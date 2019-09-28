@@ -1,12 +1,16 @@
-pip==19.2.3
-bump2version==0.5.11
-wheel==0.33.6
-watchdog==0.9.0
-flake8==3.7.8
-tox==3.14.0
-coverage==4.5.4
-Sphinx==2.2.0
-twine==2.0.0
-
-pytest==5.1.3
-pytest-runner==5.1
+pip>=19.2.3
+bump2version>=0.5.11
+twine>=2.0.0
+wheel>=0.33.6
+# code formating
+black>=18.9b0
+# test requirements
+flake8>=3.7.8
+tox>=3.5.2
+pytest>=5.1.3
+pytest-runner>=5.1
+pytest-cov>=2.5.1
+coverage>=4.5.4
+# docs requirements
+sphinx-rtd-theme>=0.3.1
+Sphinx>=2.2.0

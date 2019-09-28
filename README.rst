@@ -2,10 +2,9 @@
 flake8-nb
 =========
 
-
-.. image:: https://api.travis-ci.org/s-weigand/dflake8_nb.svg?branch=master
-        :target: https://travis-ci.org/s-weigand/flake8_nb
-        :alt: Test Status
+.. image:: https://travis-ci.org/s-weigand/flake8-nb.svg?branch=master
+        :target: https://travis-ci.org/s-weigand/flake8-nb
+        :alt: Test Status Linux and OsX
 
 .. image:: https://ci.appveyor.com/api/projects/status/gf2hgt9p2vb8y08y/branch/master?svg=true
         :target: https://ci.appveyor.com/project/s-weigand/flake8-nb/branch/master
@@ -15,9 +14,13 @@ flake8-nb
         :target: https://flake8_nb.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
+.. image:: https://coveralls.io/repos/github/s-weigand/flake8-nb/badge.svg?branch=master
+        :target: https://coveralls.io/github/s-weigand/flake8-nb?branch=master
+        :alt: Test Coverage
+
 .. image:: https://pyup.io/repos/github/s-weigand/flake8_nb/shield.svg
-     :target: https://pyup.io/repos/github/s-weigand/flake8_nb/
-     :alt: Updates
+        :target: https://pyup.io/repos/github/s-weigand/flake8_nb/
+        :alt: Updates
 
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
         :target: https://github.com/psf/black
