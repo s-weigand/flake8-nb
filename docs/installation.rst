@@ -19,8 +19,8 @@ This is the preferred method to install flake8-nb, as it will always install the
 If you don't have `pip`_ installed, this `Python installation guide`_ can guide
 you through the process.
 
-.. _pip: https://pip.pypa.io
-.. _Python installation guide: http://docs.python-guide.org/en/latest/starting/installation/
+.. _pip: https://pip.pypa.io/en/stable/
+.. _Python installation guide: https://docs.python-guide.org/starting/installation/
 
 
 From sources
@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/s-weigand/flake8_nb
+    $ git clone git://github.com/s-weigand/flake8-nb
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/s-weigand/flake8_nb/tarball/master
+    $ curl -OJL https://github.com/s-weigand/flake8-nb/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/s-weigand/flake8_nb
-.. _tarball: https://github.com/s-weigand/flake8_nb/tarball/master
+.. _Github repo: https://github.com/s-weigand/flake8-nb
+.. _tarball: https://github.com/s-weigand/flake8-nb/tarball/master

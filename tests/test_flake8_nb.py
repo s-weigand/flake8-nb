@@ -3,23 +3,19 @@
 
 """Tests for `flake8_nb` package."""
 
-import pytest
+# import pytest
 
 
-from flake8_nb import flake8_nb
+from flake8_nb.flake8_nb import strip_newline, add_newline, generate_input_name
 
 
-@pytest.fixture
-def response():
-    """Sample pytest fixture.
-
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
+def test_strip_newline():
+    assert strip_newline("test string\n") == "test string"
 
 
-def test_content(response):
-    """Sample pytest test function with the pytest fixture as an argument."""
-    # from bs4 import BeautifulSoup
-    # assert 'GitHub' in BeautifulSoup(response.content).title.string
+def test_add_newline():
+    assert add_newline("test string") == "test string\n"
+
+
+def test_generate_input_name():
+    assert generate_input_name("test_notebook.ipynb", 1) == "test_notebook.ipynb#In[1]"

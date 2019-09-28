@@ -64,20 +64,9 @@ matrix:
               - pip freeze
           script: tox -e py37
 
-        - python: 3.6
-          env: win-coverage
-          install:
-              - pip install git+https://github.com/Robpol86/appveyor-artifacts.git coveralls
-          script:
-              - appveyor-artifacts -m download
-          after_success:
-              - coveralls
-              - coverage erase
-
     allow_failures:
         #      this tests are allowed to fail since they rely external resources
         - env: TOXENV=docs-links
-        - env: win-coverage
 
 install:
     - python -m pip install -U pip>=8.1.2

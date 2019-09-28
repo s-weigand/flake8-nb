@@ -8,7 +8,6 @@ Welcome to flake8-nb's documentation!
    readme
    installation
    usage
-   modules
    contributing
    authors
    history
