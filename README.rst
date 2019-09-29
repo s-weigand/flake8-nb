@@ -30,7 +30,7 @@ flake8-nb
         :target: https://github.com/psf/black
         :alt: Code style Python: black
 
-Flake8 extension to check notebooks
+Flake8 based checking for jupyter notebooks
 
 
 

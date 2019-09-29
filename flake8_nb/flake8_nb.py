@@ -1,17 +1,38 @@
 # -*- coding: utf-8 -*-
 
 """Main module."""
-from . import __version__
 import json
-import logging
-from ast import Module
-from optparse import Values
-from flake8.options.manager import OptionManager
+from typing import Dict, List, Tuple, Union
+import warnings
 
-# import re
+# logging.basicConfig(level=logging.DEBUG)
+
+import re
+
+# python 3.6 compat
+try:
+    from re import Pattern as re_Pattern
+except ImportError:
+    re_Pattern = type(re.compile("", 0))
+
+import functools  # noqa
 
 
-def ignore_cell(notebook_cell):
+class InvalidFlake8TagWarning(UserWarning):
+    pass
+
+
+def warn_wrong_tag_pattern(flake8_tag: str):
+    warnings.warn(
+        "flake8-noqa-line/cell-tags should be of form "
+        "'flake8-noqa-cell-<rule1>-<rule2>'/"
+        "'flake8-noqa-line-<line_nr>-<rule1>-<rule2>', "
+        f"you used: '{flake8_tag}'",
+        InvalidFlake8TagWarning,
+    )
+
+
+def ignore_cell(notebook_cell: Dict):
     if notebook_cell["cell_type"] != "code":
         return True
     elif not notebook_cell["source"]:
@@ -20,7 +41,7 @@ def ignore_cell(notebook_cell):
         return True
 
 
-def get_clean_notebook(notebook_path):
+def get_clean_notebook(notebook_path: str):
     with open(notebook_path) as notebook_file:
         notebook_cells = json.load(notebook_file)["cells"]
 
@@ -39,19 +60,19 @@ def get_clean_notebook(notebook_path):
     return notebook_cells
 
 
-def generate_input_name(notebook_path, input_nr):
+def generate_input_name(notebook_path: str, input_nr: Union[int, str]):
     return f"{notebook_path}#In[{input_nr}]"
 
 
-def strip_newline(souce_line):
+def strip_newline(souce_line: str):
     return souce_line.rstrip("\n")
 
 
-def add_newline(souce_line):
+def add_newline(souce_line: str):
     return f"{souce_line}\n"
 
 
-def extract_flake8_tags(notebook_cell):
+def extract_flake8_tags(notebook_cell: Dict):
     input_nr = notebook_cell["execution_count"]
     flake8_tags = []
     for tag in notebook_cell["metadata"].get("tags", []):
@@ -61,49 +82,40 @@ def extract_flake8_tags(notebook_cell):
     return {"input_nr": input_nr, "flake8_tags": flake8_tags}
 
 
-class Flake8Notebook:
-    name = "flake8_nb"
-    version = __version__
-    use_flake8_nb = False
+def flake8_tag_to_rules_dict(
+    flake8_tag_regex: re_Pattern, flake8_tag: str
+) -> Dict[str, List]:
+    match = re.match(flake8_tag_regex, flake8_tag)
+    if match:
+        if match.group("cell_rules"):
+            cell_rules = match.group("cell_rules")
+            cell_rules = cell_rules.split("-")
+            return {"cell": cell_rules}
+        elif match.group("line_nr") and match.group("line_rules"):
+            line_nr = str(match.group("line_nr"))
+            line_rules = match.group("line_rules")
+            line_rules = line_rules.split("-")
+            return {line_nr: line_rules}
+    warn_wrong_tag_pattern(flake8_tag)
+    return {}
 
-    def __init__(self, tree: Module, filename: str):
-        self.filename = filename
-        self.tree = tree
 
-    @classmethod
-    def add_options(cls, parser: OptionManager):
-        parser.add_option(
-            short_option_name="--nb",
-            long_option_name="--check_notebook",
-            action="store_true",
-            parse_from_config=True,
-            help="Enables testing of jupyter/iPython notebooks",
-        )
-        # logging.warn(f"OPTIONS DICT: {parser.config_options_dict['filename']}")
+def update_rules_dict(
+    total_rules_dict: Dict[str, List], new_rules_dict: Dict[str, List]
+) -> Dict[str, List]:
+    for key, rules in new_rules_dict.items():
+        total_rules_dict[key] = total_rules_dict.get(key, []) + rules
 
-    @classmethod
-    def parse_options(cls, option_manager: OptionManager, options: Values, args):
-        logging.warn(f"OPTIONS: {options}")
-        if options.check_notebook:
-            options.ensure_value("filename", ["*.ipynb#In*"])
-            # options.filename = options.filename.append("ipynb")
-            # options.filename = options.filename.append("*.ipynb#In*")
-            # options.__dict__["filename"] = "*.ipynb#In*, *.py"
-            with open("testing/test_notebook.ipynb#In[1]", "w+") as test:
-                test.write("%%bash")
 
-            logging.warn(f"args: {args}")
-            logging.warn(f"option_manager TYPE: {type(option_manager)}")
-            logging.warn(
-                f'options.filename VALUE: {option_manager.config_options_dict["filename"]}'
-            )
-            cls.use_flake8_nb = options.check_notebook
-
-    def run(self):
-        logging.warn(f"FILENAME: {self.filename}")
-        # logging.warn(f"TREE: {self.tree.body}")
-        if self.filename.endswith("flake8_nb.py"):
-            # raise Exception("FOOO")
-            # yield [Exception(1, 1, "MESSAGE TEXT", type(self))]
-            pass
-        yield (1, 1, "MESSAGE TEXT", type(self))
+def get_flake8_rules_dict(notebook_cell: Dict) -> Tuple[int, Dict[str, List]]:
+    flake8_tags = extract_flake8_tags(notebook_cell)
+    flake8_tag_pattern = (
+        r"flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)|"
+        r"line-(?P<line_nr>\d+)-(?P<line_rules>(\w+\d+-?)+))"
+    )
+    flake8_tag_regex = re.compile(flake8_tag_pattern)
+    total_rules_dict = {}
+    for flake8_tag in flake8_tags["flake8_tags"]:
+        new_rules_dict = flake8_tag_to_rules_dict(flake8_tag_regex, flake8_tag)
+        update_rules_dict(total_rules_dict, new_rules_dict)
+    return flake8_tags["input_nr"], total_rules_dict
