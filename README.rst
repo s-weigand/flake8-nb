@@ -18,6 +18,10 @@ flake8-nb
         :target: https://coveralls.io/github/s-weigand/flake8-nb?branch=master
         :alt: Test Coverage
 
+.. image:: https://bettercodehub.com/edge/badge/s-weigand/flake8-nb?branch=master
+        :target: https://bettercodehub.com/
+        :alt: BCH compliance
+
 .. image:: https://pyup.io/repos/github/s-weigand/flake8-nb/shield.svg
         :target: https://pyup.io/repos/github/s-weigand/flake8-nb/
         :alt: Updates
