@@ -7,7 +7,7 @@ import pytest
 
 from typing import Dict, List, Tuple
 
-from flake8_nb.flake8_nb import (
+from flake8_nb.prepare_file import (
     add_newline,
     extract_flake8_tags,
     flake8_tag_to_rules_dict,
