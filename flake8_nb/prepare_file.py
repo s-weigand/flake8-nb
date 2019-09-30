@@ -8,6 +8,8 @@ from nbconvert.filters import ipython2python
 
 import re
 
+import functools  # noqa:
+
 
 FLAKE8_TAG_PATTERN = re.compile(
     r"^flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)"
@@ -17,7 +19,10 @@ FLAKE8_TAG_PATTERN = re.compile(
 )
 
 HAS_FLAKE8_NOQA_PATTERN = re.compile(
-    r"^.+?\s*(?P<has_flake8_noqa>[#]\s*noqa\s*[:](\s*\w+\d+[,]?\s*)+)$", re.DOTALL
+    r"^.+?\s*(?P<has_flake8_noqa_rules>[#]\s*noqa\s*[:]"
+    r"(\s*\w+\d+[,]?\s*)+)(\n)?$"
+    r"|^.+?\s*(?P<has_flake8_noqa_all>[#]\s*noqa\s*[:]?\s*)(\n)?$",
+    re.DOTALL,
 )
 
 
@@ -119,11 +124,10 @@ def get_flake8_rules_dict(notebook_cell: Dict) -> Tuple[int, Dict[str, List]]:
     return flake8_tags["input_nr"], total_rules_dict
 
 
-def has_flake8_noqa(code_line: str):
+def has_flake8_noqa(code_line: str) -> Union[str, None]:
     match = re.match(HAS_FLAKE8_NOQA_PATTERN, code_line)
-    if match and match.group("has_flake8_noqa"):
-        return True
-    else:
-        return False
-
-
+    if match:
+        if match.group("has_flake8_noqa_rules"):
+            return "rules"
+        elif match.group("has_flake8_noqa_all"):
+            return "all"

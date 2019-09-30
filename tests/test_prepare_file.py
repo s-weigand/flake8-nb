@@ -5,7 +5,7 @@
 
 import pytest
 
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 from flake8_nb.prepare_file import (
     add_newline,
@@ -121,14 +121,17 @@ def test_ignore_cell(notebook_cell: Dict, expected_result: bool):
 @pytest.mark.parametrize(
     "code_line,expected_result",
     [
-        ("foo  # noqa: E402, Fasd401", True),
-        ("foo  # noqa : E402, Fasd401 \n", True),
-        ('"foo  # noqa : E402, Fasd401"', False),
-        ("foo  # noqa : E402, Fasd401 some randome stuff", False),
-        ("get_ipython().run_cell_magic('bash', '', 'echo test')\n", False),
+        ("foo  # noqa: E402, Fasd401", "rules"),
+        ("foo  # noqa : E402,      Fasd401 \n", "rules"),
+        ("foo  # noqa", "all"),
+        ("foo  # noqa   :  ", "all"),
+        ("foo  # noqa    \n", "all"),
+        ('"foo  # noqa : E402, Fasd401"', None),
+        ("foo  # noqa : E402, Fasd401 some randome stuff", None),
+        ("get_ipython().run_cell_magic('bash', '', 'echo test')\n", None),
     ],
 )
-def test_has_flake8_noqa(code_line: str, expected_result: bool):
+def test_has_flake8_noqa(code_line: str, expected_result: Union[str, None]):
     assert has_flake8_noqa(code_line) == expected_result
 
 
