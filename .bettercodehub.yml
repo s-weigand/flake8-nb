@@ -1,0 +1,11 @@
+languages:
+  - name: python
+    production:
+      exclude:
+        - /docs/conf\.py
+        - /flake8_nb/__init__\.py
+      include:
+        - /flake8_nb/.*\.py
+    test:
+      include:
+        - /tests/.*\.py

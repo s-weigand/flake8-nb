@@ -6,8 +6,6 @@ from typing import Dict, List, Tuple, Union
 import warnings
 from nbconvert.filters import ipython2python
 
-# logging.basicConfig(level=logging.DEBUG)
-
 import re
 
 # python 3.6 compat
