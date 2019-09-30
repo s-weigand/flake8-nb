@@ -24,8 +24,8 @@ class InvalidFlake8TagWarning(UserWarning):
 def warn_wrong_tag_pattern(flake8_tag: str):
     warnings.warn(
         "flake8-noqa-line/cell-tags should be of form "
-        "'flake8-noqa-cell-<rule1>-<rule2>'/"
-        "'flake8-noqa-line-<line_nr>-<rule1>-<rule2>', "
+        "'flake8-noqa-cell-<rule1>-<rule2>'|'flake8-noqa-cell'/"
+        "'flake8-noqa-line-<line_nr>-<rule1>-<rule2>'|'flake8-noqa-line-<rule1>', "
         f"you used: '{flake8_tag}'",
         InvalidFlake8TagWarning,
     )
@@ -35,8 +35,6 @@ def ignore_cell(notebook_cell: Dict):
     if not notebook_cell["source"]:
         return True
     elif notebook_cell["cell_type"] != "code":
-        return True
-    elif "flake8-noqa" in notebook_cell["metadata"].get("tags", []):
         return True
 
 
@@ -69,7 +67,6 @@ def extract_flake8_tags(notebook_cell: Dict):
     input_nr = notebook_cell["execution_count"]
     flake8_tags = []
     for tag in notebook_cell["metadata"].get("tags", []):
-        print(tag)
         if tag.startswith("flake8-noqa"):
             flake8_tags.append(tag)
     return {"input_nr": input_nr, "flake8_tags": flake8_tags}
@@ -84,11 +81,16 @@ def flake8_tag_to_rules_dict(
             cell_rules = match.group("cell_rules")
             cell_rules = cell_rules.split("-")
             return {"cell": cell_rules}
+        elif match.group("ignore_cell"):
+            return {"cell": ["noqa"]}
         elif match.group("line_nr") and match.group("line_rules"):
             line_nr = str(match.group("line_nr"))
             line_rules = match.group("line_rules")
             line_rules = line_rules.split("-")
             return {line_nr: line_rules}
+        elif match.group("ignore_line_nr"):
+            line_nr = str(match.group("ignore_line_nr"))
+            return {line_nr: ["noqa"]}
     warn_wrong_tag_pattern(flake8_tag)
     return {}
 
@@ -96,15 +98,21 @@ def flake8_tag_to_rules_dict(
 def update_rules_dict(
     total_rules_dict: Dict[str, List], new_rules_dict: Dict[str, List]
 ) -> Dict[str, List]:
-    for key, rules in new_rules_dict.items():
-        total_rules_dict[key] = total_rules_dict.get(key, []) + rules
+    for key, new_rules in new_rules_dict.items():
+        old_rules = total_rules_dict.get(key, [])
+        if "noqa" in old_rules + new_rules:
+            total_rules_dict[key] = ["noqa"]
+        else:
+            total_rules_dict[key] = old_rules + new_rules
 
 
 def get_flake8_rules_dict(notebook_cell: Dict) -> Tuple[int, Dict[str, List]]:
     flake8_tags = extract_flake8_tags(notebook_cell)
     flake8_tag_pattern = (
-        r"flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)|"
-        r"line-(?P<line_nr>\d+)-(?P<line_rules>(\w+\d+-?)+))"
+        r"^flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)"
+        r"|line-(?P<line_nr>\d+)-(?P<line_rules>(\w+\d+-?)+))$"
+        r"|^(?P<ignore_cell>flake8-noqa-cell)$"
+        r"|^flake8-noqa-line-(?P<ignore_line_nr>\d+)$"
     )
     flake8_tag_regex = re.compile(flake8_tag_pattern)
     total_rules_dict = {}
