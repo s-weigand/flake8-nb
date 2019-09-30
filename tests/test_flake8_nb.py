@@ -5,7 +5,7 @@
 
 import pytest
 
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 
 from flake8_nb.flake8_nb import (
     add_newline,
