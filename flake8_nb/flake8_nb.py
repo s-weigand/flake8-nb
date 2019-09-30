@@ -4,6 +4,7 @@
 import json
 from typing import Dict, List, Tuple, Union
 import warnings
+from nbconvert.filters import ipython2python
 
 # logging.basicConfig(level=logging.DEBUG)
 
@@ -33,9 +34,9 @@ def warn_wrong_tag_pattern(flake8_tag: str):
 
 
 def ignore_cell(notebook_cell: Dict):
-    if notebook_cell["cell_type"] != "code":
+    if not notebook_cell["source"]:
         return True
-    elif not notebook_cell["source"]:
+    elif notebook_cell["cell_type"] != "code":
         return True
     elif "flake8-noqa" in notebook_cell["metadata"].get("tags", []):
         return True
@@ -44,19 +45,13 @@ def ignore_cell(notebook_cell: Dict):
 def get_clean_notebook(notebook_path: str):
     with open(notebook_path) as notebook_file:
         notebook_cells = json.load(notebook_file)["cells"]
-
     for index, cell in list(enumerate(notebook_cells))[::-1]:
         if ignore_cell(cell):
             notebook_cells.pop(index)
         else:
             cell_source = list(enumerate(cell["source"]))[::-1]
-            for source_line_index, source_line in cell_source:
-                if source_line.startswith(("%", "?", "!")) or source_line.endswith(
-                    ("?", "?\n")
-                ):
-                    cell["source"].pop(source_line_index)
-            if not cell["source"]:
-                notebook_cells.pop(index)
+            for source_index, source_line in cell_source:
+                cell["source"][source_index] = ipython2python(source_line)
     return notebook_cells
 
 
