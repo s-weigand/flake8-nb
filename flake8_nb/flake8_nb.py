@@ -8,13 +8,17 @@ from nbconvert.filters import ipython2python
 
 import re
 
-# python 3.6 compat
-try:
-    from re import Pattern as re_Pattern
-except ImportError:
-    re_Pattern = type(re.compile("", 0))
 
-import functools  # noqa
+FLAKE8_TAG_PATTERN = re.compile(
+    r"^flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)"
+    r"|line-(?P<line_nr>\d+)-(?P<line_rules>(\w+\d+-?)+))$"
+    r"|^(?P<ignore_cell>flake8-noqa-cell)$"
+    r"|^flake8-noqa-line-(?P<ignore_line_nr>\d+)$"
+)
+
+HAS_FLAKE8_NOQA_PATTERN = re.compile(
+    r"^.+?\s*(?P<has_flake8_noqa>[#]\s*noqa\s*[:](\s*\w+\d+[,]?\s*)+)$", re.DOTALL
+)
 
 
 class InvalidFlake8TagWarning(UserWarning):
@@ -36,6 +40,8 @@ def ignore_cell(notebook_cell: Dict):
         return True
     elif notebook_cell["cell_type"] != "code":
         return True
+    else:
+        return False
 
 
 def get_clean_notebook(notebook_path: str):
@@ -72,10 +78,8 @@ def extract_flake8_tags(notebook_cell: Dict):
     return {"input_nr": input_nr, "flake8_tags": flake8_tags}
 
 
-def flake8_tag_to_rules_dict(
-    flake8_tag_regex: re_Pattern, flake8_tag: str
-) -> Dict[str, List]:
-    match = re.match(flake8_tag_regex, flake8_tag)
+def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List]:
+    match = re.match(FLAKE8_TAG_PATTERN, flake8_tag)
     if match:
         if match.group("cell_rules"):
             cell_rules = match.group("cell_rules")
@@ -103,20 +107,21 @@ def update_rules_dict(
         if "noqa" in old_rules + new_rules:
             total_rules_dict[key] = ["noqa"]
         else:
-            total_rules_dict[key] = old_rules + new_rules
+            total_rules_dict[key] = list(set(old_rules + new_rules))
 
 
 def get_flake8_rules_dict(notebook_cell: Dict) -> Tuple[int, Dict[str, List]]:
     flake8_tags = extract_flake8_tags(notebook_cell)
-    flake8_tag_pattern = (
-        r"^flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)"
-        r"|line-(?P<line_nr>\d+)-(?P<line_rules>(\w+\d+-?)+))$"
-        r"|^(?P<ignore_cell>flake8-noqa-cell)$"
-        r"|^flake8-noqa-line-(?P<ignore_line_nr>\d+)$"
-    )
-    flake8_tag_regex = re.compile(flake8_tag_pattern)
     total_rules_dict = {}
     for flake8_tag in flake8_tags["flake8_tags"]:
-        new_rules_dict = flake8_tag_to_rules_dict(flake8_tag_regex, flake8_tag)
+        new_rules_dict = flake8_tag_to_rules_dict(flake8_tag)
         update_rules_dict(total_rules_dict, new_rules_dict)
     return flake8_tags["input_nr"], total_rules_dict
+
+
+def has_flake8_noqa(code_line: str):
+    match = re.match(HAS_FLAKE8_NOQA_PATTERN, code_line)
+    if match and match.group("has_flake8_noqa"):
+        return True
+    else:
+        return False
