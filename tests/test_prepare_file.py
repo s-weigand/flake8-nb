@@ -8,30 +8,40 @@ import pytest
 from typing import Dict, List, Tuple, Union
 
 from flake8_nb.prepare_file import (
-    add_newline,
     extract_flake8_tags,
     flake8_tag_to_rules_dict,
     generate_input_name,
+    generate_rules_list,
     get_flake8_rules_dict,
-    has_flake8_noqa,
+    get_inline_flake8_noqa,
     ignore_cell,
     InvalidFlake8TagWarning,
-    strip_newline,
     update_rules_dict,
+    update_inline_flake8_noqa,
     warn_wrong_tag_pattern,
 )
 
 
-def test_strip_newline():
-    assert strip_newline("test string\n") == "test string"
-
-
-def test_add_newline():
-    assert add_newline("test string") == "test string\n"
-
-
 def test_generate_input_name():
     assert generate_input_name("test_notebook.ipynb", 1) == "test_notebook.ipynb#In[1]"
+
+
+@pytest.mark.parametrize(
+    "line_index,rules_dict,expected_result",
+    [
+        (
+            1,
+            {"cell": ["noqa"], "1": ["E402", "F401", "W391"]},
+            ["E402", "F401", "W391", "noqa"],
+        ),
+        (2, {"cell": ["noqa"], "1": ["E402", "F401", "W391"]}, ["noqa"]),
+        (2, {"1": ["E402", "F401", "W391"]}, []),
+    ],
+)
+def test_generate_rules_list(
+    line_index: int, rules_dict: Dict[str, List], expected_result: List
+):
+    assert sorted(generate_rules_list(line_index, rules_dict)) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -121,18 +131,18 @@ def test_ignore_cell(notebook_cell: Dict, expected_result: bool):
 @pytest.mark.parametrize(
     "code_line,expected_result",
     [
-        ("foo  # noqa: E402, Fasd401", "rules"),
-        ("foo  # noqa : E402,      Fasd401 \n", "rules"),
-        ("foo  # noqa", "all"),
-        ("foo  # noqa   :  ", "all"),
-        ("foo  # noqa    \n", "all"),
+        ("foo  # noqa: E402, Fasd401", ["E402", "Fasd401"]),
+        ("foo  # noqa : E402,      Fasd401 \n", ["E402", "Fasd401"]),
+        ("foo  # noqa", ["noqa"]),
+        ("foo  # noqa   :  ", ["noqa"]),
+        ("foo  # noqa    \n", ["noqa"]),
         ('"foo  # noqa : E402, Fasd401"', None),
         ("foo  # noqa : E402, Fasd401 some randome stuff", None),
         ("get_ipython().run_cell_magic('bash', '', 'echo test')\n", None),
     ],
 )
-def test_has_flake8_noqa(code_line: str, expected_result: Union[str, None]):
-    assert has_flake8_noqa(code_line) == expected_result
+def test_get_inline_flake8_noqa(code_line: str, expected_result: Union[str, None]):
+    assert get_inline_flake8_noqa(code_line) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -152,6 +162,39 @@ def test_update_rules_dict(
     assert sorted(total_rules_dict["1"]) == sorted(expected_result["1"])
 
 
+@pytest.mark.parametrize(
+    "code_line,rules_list,expected_result",
+    [
+        ("foo  # noqa: E402, Fasd401", ["noqa"], "foo  # noqa: "),
+        (
+            "foo  # noqa : E402,      Fasd401 \n",
+            ["E402", "F401"],
+            "foo  # noqa: E402, F401, Fasd401",
+        ),
+        ("foo  # noqa", ["E402", "F401"], "foo  # noqa: "),
+        (
+            '"foo  # noqa : E402, Fasd401"',
+            ["E402", "F401"],
+            '"foo  # noqa : E402, Fasd401"  # noqa: E402, F401',
+        ),
+        (
+            "foo  # noqa : E402, Fasd401 some randome stuff",
+            [],
+            "foo  # noqa : E402, Fasd401 some randome stuff",
+        ),
+        (
+            "foo  # noqa : E402, Fasd401 some randome stuff",
+            ["E402", "F401"],
+            "foo  # noqa : E402, Fasd401 some randome stuff  # noqa: E402, F401",
+        ),
+    ],
+)
+def test_update_inline_flake8_noqa(
+    code_line: str, rules_list: List, expected_result: str
+):
+    assert update_inline_flake8_noqa(code_line, rules_list) == expected_result
+
+
 def test_warn_wrong_tag_pattern():
     with pytest.warns(
         InvalidFlake8TagWarning,
@@ -163,3 +206,13 @@ def test_warn_wrong_tag_pattern():
         ),
     ):
         warn_wrong_tag_pattern("user-pattern")
+
+
+# foo  # noqa: E402, Fasd401
+# foo  # noqa : E402,      Fasd401
+# foo  # noqa
+# foo  # noqa   :
+# foo  # noqa    \n
+# "foo  # noqa : E402, Fasd401"
+# foo  # noqa : E402, Fasd401 some randome stuff
+# get_ipython().run_cell_magic('bash', '', 'echo test')\n

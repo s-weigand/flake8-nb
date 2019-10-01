@@ -8,8 +8,6 @@ from nbconvert.filters import ipython2python
 
 import re
 
-import functools  # noqa:
-
 
 FLAKE8_TAG_PATTERN = re.compile(
     r"^flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)"
@@ -18,11 +16,14 @@ FLAKE8_TAG_PATTERN = re.compile(
     r"|^flake8-noqa-line-(?P<ignore_line_nr>\d+)$"
 )
 
-HAS_FLAKE8_NOQA_PATTERN = re.compile(
-    r"^.+?\s*(?P<has_flake8_noqa_rules>[#]\s*noqa\s*[:]"
-    r"(\s*\w+\d+[,]?\s*)+)(\n)?$"
-    r"|^.+?\s*(?P<has_flake8_noqa_all>[#]\s*noqa\s*[:]?\s*)(\n)?$",
-    re.DOTALL,
+FLAKE8_NOQA_INLINE_PATTERN = re.compile(
+    r"^.+?\s*[#]\s*noqa\s*[:]"
+    r"(?P<flake8_noqa_rules>(\s*\w+\d+[,]?\s*)+)(\n)?$"
+    r"|^.+?\s*(?P<has_flake8_noqa_all>[#]\s*noqa\s*[:]?\s*)(\n)?$"
+)
+
+FLAKE8_NOQA_INLINE_REPLACE_PATTERN = re.compile(
+    r"^(?P<source_code>.+?)\s*(?P<flake8_noqa>[#]\s*noqa\s*[:]?.*)(\n)?$"
 )
 
 
@@ -64,14 +65,6 @@ def get_clean_notebook(notebook_path: str):
 
 def generate_input_name(notebook_path: str, input_nr: Union[int, str]):
     return f"{notebook_path}#In[{input_nr}]"
-
-
-def strip_newline(souce_line: str):
-    return souce_line.rstrip("\n")
-
-
-def add_newline(souce_line: str):
-    return f"{souce_line}\n"
 
 
 def extract_flake8_tags(notebook_cell: Dict):
@@ -124,10 +117,38 @@ def get_flake8_rules_dict(notebook_cell: Dict) -> Tuple[int, Dict[str, List]]:
     return flake8_tags["input_nr"], total_rules_dict
 
 
-def has_flake8_noqa(code_line: str) -> Union[str, None]:
-    match = re.match(HAS_FLAKE8_NOQA_PATTERN, code_line)
+def generate_rules_list(line_index: int, rules_dict: Dict[str, List]) -> List:
+    line_rules = rules_dict.get(str(line_index), [])
+    cell_rules = rules_dict.get("cell", [])
+    return line_rules + cell_rules
+
+
+def get_inline_flake8_noqa(code_line: str) -> List:
+    match = re.match(FLAKE8_NOQA_INLINE_PATTERN, code_line)
     if match:
-        if match.group("has_flake8_noqa_rules"):
-            return "rules"
+        flake8_noqa_rules = match.group("flake8_noqa_rules")
+        if flake8_noqa_rules:
+            flake8_noqa_rules = flake8_noqa_rules.split(",")
+            return list(map(lambda line: line.strip(), flake8_noqa_rules))
         elif match.group("has_flake8_noqa_all"):
-            return "all"
+            return ["noqa"]
+        else:
+            return []
+
+
+def update_inline_flake8_noqa(source_line: str, rules_list: List) -> str:
+    inline_flake8_noqa = get_inline_flake8_noqa(source_line)
+    if inline_flake8_noqa:
+        rules_list = set(inline_flake8_noqa + rules_list)
+        source_line = re.sub(
+            FLAKE8_NOQA_INLINE_REPLACE_PATTERN, r"\g<source_code>", source_line
+        )
+    rules_list = sorted(list(rules_list))
+    if "noqa" in rules_list:
+        noqa_str = ""
+    else:
+        noqa_str = ", ".join(rules_list)
+    if rules_list:
+        return f"{source_line}  # noqa: {noqa_str}"
+    else:
+        return source_line
