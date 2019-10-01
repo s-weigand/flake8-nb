@@ -3,10 +3,7 @@ sudo: false
 language: python
 cache: pip
 
-python:
-  - 3.6
-
-matrix:
+jobs:
   fast_finish: true
   include:
     - python: 3.6
@@ -25,14 +22,18 @@ matrix:
         - echo "done"
 
     - language: python
+      python: 3.6
+      name: linux-py36
+
+    - language: python
       sudo: required
       dist: xenial
       python: "3.7"
-      env: linux-py37
+      name: linux-py37
 
     - language: generic
       python: 3.6
-      env: osx-py36
+      name: osx-py36
       os: osx
       before_install:
         - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
@@ -49,7 +50,7 @@ matrix:
 
     - language: generic
       python: 3.7
-      env: osx-py37
+      name: osx-py37
       os: osx
       before_install:
         - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
