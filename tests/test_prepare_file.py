@@ -22,7 +22,8 @@ from flake8_nb.prepare_file import (
 )
 
 
-def test_generate_input_name():
+@pytest.mark.parametrize("input_nr", [1, "1"])
+def test_generate_input_name(input_nr: Union[int, str]):
     assert generate_input_name("test_notebook.ipynb", 1) == "test_notebook.ipynb#In[1]"
 
 
@@ -136,12 +137,12 @@ def test_ignore_cell(notebook_cell: Dict, expected_result: bool):
         ("foo  # noqa", ["noqa"]),
         ("foo  # noqa   :  ", ["noqa"]),
         ("foo  # noqa    \n", ["noqa"]),
-        ('"foo  # noqa : E402, Fasd401"', None),
-        ("foo  # noqa : E402, Fasd401 some randome stuff", None),
-        ("get_ipython().run_cell_magic('bash', '', 'echo test')\n", None),
+        ('"foo  # noqa : E402, Fasd401"', []),
+        ("foo  # noqa : E402, Fasd401 some randome stuff", []),
+        ("get_ipython().run_cell_magic('bash', '', 'echo test')\n", []),
     ],
 )
-def test_get_inline_flake8_noqa(code_line: str, expected_result: Union[str, None]):
+def test_get_inline_flake8_noqa(code_line: str, expected_result: List):
     assert get_inline_flake8_noqa(code_line) == expected_result
 
 

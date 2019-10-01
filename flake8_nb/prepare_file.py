@@ -132,8 +132,8 @@ def get_inline_flake8_noqa(code_line: str) -> List:
             return list(map(lambda line: line.strip(), flake8_noqa_rules))
         elif match.group("has_flake8_noqa_all"):
             return ["noqa"]
-        else:
-            return []
+    else:
+        return []
 
 
 def update_inline_flake8_noqa(source_line: str, rules_list: List) -> str:
