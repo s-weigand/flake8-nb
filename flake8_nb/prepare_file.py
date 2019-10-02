@@ -90,7 +90,7 @@ def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List]:
             line_rules = match.group("line_rules")
             line_rules = line_rules.split("-")
             return {line_nr: line_rules}
-        elif match.group("ignore_line_nr"):
+        elif match.group("ignore_line_nr"):  # pragma: no branch
             line_nr = str(match.group("ignore_line_nr"))
             return {line_nr: ["noqa"]}
     warn_wrong_tag_pattern(flake8_tag)
@@ -130,7 +130,7 @@ def get_inline_flake8_noqa(code_line: str) -> List:
         if flake8_noqa_rules:
             flake8_noqa_rules = flake8_noqa_rules.split(",")
             return list(map(lambda line: line.strip(), flake8_noqa_rules))
-        elif match.group("has_flake8_noqa_all"):
+        elif match.group("has_flake8_noqa_all"):  # pragma: no branch
             return ["noqa"]
     else:
         return []
