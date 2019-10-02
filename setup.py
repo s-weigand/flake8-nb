@@ -3,7 +3,13 @@
 
 """The setup script."""
 
+import os
+import sys
+
 from setuptools import setup, find_packages
+
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "flake8_nb"))  # noqa
 
 with open("README.rst") as readme_file:
     readme = readme_file.read()
@@ -50,6 +56,10 @@ setup(
     packages=find_packages(include=["flake8_nb", "flake8_nb.*"]),
     setup_requires=setup_requirements,
     test_suite="tests",
+    entry_points={
+        "console_scripts": ["flake8_nb = flake8_nb.__main__:main"],
+        "flake8.report": "default_notebook = flake8_nb.flake8_integration:IpynbFormater",
+    },
     tests_require=test_requirements,
     url="https://github.com/s-weigand/flake8_nb",
     version="0.1.0",
