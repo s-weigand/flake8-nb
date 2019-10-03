@@ -22,6 +22,9 @@ flake8-nb
         :target: https://bettercodehub.com/
         :alt: BCH compliance
 
+.. image:: https://api.codacy.com/project/badge/Grade/d02b436a637243a1b626b74d018c3bbe
+        :target: https://www.codacy.com/manual/s.weigand.phy/flake8-nb?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=s-weigand/flake8-nb&amp;utm_campaign=Badge_Grade
+
 .. image:: https://pyup.io/repos/github/s-weigand/flake8-nb/shield.svg
         :target: https://pyup.io/repos/github/s-weigand/flake8-nb/
         :alt: Updates
