@@ -2,11 +2,12 @@
 
 """Main module."""
 import json
+import re
+import tempfile
 from typing import Dict, List, Tuple, Union
 import warnings
-from nbconvert.filters import ipython2python
 
-import re
+from nbconvert.filters import ipython2python
 
 
 FLAKE8_TAG_PATTERN = re.compile(
@@ -129,7 +130,7 @@ def get_inline_flake8_noqa(code_line: str) -> List:
         flake8_noqa_rules = match.group("flake8_noqa_rules")
         if flake8_noqa_rules:
             flake8_noqa_rules = flake8_noqa_rules.split(",")
-            return list(map(lambda line: line.strip(), flake8_noqa_rules))
+            return [line.strip() for line in flake8_noqa_rules]
         elif match.group("has_flake8_noqa_all"):  # pragma: no branch
             return ["noqa"]
     else:

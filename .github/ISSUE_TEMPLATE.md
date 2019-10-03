@@ -1,6 +1,6 @@
-* flake8-nb version:
-* Python version:
-* Operating System:
+-   flake8-nb version:
+-   Python version:
+-   Operating System:
 
 ### Description
 
