@@ -3,7 +3,8 @@
 """Main module."""
 import json
 import re
-import tempfile
+
+# import tempfile
 from typing import Dict, List, Tuple, Union
 import warnings
 
