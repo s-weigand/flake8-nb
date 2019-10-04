@@ -11,10 +11,10 @@ from setuptools import setup, find_packages
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "flake8_nb"))  # noqa
 
-with open("README.md") as readme_file:
+with open("README.md", encoding="utf-8") as readme_file:
     readme = readme_file.read()
 
-with open("HISTORY.md") as history_file:
+with open("HISTORY.md", encoding="utf-8") as history_file:
     history = history_file.read()
 
 requirements = ["flake8>=3.0.0", "nbconvert>=5.6.0"]
