@@ -9,6 +9,7 @@ from typing import Dict, List, Tuple, Union
 
 from flake8_nb.prepare_file import (
     extract_flake8_tags,
+    extract_flake8_inline_tags,
     flake8_tag_to_rules_dict,
     generate_input_name,
     generate_rules_list,
@@ -54,6 +55,7 @@ def test_generate_rules_list(
                 "metadata": {
                     "tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]
                 },
+                "source": ["foo  "],
             },
             (8, {"cell": ["E402", "F401"]}),
         ),
@@ -68,33 +70,77 @@ def test_generate_rules_list(
                         "flake8-noqa-cell",
                     ]
                 },
+                "source": ["foo  # flake8-noqa-line-3-D402         \n "],
             },
-            (9, {"cell": ["noqa"], "1": ["W391", "E402", "F401"]}),
+            (9, {"cell": ["noqa"], "1": ["W391", "E402", "F401"], "3": ["D402"]}),
+        ),
+        (
+            {
+                "execution_count": 8,
+                "metadata": {
+                    "tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]
+                },
+                "source": ["foo  # flake8-noqa-cell     ", "bar # flake8-noqa-line-4"],
+            },
+            (8, {"cell": ["noqa"], "4": ["noqa"]}),
         ),
     ],
 )
 def test_get_flake8_rules_dict(
     notebook_cell: Dict, expected_result: Tuple[int, Dict[str, List]]
 ):
-    result = get_flake8_rules_dict(notebook_cell)
-    assert result[0] == expected_result[0]
-    assert sorted(result[1]["cell"]) == sorted(expected_result[1]["cell"])
-    if "1" in expected_result:
-        assert sorted(result[1]["1"]) == sorted(expected_result[1]["1"])
+    input_nr, flake8_rules_dict = get_flake8_rules_dict(notebook_cell)
+    assert input_nr == expected_result[0]
+    for key in expected_result[1]:
+        assert sorted(flake8_rules_dict[key]) == sorted(expected_result[1][key])
 
 
 def test_extract_flake8_tags():
     notebook_cell = {
-        "execution_count": 1,
         "metadata": {
-            "tags": ["flake8-noqa-cell-E402-F401", "flake8-noqa-cell", "random-tag"]
-        },
+            "tags": [
+                "flake8-noqa-cell-E402-F401",
+                "flake8-noqa-cell",
+                "flake8-noqa-line-1-E402",
+                "flake8-noqa-line-1",
+                "random-tag",
+            ]
+        }
     }
-    expected_result = {
-        "input_nr": 1,
-        "flake8_tags": ["flake8-noqa-cell-E402-F401", "flake8-noqa-cell"],
-    }
+    expected_result = [
+        "flake8-noqa-cell-E402-F401",
+        "flake8-noqa-cell",
+        "flake8-noqa-line-1-E402",
+        "flake8-noqa-line-1",
+    ]
     assert extract_flake8_tags(notebook_cell) == expected_result
+
+
+def test_extract_flake8_inline_tags():
+    notebook_cell = {
+        "source": [
+            "foo  # flake8-noqa-cell-A402-BC403",
+            "foo  # flake8-noqa-cell     ",
+            "foo  # flake8-noqa-line-3-D402         \n",
+            "foo  # flake8-noqa-line-4",
+            "foo  # flake8-noqa-cell-E402 flake8-noqa-cell-F403",
+            "foo  # flake8-noqa-line-6-GH402 flake8-noqa-line-6-J403-L43",
+            "foo  # noqa    \n",
+            '"foo  # flake8-noqa-cell"',
+            "foo  # noqa : flake8-noqa-cell some randome stuff",
+        ]
+    }
+    expected_result = [
+        "flake8-noqa-cell-A402-BC403",
+        "flake8-noqa-cell",
+        "flake8-noqa-line-3-D402",
+        "flake8-noqa-line-4",
+        "flake8-noqa-cell-E402",
+        "flake8-noqa-cell-F403",
+        "flake8-noqa-line-6-GH402",
+        "flake8-noqa-line-6-J403-L43",
+    ]
+    assert sorted(extract_flake8_inline_tags(notebook_cell)) == sorted(expected_result)
 
 
 @pytest.mark.parametrize(
@@ -212,10 +258,24 @@ def test_warn_wrong_tag_pattern():
 # TODO clean up
 # Test Expression
 
+# Normal flake8
+
 # foo  # noqa: E402, Fasd401
 # foo  # noqa : E402,      Fasd401
 # foo  # noqa
 # foo  # noqa   :
+# foo  # noqa    \n
+# "foo  # noqa : E402, Fasd401"
+# foo  # noqa : E402, Fasd401 some randome stuff
+# get_ipython().run_cell_magic('bash', '', 'echo test')\n
+
+
+# Inline flake8 tags
+
+# foo  # flake8-noqa-cell-E402
+# foo  # flake8-noqa-cell
+# foo  # flake8-noqa-line-1-E402
+# foo  # flake8-noqa-line-1
 # foo  # noqa    \n
 # "foo  # noqa : E402, Fasd401"
 # foo  # noqa : E402, Fasd401 some randome stuff

@@ -18,6 +18,11 @@ FLAKE8_TAG_PATTERN = re.compile(
     r"|^flake8-noqa-line-(?P<ignore_line_nr>\d+)$"
 )
 
+FLAKE8_INLINE_TAG_PATTERN = re.compile(
+    r"^.*?(#(?P<flake8_inline_tags>(\s*flake8-noqa-(cell(-\w+\d+)*|line-\d+(-\w+\d+)*))+))\s*$",
+    re.DOTALL,
+)
+
 FLAKE8_NOQA_INLINE_PATTERN = re.compile(
     r"^.+?\s*[#]\s*noqa\s*[:]"
     r"(?P<flake8_noqa_rules>(\s*\w+\d+[,]?\s*)+)(\n)?$"
@@ -70,12 +75,23 @@ def generate_input_name(notebook_path: str, input_nr: Union[int, str]):
 
 
 def extract_flake8_tags(notebook_cell: Dict):
-    input_nr = notebook_cell["execution_count"]
     flake8_tags = []
     for tag in notebook_cell["metadata"].get("tags", []):
-        if tag.startswith("flake8-noqa"):
+        if tag.startswith("flake8-noqa-"):
             flake8_tags.append(tag)
-    return {"input_nr": input_nr, "flake8_tags": flake8_tags}
+    return flake8_tags
+
+
+def extract_flake8_inline_tags(notebook_cell: Dict):
+    flake8_inline_tags = []
+    for source_line in notebook_cell["source"]:
+        match = re.match(FLAKE8_INLINE_TAG_PATTERN, source_line)
+        if match and match.group("flake8_inline_tags"):
+            for tag in match.group("flake8_inline_tags").split(" "):
+                tag = tag.strip()
+                if tag:
+                    flake8_inline_tags.append(tag)
+    return flake8_inline_tags
 
 
 def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List]:
@@ -112,11 +128,13 @@ def update_rules_dict(
 
 def get_flake8_rules_dict(notebook_cell: Dict) -> Tuple[int, Dict[str, List]]:
     flake8_tags = extract_flake8_tags(notebook_cell)
+    flake8_inline_tags = extract_flake8_inline_tags(notebook_cell)
+    input_nr = notebook_cell["execution_count"]
     total_rules_dict = {}
-    for flake8_tag in flake8_tags["flake8_tags"]:
+    for flake8_tag in set(flake8_tags + flake8_inline_tags):
         new_rules_dict = flake8_tag_to_rules_dict(flake8_tag)
         update_rules_dict(total_rules_dict, new_rules_dict)
-    return flake8_tags["input_nr"], total_rules_dict
+    return input_nr, total_rules_dict
 
 
 def generate_rules_list(line_index: int, rules_dict: Dict[str, List]) -> List:
