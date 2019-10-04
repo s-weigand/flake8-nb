@@ -9,14 +9,14 @@
 [![Updates](https://pyup.io/repos/github/s-weigand/flake8-nb/shield.svg)](https://pyup.io/repos/github/s-weigand/flake8-nb/)
 [![Code style Python: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Flake8 based checking for jupyter notebooks.
-Basically this is a hack on the flake8 `Application` class, which adds parsing and a better formatter for `*.ipynb` files.
+`flake8` based checking for jupyter notebooks.
+Basically this is a hack on the `flake8`'s `Application` class, which adds parsing and a cell based formatter for `*.ipynb` files.
 
-# Features
+## Features
 
 -   TODO
 
-# Credits
+## Credits
 
 This package was created with
 [Cookiecutter](https://github.com/cookiecutter/cookiecutter) and the

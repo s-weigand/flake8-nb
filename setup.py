@@ -11,10 +11,10 @@ from setuptools import setup, find_packages
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "flake8_nb"))  # noqa
 
-with open("README.rst") as readme_file:
+with open("README.md") as readme_file:
     readme = readme_file.read()
 
-with open("HISTORY.rst") as history_file:
+with open("HISTORY.md") as history_file:
     history = history_file.read()
 
 requirements = ["flake8>=3.0.0", "nbconvert>=5.6.0"]
@@ -48,7 +48,7 @@ setup(
     description="Flake8 based checking for jupyter notebooks",
     install_requires=requirements,
     long_description=readme + "\n\n" + history,
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     license="Apache Software License 2.0",
     include_package_data=True,
     keywords="flake8_nb flake8 lint notebook jupyter ipython",
