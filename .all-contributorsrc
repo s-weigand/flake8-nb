@@ -1,0 +1,29 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "s",
+      "name": "Said Özcan",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1969638?v=4",
+      "profile": "http://saidozcan.nl",
+      "contributions": [
+        "code",
+        "ideas",
+        "maintenance",
+        "projectManagement",
+        "infra",
+        "test",
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "flake8-nb",
+  "projectOwner": "s-weigand",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
