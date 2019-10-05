@@ -25,8 +25,8 @@ FLAKE8_INLINE_TAG_PATTERN = re.compile(
 
 FLAKE8_NOQA_INLINE_PATTERN = re.compile(
     r"^.+?\s*[#]\s*noqa\s*[:]"
-    r"(?P<flake8_noqa_rules>(\s*\w+\d+[,]?\s*)+)(\n)?$"
-    r"|^.+?\s*(?P<has_flake8_noqa_all>[#]\s*noqa\s*[:]?\s*)(\n)?$"
+    r"(?P<flake8_noqa_rules>(\s*\w+\d+[,]?\s*)+)$"
+    r"|^.+?\s*(?P<has_flake8_noqa_all>[#]\s*noqa\s*[:]?\s*)$"
 )
 
 FLAKE8_NOQA_INLINE_REPLACE_PATTERN = re.compile(
