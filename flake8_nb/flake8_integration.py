@@ -77,6 +77,13 @@ class IpynbFormater(Default):
 class Flake8NbApplication(Application):
     def __init__(self, program="flake8_nb", version=__version__):
         super().__init__(program, version)
+        # TODO Cleanup after flake8>3.7.8 release
+        # if https://gitlab.com/pycqa/flake8/merge_requests/359#note_226407899 gets merged
+        self.option_manager.parser.prog = program
+        self.option_manager.parser.version = version
+        self.option_manager.program_name = program
+        self.option_manager.version = version
+        # end cleanup
         self.overwrite_flake8_option(
             "--format",
             metavar="format",
@@ -133,13 +140,13 @@ class Flake8NbApplication(Application):
             # see https://github.com/PyCQA/flake8/commit/b54164f916922725c17e6d0df75998ada6b27eef#diff-d5a0050fc6e4a3978782bdca39900c59  # noqa
             # pylint: disable=assignment-from-no-return
             prelim_opts, prelim_args = super().parse_preliminary_options_and_args(argv)
-            print(prelim_opts, prelim_args)
+            # print(prelim_opts, prelim_args)
             return prelim_opts, prelim_args
 
         else:
             # TODO: remove compat after flake8>3.7.8 release
             super().parse_preliminary_options_and_args(argv)
-            print(self.prelim_opts, self.prelim_args)
+            # print(self.prelim_opts, self.prelim_args)
 
     def initialize(self, argv: List[str]) -> None:
         super().initialize(argv)
