@@ -94,11 +94,14 @@ class Flake8NbApplication(Application):
         long_option_name : str
             Long name of the flake8 cli option.
         """
+        is_option = False
         for option_index, option in enumerate(self.option_manager.options):
             if option.long_option_name == long_option_name:
                 self.option_manager.options.pop(option_index)
-        self.option_manager.parser.remove_option(long_option_name)
-        self.option_manager.add_option(long_option_name, *args, **kwargs)
+                is_option = True
+        if is_option:
+            self.option_manager.parser.remove_option(long_option_name)
+            self.option_manager.add_option(long_option_name, *args, **kwargs)
 
     def parse_preliminary_options_and_args(
         self, argv: Union[None, List[str]]
