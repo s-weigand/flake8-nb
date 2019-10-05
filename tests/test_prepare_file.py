@@ -5,7 +5,7 @@
 
 import pytest
 
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Union
 
 from flake8_nb.prepare_file import (
     extract_flake8_tags,
@@ -17,6 +17,7 @@ from flake8_nb.prepare_file import (
     get_inline_flake8_noqa,
     ignore_cell,
     InvalidFlake8TagWarning,
+    notebook_cell_to_intermediate_py_str,
     update_rules_dict,
     update_inline_flake8_noqa,
     warn_wrong_tag_pattern,
@@ -29,21 +30,21 @@ def test_generate_input_name(input_nr: Union[int, str]):
 
 
 @pytest.mark.parametrize(
-    "line_index,rules_dict,expected_result",
+    "source_index,rules_dict,expected_result",
     [
         (
-            1,
+            0,
             {"cell": ["noqa"], "1": ["E402", "F401", "W391"]},
             ["E402", "F401", "W391", "noqa"],
         ),
-        (2, {"cell": ["noqa"], "1": ["E402", "F401", "W391"]}, ["noqa"]),
-        (2, {"1": ["E402", "F401", "W391"]}, []),
+        (1, {"cell": ["noqa"], "1": ["E402", "F401", "W391"]}, ["noqa"]),
+        (1, {"1": ["E402", "F401", "W391"]}, []),
     ],
 )
 def test_generate_rules_list(
-    line_index: int, rules_dict: Dict[str, List], expected_result: List
+    source_index: int, rules_dict: Dict[str, List], expected_result: List
 ):
-    assert sorted(generate_rules_list(line_index, rules_dict)) == expected_result
+    assert sorted(generate_rules_list(source_index, rules_dict)) == expected_result
 
 
 @pytest.mark.parametrize(
@@ -57,7 +58,7 @@ def test_generate_rules_list(
                 },
                 "source": ["foo  "],
             },
-            (8, {"cell": ["E402", "F401"]}),
+            {"cell": ["E402", "F401"]},
         ),
         (
             {
@@ -72,7 +73,7 @@ def test_generate_rules_list(
                 },
                 "source": ["foo  # flake8-noqa-line-3-D402         \n "],
             },
-            (9, {"cell": ["noqa"], "1": ["W391", "E402", "F401"], "3": ["D402"]}),
+            {"cell": ["noqa"], "1": ["W391", "E402", "F401"], "3": ["D402"]},
         ),
         (
             {
@@ -82,17 +83,14 @@ def test_generate_rules_list(
                 },
                 "source": ["foo  # flake8-noqa-cell     ", "bar # flake8-noqa-line-4"],
             },
-            (8, {"cell": ["noqa"], "4": ["noqa"]}),
+            {"cell": ["noqa"], "4": ["noqa"]},
         ),
     ],
 )
-def test_get_flake8_rules_dict(
-    notebook_cell: Dict, expected_result: Tuple[int, Dict[str, List]]
-):
-    input_nr, flake8_rules_dict = get_flake8_rules_dict(notebook_cell)
-    assert input_nr == expected_result[0]
-    for key in expected_result[1]:
-        assert sorted(flake8_rules_dict[key]) == sorted(expected_result[1][key])
+def test_get_flake8_rules_dict(notebook_cell: Dict, expected_result: Dict[str, List]):
+    flake8_rules_dict = get_flake8_rules_dict(notebook_cell)
+    for key in expected_result:
+        assert sorted(flake8_rules_dict[key]) == sorted(expected_result[key])
 
 
 def test_extract_flake8_tags():
@@ -164,6 +162,23 @@ def test_flake8_tag_to_rules_dict(
 
 
 @pytest.mark.parametrize(
+    "source_index,expected_result",
+    [
+        ("foo  # noqa: E402, Fasd401", ["E402", "Fasd401"]),
+        ("foo  # noqa : E402,      Fasd401 \n", ["E402", "Fasd401"]),
+        ("foo  # noqa", ["noqa"]),
+        ("foo  # noqa   :  ", ["noqa"]),
+        ("foo  # noqa    \n", ["noqa"]),
+        ('"foo  # noqa : E402, Fasd401"', []),
+        ("foo  # noqa : E402, Fasd401 some randome stuff", []),
+        ("get_ipython().run_cell_magic('bash', '', 'echo test')\n", []),
+    ],
+)
+def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
+    assert get_inline_flake8_noqa(source_index) == expected_result
+
+
+@pytest.mark.parametrize(
     "notebook_cell,expected_result",
     [
         ({"source": ["print('foo')"], "cell_type": "code"}, False),
@@ -176,20 +191,51 @@ def test_ignore_cell(notebook_cell: Dict, expected_result: bool):
 
 
 @pytest.mark.parametrize(
-    "code_line,expected_result",
+    "notebook_cell,expected_result",
     [
-        ("foo  # noqa: E402, Fasd401", ["E402", "Fasd401"]),
-        ("foo  # noqa : E402,      Fasd401 \n", ["E402", "Fasd401"]),
-        ("foo  # noqa", ["noqa"]),
-        ("foo  # noqa   :  ", ["noqa"]),
-        ("foo  # noqa    \n", ["noqa"]),
-        ('"foo  # noqa : E402, Fasd401"', []),
-        ("foo  # noqa : E402, Fasd401 some randome stuff", []),
-        ("get_ipython().run_cell_magic('bash', '', 'echo test')\n", []),
+        (
+            {
+                "execution_count": 8,
+                "metadata": {
+                    "tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]
+                },
+                "source": ["for i in range(1):\n", "    print(i)"],
+            },
+            "#In[8]\nfor i in range(1):  # noqa: E402, F401\n    print(i)  # noqa: E402, F401\n",
+        ),
+        (
+            {
+                "execution_count": 9,
+                "metadata": {
+                    "tags": ["flake8-noqa-line-1-E402-F401", "flake8-noqa-line-1-W391"]
+                },
+                "source": ["for i in range(1):\n", "    print(i)"],
+            },
+            "#In[9]\nfor i in range(1):  # noqa: E402, F401, W391\n    print(i)\n",
+        ),
+        (
+            {
+                "execution_count": 2,
+                "metadata": {"tags": ["flake8-noqa-cell-E402", "flake8-noqa-line-1"]},
+                "source": ["for i in range(1):\n", "    print(i)  # noqa:F401, W391"],
+            },
+            "#In[2]\nfor i in range(1):  # noqa: \n    print(i)  # noqa: E402, F401, W391\n",
+        ),
+        (
+            {
+                "execution_count": 1,
+                "metadata": {"tags": ["flake8-noqa-cell", "flake8-noqa-line-1"]},
+                "source": ["for i in range(1):\n", "    print(i)  # noqa:F401, W391"],
+            },
+            "#In[1]\nfor i in range(1):  # noqa: \n    print(i)  # noqa: \n",
+        ),
     ],
 )
-def test_get_inline_flake8_noqa(code_line: str, expected_result: List):
-    assert get_inline_flake8_noqa(code_line) == expected_result
+def test_notebook_cell_to_intermediate_py_str(
+    notebook_cell: Dict, expected_result: str
+):
+    intermediate_py_str = notebook_cell_to_intermediate_py_str(notebook_cell)
+    assert intermediate_py_str == expected_result
 
 
 @pytest.mark.parametrize(
@@ -210,36 +256,36 @@ def test_update_rules_dict(
 
 
 @pytest.mark.parametrize(
-    "code_line,rules_list,expected_result",
+    "source_index,rules_list,expected_result",
     [
-        ("foo  # noqa: E402, Fasd401", ["noqa"], "foo  # noqa: "),
+        ("foo  # noqa: E402, Fasd401", ["noqa"], "foo  # noqa: \n"),
         (
             "foo  # noqa : E402,      Fasd401 \n",
             ["E402", "F401"],
-            "foo  # noqa: E402, F401, Fasd401",
+            "foo  # noqa: E402, F401, Fasd401\n",
         ),
-        ("foo  # noqa", ["E402", "F401"], "foo  # noqa: "),
+        ("foo  # noqa", ["E402", "F401"], "foo  # noqa: \n"),
         (
             '"foo  # noqa : E402, Fasd401"',
             ["E402", "F401"],
-            '"foo  # noqa : E402, Fasd401"  # noqa: E402, F401',
+            '"foo  # noqa : E402, Fasd401"  # noqa: E402, F401\n',
         ),
         (
-            "foo  # noqa : E402, Fasd401 some randome stuff",
+            "foo  # noqa : E402, Fasd401 some randome stuff\n",
             [],
-            "foo  # noqa : E402, Fasd401 some randome stuff",
+            "foo  # noqa : E402, Fasd401 some randome stuff\n",
         ),
         (
-            "foo  # noqa : E402, Fasd401 some randome stuff",
+            "foo  # noqa : E402, Fasd401 some randome stuff\n",
             ["E402", "F401"],
-            "foo  # noqa : E402, Fasd401 some randome stuff  # noqa: E402, F401",
+            "foo  # noqa : E402, Fasd401 some randome stuff  # noqa: E402, F401\n",
         ),
     ],
 )
 def test_update_inline_flake8_noqa(
-    code_line: str, rules_list: List, expected_result: str
+    source_index: str, rules_list: List, expected_result: str
 ):
-    assert update_inline_flake8_noqa(code_line, rules_list) == expected_result
+    assert update_inline_flake8_noqa(source_index, rules_list) == expected_result
 
 
 def test_warn_wrong_tag_pattern():

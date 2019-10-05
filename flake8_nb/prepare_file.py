@@ -5,7 +5,7 @@ import json
 import re
 
 # import tempfile
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Union
 import warnings
 
 from nbconvert.filters import ipython2python
@@ -30,7 +30,7 @@ FLAKE8_NOQA_INLINE_PATTERN = re.compile(
 )
 
 FLAKE8_NOQA_INLINE_REPLACE_PATTERN = re.compile(
-    r"^(?P<source_code>.+?)\s*(?P<flake8_noqa>[#]\s*noqa\s*[:]?.*)(\n)?$"
+    r"^(?P<source_code>.+?)\s*(?P<flake8_noqa>[#]\s*noqa\s*[:]?.*)$"
 )
 
 
@@ -126,25 +126,24 @@ def update_rules_dict(
             total_rules_dict[key] = list(set(old_rules + new_rules))
 
 
-def get_flake8_rules_dict(notebook_cell: Dict) -> Tuple[int, Dict[str, List]]:
+def get_flake8_rules_dict(notebook_cell: Dict) -> Dict[str, List]:
     flake8_tags = extract_flake8_tags(notebook_cell)
     flake8_inline_tags = extract_flake8_inline_tags(notebook_cell)
-    input_nr = notebook_cell["execution_count"]
     total_rules_dict = {}
     for flake8_tag in set(flake8_tags + flake8_inline_tags):
         new_rules_dict = flake8_tag_to_rules_dict(flake8_tag)
         update_rules_dict(total_rules_dict, new_rules_dict)
-    return input_nr, total_rules_dict
+    return total_rules_dict
 
 
-def generate_rules_list(line_index: int, rules_dict: Dict[str, List]) -> List:
-    line_rules = rules_dict.get(str(line_index), [])
+def generate_rules_list(source_index: int, rules_dict: Dict[str, List]) -> List:
+    line_rules = rules_dict.get(str(source_index + 1), [])
     cell_rules = rules_dict.get("cell", [])
     return line_rules + cell_rules
 
 
-def get_inline_flake8_noqa(code_line: str) -> List:
-    match = re.match(FLAKE8_NOQA_INLINE_PATTERN, code_line)
+def get_inline_flake8_noqa(source_line: str) -> List:
+    match = re.match(FLAKE8_NOQA_INLINE_PATTERN, source_line)
     if match:
         flake8_noqa_rules = match.group("flake8_noqa_rules")
         if flake8_noqa_rules:
@@ -156,12 +155,13 @@ def get_inline_flake8_noqa(code_line: str) -> List:
         return []
 
 
-def update_inline_flake8_noqa(source_line: str, rules_list: List) -> str:
-    inline_flake8_noqa = get_inline_flake8_noqa(source_line)
+def update_inline_flake8_noqa(source_index: str, rules_list: List) -> str:
+    inline_flake8_noqa = get_inline_flake8_noqa(source_index)
+    source_index = source_index.rstrip("\n")
     if inline_flake8_noqa:
         rules_list = set(inline_flake8_noqa + rules_list)
-        source_line = re.sub(
-            FLAKE8_NOQA_INLINE_REPLACE_PATTERN, r"\g<source_code>", source_line
+        source_index = re.sub(
+            FLAKE8_NOQA_INLINE_REPLACE_PATTERN, r"\g<source_code>", source_index
         )
     rules_list = sorted(list(rules_list))
     if "noqa" in rules_list:
@@ -169,6 +169,17 @@ def update_inline_flake8_noqa(source_line: str, rules_list: List) -> str:
     else:
         noqa_str = ", ".join(rules_list)
     if rules_list:
-        return f"{source_line}  # noqa: {noqa_str}"
+        return f"{source_index}  # noqa: {noqa_str}\n"
     else:
-        return source_line
+        return f"{source_index}\n"
+
+
+def notebook_cell_to_intermediate_py_str(notebook_cell: Dict) -> str:
+    updated_source_lines = []
+    input_nr = notebook_cell["execution_count"]
+    rules_dict = get_flake8_rules_dict(notebook_cell)
+    for line_index, source_line in enumerate(notebook_cell["source"]):
+        rules_list = generate_rules_list(line_index, rules_dict)
+        updated_source_line = update_inline_flake8_noqa(source_line, rules_list)
+        updated_source_lines.append(updated_source_line)
+    return f"#In[{input_nr}]\n{''.join(updated_source_lines)}"
