@@ -1,7 +1,7 @@
 from .conftest import TempIpynbArgs
 
 
-from flake8_nb.flake8_integration import get_notebooks_from_args
+from flake8_nb.flake8_integration.cli import get_notebooks_from_args
 
 
 def test_get_notebooks_from_args(temp_ipynb_args: TempIpynbArgs):

@@ -7,7 +7,7 @@ import pytest
 
 from typing import Dict, List, Union
 
-from flake8_nb.prepare_file import (
+from flake8_nb.parsers.cell_parsers import (
     extract_flake8_tags,
     extract_flake8_inline_tags,
     flake8_tag_to_rules_dict,
@@ -15,7 +15,6 @@ from flake8_nb.prepare_file import (
     generate_rules_list,
     get_flake8_rules_dict,
     get_inline_flake8_noqa,
-    ignore_cell,
     InvalidFlake8TagWarning,
     notebook_cell_to_intermediate_py_str,
     update_rules_dict,
@@ -176,18 +175,6 @@ def test_flake8_tag_to_rules_dict(
 )
 def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
     assert get_inline_flake8_noqa(source_index) == expected_result
-
-
-@pytest.mark.parametrize(
-    "notebook_cell,expected_result",
-    [
-        ({"source": ["print('foo')"], "cell_type": "code"}, False),
-        ({"source": ["## print('foo')"], "cell_type": "markdown"}, True),
-        ({"source": [], "cell_type": "code"}, True),
-    ],
-)
-def test_ignore_cell(notebook_cell: Dict, expected_result: bool):
-    assert ignore_cell(notebook_cell) == expected_result
 
 
 @pytest.mark.parametrize(

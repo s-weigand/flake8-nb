@@ -5,12 +5,9 @@ import os
 from typing import List, Tuple, Union
 
 from flake8.main.application import Application
-from flake8.formatting.default import Default
 from flake8.utils import matches_filename
 
-from flake8.style_guide import Violation
-
-from . import __version__, FLAKE8_VERSION_TUPLE
+from .. import __version__, FLAKE8_VERSION_TUPLE
 
 
 LOG = logging.getLogger(__name__)
@@ -56,22 +53,6 @@ def get_notebooks_from_args(
                 [is_notebook(filename, nb_list, root) for filename in filenames]
 
     return nb_list
-
-
-class IpynbFormater(Default):
-    """
-    Default flake8 formatter for jupyter notebooks.
-    If the file to be formated is a *.py file,
-    it uses flake8's default formatter.
-    """
-
-    def format(self, error: Violation):
-        print(f" USING ##### { IpynbFormater }")
-        filename = error.filename
-        if filename.lower().endswith(".py"):
-            return super().format(error)
-        elif filename.lower().endswith(".ipynb"):
-            return "NOTEBOOK"
 
 
 class Flake8NbApplication(Application):

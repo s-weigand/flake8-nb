@@ -1,8 +1,9 @@
 languages:
-  - name: python
-    production:
-      exclude:
-        - /docs/conf\.py
-    test:
-      include:
-        - /tests/.*\.py
+    - name: python
+      production:
+          exclude:
+              - /docs/conf\.py
+      test:
+          include:
+              - /tests/.*\.py
+      component_depth: 2

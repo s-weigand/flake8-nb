@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """Main module."""
-import json
 import re
 
 # import tempfile
 from typing import Dict, List, Union
 import warnings
-
-from nbconvert.filters import ipython2python
 
 
 FLAKE8_TAG_PATTERN = re.compile(
@@ -46,28 +43,6 @@ def warn_wrong_tag_pattern(flake8_tag: str):
         f"you used: '{flake8_tag}'",
         InvalidFlake8TagWarning,
     )
-
-
-def ignore_cell(notebook_cell: Dict):
-    if not notebook_cell["source"]:
-        return True
-    elif notebook_cell["cell_type"] != "code":
-        return True
-    else:
-        return False
-
-
-def get_clean_notebook(notebook_path: str):
-    with open(notebook_path) as notebook_file:
-        notebook_cells = json.load(notebook_file)["cells"]
-    for index, cell in list(enumerate(notebook_cells))[::-1]:
-        if ignore_cell(cell):
-            notebook_cells.pop(index)
-        else:
-            cell_source = list(enumerate(cell["source"]))[::-1]
-            for source_index, source_line in cell_source:
-                cell["source"][source_index] = ipython2python(source_line)
-    return notebook_cells
 
 
 def generate_input_name(notebook_path: str, input_nr: Union[int, str]):
