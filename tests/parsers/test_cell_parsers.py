@@ -5,13 +5,12 @@
 
 import pytest
 
-from typing import Dict, List, Union
+from typing import Dict, List
 
 from flake8_nb.parsers.cell_parsers import (
     extract_flake8_tags,
     extract_flake8_inline_tags,
     flake8_tag_to_rules_dict,
-    generate_input_name,
     generate_rules_list,
     get_flake8_rules_dict,
     get_inline_flake8_noqa,
@@ -21,11 +20,6 @@ from flake8_nb.parsers.cell_parsers import (
     update_inline_flake8_noqa,
     warn_wrong_tag_pattern,
 )
-
-
-@pytest.mark.parametrize("input_nr", [1, "1"])
-def test_generate_input_name(input_nr: Union[int, str]):
-    assert generate_input_name("test_notebook.ipynb", 1) == "test_notebook.ipynb#In[1]"
 
 
 @pytest.mark.parametrize(
@@ -188,7 +182,7 @@ def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
                 },
                 "source": ["for i in range(1):\n", "    print(i)"],
             },
-            "#In[8]\nfor i in range(1):  # noqa: E402, F401\n    print(i)  # noqa: E402, F401\n",
+            "# In[8]\nfor i in range(1):  # noqa: E402, F401\n    print(i)  # noqa: E402, F401\n",
         ),
         (
             {
@@ -198,7 +192,7 @@ def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
                 },
                 "source": ["for i in range(1):\n", "    print(i)"],
             },
-            "#In[9]\nfor i in range(1):  # noqa: E402, F401, W391\n    print(i)\n",
+            "# In[9]\nfor i in range(1):  # noqa: E402, F401, W391\n    print(i)\n",
         ),
         (
             {
@@ -206,7 +200,7 @@ def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
                 "metadata": {"tags": ["flake8-noqa-cell-E402", "flake8-noqa-line-1"]},
                 "source": ["for i in range(1):\n", "    print(i)  # noqa:F401, W391"],
             },
-            "#In[2]\nfor i in range(1):  # noqa: \n    print(i)  # noqa: E402, F401, W391\n",
+            "# In[2]\nfor i in range(1):  # noqa: \n    print(i)  # noqa: E402, F401, W391\n",
         ),
         (
             {
@@ -214,7 +208,7 @@ def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
                 "metadata": {"tags": ["flake8-noqa-cell", "flake8-noqa-line-1"]},
                 "source": ["for i in range(1):\n", "    print(i)  # noqa:F401, W391"],
             },
-            "#In[1]\nfor i in range(1):  # noqa: \n    print(i)  # noqa: \n",
+            "# In[1]\nfor i in range(1):  # noqa: \n    print(i)  # noqa: \n",
         ),
     ],
 )

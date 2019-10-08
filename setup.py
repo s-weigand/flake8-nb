@@ -17,7 +17,7 @@ with open("README.md", encoding="utf-8") as readme_file:
 with open("HISTORY.md", encoding="utf-8") as history_file:
     history = history_file.read()
 
-requirements = ["flake8>=3.0.0", "nbconvert>=5.6.0"]
+requirements = ["flake8>=3.0.0", "nbconvert>=5.6.0", "ipython>=7.8.0"]
 
 
 setup_requirements = ["pytest-runner"]
@@ -45,6 +45,11 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Quality Assurance",
     ],
+    project_urls={
+        "Documentation": "https://flake8-nb.readthedocs.io/en/latest/",
+        "Source": "https://github.com/s-weigand/flake8-nb",
+        "Tracker": "https://github.com/s-weigand/flake8-nb/issues",
+    },
     description="Flake8 based checking for jupyter notebooks",
     install_requires=requirements,
     long_description=readme + "\n\n" + history,

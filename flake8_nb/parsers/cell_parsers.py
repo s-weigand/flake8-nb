@@ -3,8 +3,7 @@
 """Main module."""
 import re
 
-# import tempfile
-from typing import Dict, List, Union
+from typing import Dict, List
 import warnings
 
 
@@ -43,10 +42,6 @@ def warn_wrong_tag_pattern(flake8_tag: str):
         f"you used: '{flake8_tag}'",
         InvalidFlake8TagWarning,
     )
-
-
-def generate_input_name(notebook_path: str, input_nr: Union[int, str]):
-    return f"{notebook_path}#In[{input_nr}]"
 
 
 def extract_flake8_tags(notebook_cell: Dict):
@@ -157,4 +152,4 @@ def notebook_cell_to_intermediate_py_str(notebook_cell: Dict) -> str:
         rules_list = generate_rules_list(line_index, rules_dict)
         updated_source_line = update_inline_flake8_noqa(source_line, rules_list)
         updated_source_lines.append(updated_source_line)
-    return f"#In[{input_nr}]\n{''.join(updated_source_lines)}"
+    return f"# In[{input_nr}]\n{''.join(updated_source_lines)}"
