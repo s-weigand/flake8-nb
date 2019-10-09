@@ -8,7 +8,7 @@ import warnings
 
 from nbconvert.filters import ipython2python
 
-from .cell_parsers import notebook_cell_to_intermediate_py_str
+from .cell_parsers import notebook_cell_to_intermediate_dict
 
 
 def ignore_cell(notebook_cell: Dict):
@@ -76,20 +76,25 @@ def create_temp_path(notebook_path: str, temp_base_path: str):
 def create_intermediate_py_file(notebook_path: str, intermediate_dir_base_path: str):
     intermediate_file_path = create_temp_path(notebook_path, intermediate_dir_base_path)
     uses_get_ipython, notebook_cells = get_notebook_code_cells(notebook_path)
-    intermediate_py_str_list = []
-    for notebook_cell in notebook_cells:
-        intermediate_py_str_list.append(
-            notebook_cell_to_intermediate_py_str(notebook_cell)
-        )
+    input_line_mapping = {"input_names": [], "code_lines": []}
     if uses_get_ipython:
+        lines_of_code = 3
         intermediate_code = "from IPython import get_ipython\n\n\n"
     else:
+        lines_of_code = 0
         intermediate_code = ""
+    intermediate_py_str_list = []
+    for notebook_cell in notebook_cells:
+        intermediate_dict = notebook_cell_to_intermediate_dict(notebook_cell)
+        intermediate_py_str_list.append(intermediate_dict["code"])
+        input_line_mapping["input_names"].append(intermediate_dict["input_name"])
+        input_line_mapping["code_lines"].append(lines_of_code + 1)
+        lines_of_code += intermediate_dict["lines_of_code"]
 
     intermediate_code += "".join(intermediate_py_str_list)
     with open(intermediate_file_path, "w+") as intermediate_file:
         intermediate_file.write(intermediate_code)
-    return intermediate_file_path
+    return intermediate_file_path, input_line_mapping
 
 
 class NotebookParser:

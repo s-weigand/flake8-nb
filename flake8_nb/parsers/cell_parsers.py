@@ -144,7 +144,7 @@ def update_inline_flake8_noqa(source_index: str, rules_list: List) -> str:
         return f"{source_index}\n"
 
 
-def notebook_cell_to_intermediate_py_str(notebook_cell: Dict) -> str:
+def notebook_cell_to_intermediate_dict(notebook_cell: Dict) -> Dict:
     updated_source_lines = []
     input_nr = notebook_cell["execution_count"]
     rules_dict = get_flake8_rules_dict(notebook_cell)
@@ -152,4 +152,9 @@ def notebook_cell_to_intermediate_py_str(notebook_cell: Dict) -> str:
         rules_list = generate_rules_list(line_index, rules_dict)
         updated_source_line = update_inline_flake8_noqa(source_line, rules_list)
         updated_source_lines.append(updated_source_line)
-    return f"# In[{input_nr}]\n{''.join(updated_source_lines)}"
+    input_name = f"In[{input_nr}]"
+    return {
+        "code": f"# {input_name}\n{''.join(updated_source_lines)}",
+        "input_name": input_name,
+        "lines_of_code": len(updated_source_lines) + 1,
+    }

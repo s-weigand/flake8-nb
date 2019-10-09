@@ -37,15 +37,26 @@ def get_expected_intermediate_file_results(
 
 
 @pytest.mark.parametrize(
-    "notebook_name",
+    "notebook_name,expected_input_line_mapping",
     [
-        "not_a_notebook",
-        "notebook_with_flake8_tags",
-        "notebook_with_out_flake8_tags",
-        "notebook_with_ipython_magic",
+        ("not_a_notebook", {"input_names": [], "code_lines": []}),
+        (
+            "notebook_with_flake8_tags",
+            {
+                "input_names": ["In[1]", "In[2]", "In[3]", "In[4]", "In[5]", "In[6]"],
+                "code_lines": [1, 4, 7, 10, 14, 18],
+            },
+        ),
+        ("notebook_with_ipython_magic", {"input_names": ["In[1]"], "code_lines": [4]}),
+        (
+            "notebook_with_out_flake8_tags",
+            {"input_names": ["In[1]", "In[2]"], "code_lines": [1, 3]},
+        ),
     ],
 )
-def test_create_intermediate_py_file(tmpdir, notebook_name: str):
+def test_create_intermediate_py_file(
+    tmpdir, notebook_name: str, expected_input_line_mapping: Dict
+):
     notebook_path = os.path.join(TEST_NOTEBOOK_BASE_PATH, f"{notebook_name}.ipynb")
 
     tmp_base_path = str(tmpdir)
@@ -54,17 +65,19 @@ def test_create_intermediate_py_file(tmpdir, notebook_name: str):
     )
     if notebook_name.startswith("not_a_notebook"):
         with pytest.warns(InvalidNotebookWarning):
-            intermediate_file_path = create_intermediate_py_file(
+            intermediate_file_path, input_line_mapping = create_intermediate_py_file(
                 notebook_path, tmp_base_path
             )
             assert intermediate_file_path == expected_result_path
+            assert input_line_mapping == expected_input_line_mapping
             with open(intermediate_file_path) as result_file:
                 assert result_file.read() == expected_result_str
     else:
-        intermediate_file_path = create_intermediate_py_file(
+        intermediate_file_path, input_line_mapping = create_intermediate_py_file(
             notebook_path, tmp_base_path
         )
         assert intermediate_file_path == expected_result_path
+        assert input_line_mapping == expected_input_line_mapping
         with open(intermediate_file_path) as result_file:
             assert result_file.read() == expected_result_str
 
