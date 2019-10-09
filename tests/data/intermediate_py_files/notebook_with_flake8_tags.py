@@ -1,6 +1,6 @@
 # In[1]
-import not_a_package  # noqa: E231
-{"1":1}  # noqa: E231
+import not_a_package  # noqa: F401
+{"1":1}  # noqa: F401
 # In[2]
 {"2":1}  # noqa: E231
 {"2":2}
@@ -8,9 +8,9 @@ import not_a_package  # noqa: E231
 {"3":1}  # noqa: E231
 {"3":2}  # noqa: E231
 # In[4]
-# flake8-noqa-cell-E231  # noqa: E231
-import not_a_package  # noqa: E231
-{"4":1}  # noqa: E231
+# flake8-noqa-cell-F401  # noqa: F401
+import not_a_package  # noqa: F401
+{"4":1}  # noqa: F401
 # In[5]
 # flake8-noqa-line-2-E231
 {"5":1}  # noqa: E231

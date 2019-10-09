@@ -14,11 +14,11 @@ from flake8_nb.parsers.notebook_parsers import (
 )
 
 TEST_NOTEBOOK_BASE_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "test_notebooks")
+    os.path.join(os.path.dirname(__file__), "..", "data", "test_notebooks")
 )
 
 INTERMEDIATE_PY_FILE_BASE_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "intermediate_py_files")
+    os.path.join(os.path.dirname(__file__), "..", "data", "intermediate_py_files")
 )
 
 
@@ -26,7 +26,7 @@ def get_expected_intermediate_file_results(
     result_name: str, base_path: str
 ) -> Tuple[str, str]:
     expected_result_path = os.path.join(
-        base_path, "tests", "test_notebooks", result_name
+        base_path, "tests", "data", "test_notebooks", result_name
     )
     expected_result_file_path = os.path.join(
         INTERMEDIATE_PY_FILE_BASE_PATH, result_name
