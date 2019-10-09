@@ -63,7 +63,7 @@ setup(
     test_suite="tests",
     entry_points={
         "console_scripts": ["flake8_nb = flake8_nb.__main__:main"],
-        "flake8.report": "default_notebook = flake8_nb.flake8_integration.formatter:IpynbFormater",
+        "flake8.report": "default_notebook = flake8_nb.flake8_integration.formatter:IpynbFormatter",
     },
     tests_require=test_requirements,
     url="https://github.com/s-weigand/flake8_nb",

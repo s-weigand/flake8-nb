@@ -90,3 +90,48 @@ def create_intermediate_py_file(notebook_path: str, intermediate_dir_base_path: 
     with open(intermediate_file_path, "w+") as intermediate_file:
         intermediate_file.write(intermediate_code)
     return intermediate_file_path
+
+
+class NotebookParser:
+    original_notebook_paths = []
+    intermediate_py_file_paths = []
+    temp_path = ""
+
+    def __init__(self, original_notebook_paths=None):
+        if original_notebook_paths:
+            self.original_notebook_paths = original_notebook_paths
+        self.create_intermediate_notebooks()
+
+    def create_intermediate_notebooks(self):
+        if self.original_notebook_paths:
+            import tempfile
+
+            self.temp_path = tempfile.mkdtemp()
+            for original_notebook_path in self.original_notebook_paths:
+                intermediate_py_file_path = create_intermediate_py_file(
+                    original_notebook_path, self.temp_path
+                )
+                self.intermediate_py_file_paths.append(intermediate_py_file_path)
+
+    def get_rel_paths(self, file_paths: List[str], base_path: str):
+        rel_paths = []
+
+        for file_path in file_paths:
+            rel_paths.append(os.path.realpath(file_path, base_path))
+
+        return rel_paths
+
+    def get_path_mapping(self) -> zip:
+        rel_original_notebook_paths = self.get_rel_paths(
+            self.original_notebook_paths, os.curdir
+        )
+        rel_intermediate_py_file_paths = self.get_rel_paths(
+            self.intermediate_py_file_paths, self.temp_path
+        )
+        return zip(rel_original_notebook_paths, rel_intermediate_py_file_paths)
+
+    def clean_up(self):
+        import shutil
+
+        if self.original_notebook_paths and self.temp_path:
+            shutil.rmtree(self.temp_path, ignore_errors=True)
