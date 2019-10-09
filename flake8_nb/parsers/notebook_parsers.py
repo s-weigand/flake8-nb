@@ -2,7 +2,7 @@ import json
 import os
 
 # import tempfile
-from typing import Dict, List, Tuple
+from typing import Dict, Iterator, List, Tuple
 
 import warnings
 
@@ -126,7 +126,7 @@ class NotebookParser:
 
         return rel_paths
 
-    def get_path_mapping(self) -> zip:
+    def get_path_mapping(self) -> Iterator[Tuple[str, str]]:
         rel_original_notebook_paths = self.get_rel_paths(
             self.original_notebook_paths, os.curdir
         )
