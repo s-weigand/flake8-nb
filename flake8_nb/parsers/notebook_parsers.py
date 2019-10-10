@@ -42,6 +42,13 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
         return []
 
 
+def convert_source_line(source_line: str):
+    if source_line.startswith(("!", "?", "%")):
+        return ipython2python(source_line)
+    else:
+        return source_line
+
+
 def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[str]]:
     uses_get_ipython = False
     notebook_cells = read_notebook_to_cells(notebook_path)
@@ -51,7 +58,7 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[str]]:
         else:
             cell_source = list(enumerate(cell["source"]))[::-1]
             for source_index, source_line in cell_source:
-                new_source_line = ipython2python(source_line)
+                new_source_line = convert_source_line(source_line)
                 if new_source_line.startswith("get_ipython"):
                     uses_get_ipython = True
                 cell["source"][source_index] = new_source_line
@@ -121,9 +128,9 @@ def create_intermediate_py_file(notebook_path: str, intermediate_dir_base_path: 
         input_line_mapping["code_lines"].append(lines_of_code + 1)
         lines_of_code += intermediate_dict["lines_of_code"]
 
-    intermediate_code += "".join(intermediate_py_str_list)
+    intermediate_code += "".join(intermediate_py_str_list).rstrip("\n")
     with open(intermediate_file_path, "w+") as intermediate_file:
-        intermediate_file.write(intermediate_code)
+        intermediate_file.write(f"{intermediate_code}\n")
     return intermediate_file_path, input_line_mapping
 
 

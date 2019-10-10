@@ -183,10 +183,10 @@ def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
                 "source": ["for i in range(1):\n", "    print(i)"],
             },
             {
-                "code": "# In[8]\nfor i in range(1):  # noqa: E402, F401\n    "
-                "print(i)  # noqa: E402, F401\n",
+                "code": "# In[8]\n\n\nfor i in range(1):  # noqa: E402, F401\n    "
+                "print(i)  # noqa: E402, F401\n\n\n",
                 "input_name": "In[8]",
-                "lines_of_code": 3,
+                "lines_of_code": 7,
             },
         ),
         (
@@ -198,22 +198,28 @@ def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
                 "source": ["for i in range(1):\n", "    print(i)"],
             },
             {
-                "code": "# In[9]\nfor i in range(1):  # noqa: E402, F401, W391\n    print(i)\n",
+                "code": "# In[9]\n\n\nfor i in range(1):  # noqa: E402, F401, W391\n"
+                "    print(i)\n\n\n",
                 "input_name": "In[9]",
-                "lines_of_code": 3,
+                "lines_of_code": 7,
             },
         ),
         (
             {
                 "execution_count": 2,
                 "metadata": {"tags": ["flake8-noqa-cell-E402", "flake8-noqa-line-1"]},
-                "source": ["for i in range(1):\n", "    print(i)  # noqa:F401, W391"],
+                "source": [
+                    "for i in range(1):\n",
+                    "    print(i)  # noqa:F401, W391",
+                    "print('foo')",
+                ],
             },
             {
-                "code": "# In[2]\nfor i in range(1):  # noqa: \n"
-                "    print(i)  # noqa: E402, F401, W391\n",
+                "code": "# In[2]\n\n\nfor i in range(1):  # noqa: \n"
+                "    print(i)  # noqa: E402, F401, W391\n"
+                "print('foo')  # noqa: E402\n\n\n",
                 "input_name": "In[2]",
-                "lines_of_code": 3,
+                "lines_of_code": 8,
             },
         ),
         (
@@ -223,9 +229,9 @@ def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
                 "source": ["for i in range(1):\n", "    print(i)  # noqa:F401, W391"],
             },
             {
-                "code": "# In[1]\nfor i in range(1):  # noqa: \n    print(i)  # noqa: \n",
+                "code": "# In[1]\n\n\nfor i in range(1):  # noqa: \n    print(i)  # noqa: \n\n\n",
                 "input_name": "In[1]",
-                "lines_of_code": 3,
+                "lines_of_code": 7,
             },
         ),
     ],

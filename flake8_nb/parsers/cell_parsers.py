@@ -154,7 +154,7 @@ def notebook_cell_to_intermediate_dict(notebook_cell: Dict) -> Dict:
         updated_source_lines.append(updated_source_line)
     input_name = f"In[{input_nr}]"
     return {
-        "code": f"# {input_name}\n{''.join(updated_source_lines)}",
+        "code": f"# {input_name}\n\n\n{''.join(updated_source_lines)}\n\n",
         "input_name": input_name,
-        "lines_of_code": len(updated_source_lines) + 1,
+        "lines_of_code": len(updated_source_lines) + 5,
     }

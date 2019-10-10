@@ -45,14 +45,28 @@ def get_expected_intermediate_file_results(
         (
             "notebook_with_flake8_tags",
             {
-                "input_names": ["In[1]", "In[2]", "In[3]", "In[4]", "In[5]", "In[6]"],
-                "code_lines": [1, 4, 7, 10, 14, 18],
+                "input_names": [
+                    "In[1]",
+                    "In[2]",
+                    "In[3]",
+                    "In[4]",
+                    "In[5]",
+                    "In[6]",
+                    "In[7]",
+                ],
+                "code_lines": [4, 11, 18, 25, 33, 41, 49],
             },
         ),
-        ("notebook_with_ipython_magic", {"input_names": ["In[1]"], "code_lines": [4]}),
+        (
+            "notebook_with_out_ipython_magic",
+            {"input_names": ["In[1]"], "code_lines": [1]},
+        ),
         (
             "notebook_with_out_flake8_tags",
-            {"input_names": ["In[1]", "In[2]"], "code_lines": [1, 3]},
+            {
+                "input_names": ["In[1]", "In[2]", "In[3]", "In[4]", "In[5]"],
+                "code_lines": [4, 10, 16, 23, 31],
+            },
         ),
     ],
 )
@@ -110,9 +124,9 @@ def test_create_temp_path(tmpdir, notebook_path: str, rel_result_path: List[str]
     "notebook_name,number_of_cells,uses_get_ipython_result",
     [
         ("not_a_notebook.ipynb", 0, False),
-        ("notebook_with_flake8_tags.ipynb", 6, False),
-        ("notebook_with_out_flake8_tags.ipynb", 2, False),
-        ("notebook_with_ipython_magic.ipynb", 1, True),
+        ("notebook_with_flake8_tags.ipynb", 7, True),
+        ("notebook_with_out_flake8_tags.ipynb", 5, True),
+        ("notebook_with_out_ipython_magic.ipynb", 1, False),
     ],
 )
 def test_get_notebook_code_cells(
@@ -176,9 +190,9 @@ def test_is_parent_dir(parent_dir: str, path: str, expected_result):
     "notebook_name,number_of_cells",
     [
         ("not_a_notebook.ipynb", 0),
-        ("notebook_with_flake8_tags.ipynb", 16),
-        ("notebook_with_out_flake8_tags.ipynb", 7),
-        ("notebook_with_ipython_magic.ipynb", 3),
+        ("notebook_with_flake8_tags.ipynb", 18),
+        ("notebook_with_out_flake8_tags.ipynb", 13),
+        ("notebook_with_out_ipython_magic.ipynb", 4),
     ],
 )
 def test_read_notebook_to_cells(notebook_name: str, number_of_cells: int):
