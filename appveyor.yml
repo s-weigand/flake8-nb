@@ -47,12 +47,17 @@ install:
   - "%CMD_IN_ENV% python -m pip install -U pip setuptools wheel"
 
   # install tox
-  - "%CMD_IN_ENV% python -m pip install -U tox"
+  - "%CMD_IN_ENV% python -m pip install -U tox coverage"
 
 build: none
 
 test_script:
+  # delete old .coverage file
+  - coverage erase
   - tox -e py{36,37}
+
+artifacts:
+  - path: .coverage
 
 on_finish:
   # Remove old or huge cache files to hopefully not exceed the 1GB cache limit.

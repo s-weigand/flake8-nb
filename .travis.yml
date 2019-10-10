@@ -68,13 +68,24 @@ jobs:
         - pip freeze
       script: tox -e py37
 
+    - python: 3.6
+      name: win-coverage
+      install:
+        - pip install git+https://github.com/Robpol86/appveyor-artifacts.git coveralls
+      script:
+        - appveyor-artifacts -m download
+
   allow_failures:
     #      this tests are allowed to fail since they rely external resources
-    - env: TOXENV=docs-links
+    - name: docs-links
+    - name: win-coverage
 
 install:
   - python -m pip install -U pip>=8.1.2
   - pip install tox-travis coveralls
+
+# delete old .coverage file
+before_script: coverage erase
 
 script: tox
 
