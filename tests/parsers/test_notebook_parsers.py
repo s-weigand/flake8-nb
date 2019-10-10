@@ -7,7 +7,9 @@ from flake8_nb.parsers.notebook_parsers import (
     create_intermediate_py_file,
     create_temp_path,
     get_notebook_code_cells,
+    get_rel_paths,
     ignore_cell,
+    is_parent_dir,
     InvalidNotebookWarning,
     read_notebook_to_cells,
     warn_invalid_notebook,
@@ -129,6 +131,23 @@ def test_get_notebook_code_cells(
 
 
 @pytest.mark.parametrize(
+    "file_paths,base_path,expected_result",
+    [
+        (
+            [os.curdir, os.path.join(os.curdir, "file.foo")],
+            os.curdir,
+            [".", "file.foo"],
+        ),
+        ([os.path.join(os.curdir, "..", "file.foo")], os.curdir, ["../file.foo"]),
+    ],
+)
+def test_get_rel_paths(
+    file_paths: List[str], base_path: str, expected_result: List[str]
+):
+    assert get_rel_paths(file_paths, base_path) == expected_result
+
+
+@pytest.mark.parametrize(
     "notebook_cell,expected_result",
     [
         ({"source": ["print('foo')"], "cell_type": "code"}, False),
@@ -138,6 +157,19 @@ def test_get_notebook_code_cells(
 )
 def test_ignore_cell(notebook_cell: Dict, expected_result: bool):
     assert ignore_cell(notebook_cell) == expected_result
+
+
+@pytest.mark.parametrize(
+    "parent_dir,path,expected_result",
+    [
+        (os.curdir, os.curdir, True),
+        (os.curdir, os.path.join(os.curdir, "file.foo"), True),
+        (os.curdir, os.path.join(os.curdir, "subdir", "file.foo"), True),
+        (os.curdir, os.path.join(os.curdir, "..", "file.foo"), False),
+    ],
+)
+def test_is_parent_dir(parent_dir: str, path: str, expected_result):
+    assert is_parent_dir(parent_dir, path) == expected_result
 
 
 @pytest.mark.parametrize(

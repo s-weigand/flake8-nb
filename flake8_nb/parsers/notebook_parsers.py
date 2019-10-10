@@ -59,10 +59,40 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[str]]:
     return uses_get_ipython, notebook_cells
 
 
+def is_parent_dir(parent_dir: str, path: str) -> bool:
+    """
+    Checks if a given dir `parent_dir` is parent directory of `path`.
+
+    Parameters
+    ----------
+    parent_dir : str
+        Path to the directory, which should be checked if it is a
+        parent directory of `path`.
+    path : str
+        Path to a file or directory, which should be checked if
+        it is inside of `parent_dir`..
+
+    Returns
+    -------
+    bool
+        Weather or not 'path' is inside of 'parent_dir'.
+
+    Notes
+    -----
+    This function uses `os.path.normcase` to prevent conflicts in windows path names.
+    """
+    path = os.path.normcase(os.path.abspath(path))
+    parent_dir = os.path.normcase(os.path.abspath(parent_dir))
+    if path.startswith(parent_dir):
+        return True
+    else:
+        return False
+
+
 def create_temp_path(notebook_path: str, temp_base_path: str):
     abs_notebook_path = os.path.abspath(notebook_path)
-    if abs_notebook_path.startswith(os.path.abspath(os.curdir)):
-        rel_file_path = os.path.relpath(notebook_path, os.curdir)
+    if is_parent_dir(os.curdir, abs_notebook_path):
+        rel_file_path = os.path.relpath(abs_notebook_path, os.curdir)
         temp_file_path = os.path.abspath(os.path.join(temp_base_path, rel_file_path))
     else:
         temp_file_path = os.path.join(temp_base_path, os.path.split(notebook_path)[1])
@@ -97,12 +127,42 @@ def create_intermediate_py_file(notebook_path: str, intermediate_dir_base_path: 
     return intermediate_file_path, input_line_mapping
 
 
+def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
+    """
+    Transforms `file_paths` in a list of paths relative to `base_path`.
+
+    Parameters
+    ----------
+    file_paths : List[str]
+        List of file paths.
+    base_path : str
+        Path `file_paths` should be relative to.
+
+    Returns
+    -------
+    List[str]
+        List of `file_paths` relative to `base_path`
+
+    Notes
+    -----
+    Windows paths will be seperated by '/' instead of '\\'.
+    """
+    rel_paths = []
+    for file_path in file_paths:
+        rel_path = os.path.normpath(os.path.relpath(file_path, base_path))
+        if os.path.altsep:
+            rel_path = rel_path.replace(os.path.sep, os.path.altsep)
+        rel_paths.append(rel_path)
+
+    return rel_paths
+
+
 class NotebookParser:
     original_notebook_paths = []
     intermediate_py_file_paths = []
     temp_path = ""
 
-    def __init__(self, original_notebook_paths=None):
+    def __init__(self, original_notebook_paths: List[str] = None):
         if original_notebook_paths:
             self.original_notebook_paths = original_notebook_paths
         self.create_intermediate_notebooks()
@@ -118,19 +178,11 @@ class NotebookParser:
                 )
                 self.intermediate_py_file_paths.append(intermediate_py_file_path)
 
-    def get_rel_paths(self, file_paths: List[str], base_path: str):
-        rel_paths = []
-
-        for file_path in file_paths:
-            rel_paths.append(os.path.realpath(file_path, base_path))
-
-        return rel_paths
-
     def get_path_mapping(self) -> Iterator[Tuple[str, str]]:
-        rel_original_notebook_paths = self.get_rel_paths(
+        rel_original_notebook_paths = get_rel_paths(
             self.original_notebook_paths, os.curdir
         )
-        rel_intermediate_py_file_paths = self.get_rel_paths(
+        rel_intermediate_py_file_paths = get_rel_paths(
             self.intermediate_py_file_paths, self.temp_path
         )
         return zip(rel_original_notebook_paths, rel_intermediate_py_file_paths)

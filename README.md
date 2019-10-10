@@ -15,7 +15,7 @@ Basically this is a hack on the `flake8`'s `Application` class, which adds parsi
 
 ## Features
 
--   TODO
+- TODO
 
 ## Credits
 
