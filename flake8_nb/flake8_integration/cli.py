@@ -2,20 +2,22 @@ import argparse
 import logging
 import os
 
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 from flake8.main.application import Application
 from flake8.utils import matches_filename
 
 from .. import __version__, FLAKE8_VERSION_TUPLE
 
+from ..parsers.notebook_parsers import NotebookParser
+
 
 LOG = logging.getLogger(__name__)
 
 
 def get_notebooks_from_args(
-    args: List[str], exclude: List[str] = ["*.tox/*"]
-) -> List[str]:
+    args: List[str], exclude: List[str] = ["*.tox/*", "*.ipynb_checkpoints*"]
+) -> Tuple[List[str], List[str]]:
     """
     Extracts the absolute paths to notebooks from current director or
     the to the CLI passes files/folder and return the as list.
@@ -29,7 +31,7 @@ def get_notebooks_from_args(
 
     Returns
     -------
-    List[str]
+    Tuple[List[str],List[str]]
         List of found notebooks absolute paths.
     """
 
@@ -37,12 +39,14 @@ def get_notebooks_from_args(
         filename = os.path.abspath(os.path.join(root, filename))
         if os.path.isfile(filename) and filename.endswith(".ipynb"):
             nb_list.append(filename)
+            return True
 
     nb_list = []
     if not args:
         args = [os.curdir]
-    for arg in args:
-        is_notebook(arg, nb_list)
+    for index, arg in list(enumerate(args))[::-1]:
+        if is_notebook(arg, nb_list):
+            args.pop(index)
         for root, _, filenames in os.walk(arg):
             if not matches_filename(
                 root,
@@ -52,19 +56,14 @@ def get_notebooks_from_args(
             ):
                 [is_notebook(filename, nb_list, root) for filename in filenames]
 
-    return nb_list
+    return args, nb_list
 
 
 class Flake8NbApplication(Application):
     def __init__(self, program="flake8_nb", version=__version__):
         super().__init__(program, version)
-        # TODO Cleanup after flake8>3.7.8 release
-        # if https://gitlab.com/pycqa/flake8/merge_requests/359#note_226407899 gets merged
-        self.option_manager.parser.prog = program
-        self.option_manager.parser.version = version
-        self.option_manager.program_name = program
-        self.option_manager.version = version
-        # end cleanup
+        self.cleaned_args = []
+        self.overwrite_flake8_program_and_version(program, version)
         self.overwrite_flake8_option(
             "--format",
             metavar="format",
@@ -72,6 +71,25 @@ class Flake8NbApplication(Application):
             parse_from_config=True,
             help="Format errors according to the chosen formatter.",
         )
+
+    def overwrite_flake8_program_and_version(self, program: str, version: str):
+        """
+        Another hack to overwrite the program name and version of flake8,
+        which is hard coded at creation of `self.option_manager`.
+
+        Parameters
+        ----------
+        program : str
+            Name of the program
+        version : str
+            Version of the program
+        """
+        # TODO Cleanup after flake8>3.7.8 release
+        # if https://gitlab.com/pycqa/flake8/merge_requests/359#note_226407899 gets merged
+        self.option_manager.parser.prog = program
+        self.option_manager.parser.version = version
+        self.option_manager.program_name = program
+        self.option_manager.version = version
 
     def overwrite_flake8_option(self, long_option_name: str, *args, **kwargs):
         """
@@ -90,6 +108,11 @@ class Flake8NbApplication(Application):
         if is_option:
             self.option_manager.parser.remove_option(long_option_name)
             self.option_manager.add_option(long_option_name, *args, **kwargs)
+
+    def _run(self, argv: Optional[List[str]]) -> None:
+        self.initialize(argv)
+        self.run_checks(self.prelim_args)
+        self.report()
 
     def parse_preliminary_options_and_args(
         self, argv: Union[None, List[str]]
@@ -122,12 +145,21 @@ class Flake8NbApplication(Application):
             # pylint: disable=assignment-from-no-return
             prelim_opts, prelim_args = super().parse_preliminary_options_and_args(argv)
             # print(prelim_opts, prelim_args)
-            return prelim_opts, prelim_args
+            args, nb_list = get_notebooks_from_args(prelim_args)
+            notebook_parser = NotebookParser(nb_list)
+            total_args = args + notebook_parser.intermediate_py_file_paths
+            return prelim_opts, total_args
 
         else:
             # TODO: remove compat after flake8>3.7.8 release
             super().parse_preliminary_options_and_args(argv)
+            args, nb_list = get_notebooks_from_args(self.prelim_args)
+            notebook_parser = NotebookParser(nb_list)
+            total_args = args + notebook_parser.intermediate_py_file_paths
+            print(total_args)
+            self.prelim_args = total_args
             # print(self.prelim_opts, self.prelim_args)
+        self.cleaned_args = args
 
     def initialize(self, argv: List[str]) -> None:
         super().initialize(argv)
@@ -140,4 +172,5 @@ class Flake8NbApplication(Application):
         This should be the last thing called on the application instance. It
         will check certain options and exit appropriately.
         """
+        NotebookParser.clean_up()
         super().exit()

@@ -11,8 +11,10 @@ from flake8_nb.parsers.notebook_parsers import (
     ignore_cell,
     is_parent_dir,
     InvalidNotebookWarning,
+    map_intermediate_to_input,
     read_notebook_to_cells,
     warn_invalid_notebook,
+    NotebookParser,
 )
 
 TEST_NOTEBOOK_BASE_PATH = os.path.abspath(
@@ -77,7 +79,7 @@ def test_create_intermediate_py_file(
 
     tmp_base_path = str(tmpdir)
     expected_result_path, expected_result_str = get_expected_intermediate_file_results(
-        f"{notebook_name}.py", tmp_base_path
+        f"{notebook_name}.ipynb_parsed", tmp_base_path
     )
     if notebook_name.startswith("not_a_notebook"):
         with pytest.warns(InvalidNotebookWarning):
@@ -101,15 +103,15 @@ def test_create_intermediate_py_file(
 @pytest.mark.parametrize(
     "notebook_path,rel_result_path",
     [
-        (os.path.join(os.curdir, "file_name.ipynb"), ["file_name.py"]),
-        (os.path.join(os.curdir, "../file_name.ipynb"), ["file_name.py"]),
+        (os.path.join(os.curdir, "file_name.ipynb"), ["file_name.ipynb_parsed"]),
+        (os.path.join(os.curdir, "../file_name.ipynb"), ["file_name.ipynb_parsed"]),
         (
             os.path.join(os.curdir, "sub_dir", "file_name.ipynb"),
-            ["sub_dir", "file_name.py"],
+            ["sub_dir", "file_name.ipynb_parsed"],
         ),
         (
             os.path.join(os.curdir, "sub_dir", "sub_sub_dir", "file_name.ipynb"),
-            ["sub_dir", "sub_sub_dir", "file_name.py"],
+            ["sub_dir", "sub_sub_dir", "file_name.ipynb_parsed"],
         ),
     ],
 )
@@ -213,3 +215,79 @@ def test_warn_invalid_notebook():
         ),
     ):
         warn_invalid_notebook("invalid_notebook.ipynb")
+
+
+@pytest.mark.parametrize(
+    "line_number,expected_result",
+    [(15, ("In[2]", 2)), (30, ("In[4]", 3)), (52, ("In[7]", 1))],
+)
+def test_map_intermediate_to_input_line(
+    line_number: int, expected_result: Tuple[str, int]
+):
+    input_line_mapping = {
+        "input_names": ["In[1]", "In[2]", "In[3]", "In[4]", "In[5]", "In[6]", "In[7]"],
+        "code_lines": [4, 11, 18, 25, 33, 41, 49],
+    }
+    assert map_intermediate_to_input(input_line_mapping, line_number) == expected_result
+
+
+#################################
+#     NotebookParser Tests      #
+#################################
+
+
+@pytest.fixture(scope="function")
+def notebook_parser() -> NotebookParser:
+    notebooks = [
+        "not_a_notebook.ipynb",
+        "notebook_with_flake8_tags.ipynb",
+        "notebook_with_out_flake8_tags.ipynb",
+        "notebook_with_out_ipython_magic.ipynb",
+    ]
+    notebook_paths = [
+        os.path.join(TEST_NOTEBOOK_BASE_PATH, notebook) for notebook in notebooks
+    ]
+    parser_instance = NotebookParser(notebook_paths)
+    yield parser_instance
+    parser_instance.clean_up()
+
+
+def test_NotebookParser_create_intermediate_py_file_paths(notebook_parser):
+    for original_notebook in notebook_parser.original_notebook_paths:
+        assert os.path.isfile(original_notebook)
+    for intermediate_py_file in notebook_parser.intermediate_py_file_paths:
+        assert os.path.isfile(intermediate_py_file)
+    assert notebook_parser.temp_path != ""
+
+    original_count = len(notebook_parser.original_notebook_paths)
+    intermediate_count = len(notebook_parser.intermediate_py_file_paths)
+    input_line_mapping_count = len(notebook_parser.input_line_mappings)
+    assert original_count == 4
+    assert intermediate_count == 4
+    assert input_line_mapping_count == 4
+
+
+def test_NotebookParser_cross_instance_value_propagation(notebook_parser):
+    notebook_parser.get_mappings()
+    new_parser_instance = NotebookParser()
+
+    original_count = len(new_parser_instance.original_notebook_paths)
+    intermediate_count = len(new_parser_instance.intermediate_py_file_paths)
+    input_line_mapping_count = len(new_parser_instance.input_line_mappings)
+    assert original_count == 4
+    assert intermediate_count == 4
+    assert input_line_mapping_count == 4
+
+
+def test_NotebookParser_clean_up(notebook_parser):
+    temp_path = notebook_parser.temp_path
+    notebook_parser.clean_up()
+    assert not os.path.exists(temp_path)
+    assert notebook_parser.temp_path == ""
+
+    original_count = len(notebook_parser.original_notebook_paths)
+    intermediate_count = len(notebook_parser.intermediate_py_file_paths)
+    input_line_mapping_count = len(notebook_parser.input_line_mappings)
+    assert original_count == 0
+    assert intermediate_count == 0
+    assert input_line_mapping_count == 0

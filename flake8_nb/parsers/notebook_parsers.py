@@ -103,14 +103,16 @@ def create_temp_path(notebook_path: str, temp_base_path: str):
         temp_file_path = os.path.abspath(os.path.join(temp_base_path, rel_file_path))
     else:
         temp_file_path = os.path.join(temp_base_path, os.path.split(notebook_path)[1])
-    temp_file_path = f"{os.path.splitext(temp_file_path)[0]}.py"
+    temp_file_path = f"{os.path.splitext(temp_file_path)[0]}.ipynb_parsed"
     temp_dir_path = os.path.dirname(temp_file_path)
     if not os.path.isdir(temp_dir_path):
         os.makedirs(temp_dir_path)
     return temp_file_path
 
 
-def create_intermediate_py_file(notebook_path: str, intermediate_dir_base_path: str):
+def create_intermediate_py_file(
+    notebook_path: str, intermediate_dir_base_path: str
+) -> Tuple[str, Dict]:
     intermediate_file_path = create_temp_path(notebook_path, intermediate_dir_base_path)
     uses_get_ipython, notebook_cells = get_notebook_code_cells(notebook_path)
     input_line_mapping = {"input_names": [], "code_lines": []}
@@ -160,42 +162,99 @@ def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
         if os.path.altsep:
             rel_path = rel_path.replace(os.path.sep, os.path.altsep)
         rel_paths.append(rel_path)
-
     return rel_paths
+
+
+def map_intermediate_to_input(
+    input_line_mapping: Dict[str, List], line_number: int
+) -> Tuple[str, int]:
+    """
+    Remaps the line at `line_number` to the corresponding code cell
+    (`input_cell_name`) and line number in the code cell
+    (`input_cell_line_number`)
+
+    Parameters
+    ----------
+    input_line_mapping : Dict[str, List]
+        Dict containing lists of input cell names and their line in the
+        intermediate file.
+    line_number : int
+        Line in the intermediate py file.
+
+    Returns
+    -------
+    Tuple[str, int]
+        Input cell name and corresponding line in that cell
+        (input_cell_name, input_cell_line_number)
+
+    See Also
+    --------
+    create_intermediate_py_file
+    """
+    line_filter = filter(
+        lambda code_line: code_line < line_number, input_line_mapping["code_lines"]
+    )
+    entry_index = len(list(line_filter)) - 1
+    try:
+        input_cell_name = input_line_mapping["input_names"][entry_index]
+        code_starting_line_number = input_line_mapping["code_lines"][entry_index] + 2
+        input_cell_line_number = code_starting_line_number - line_number
+        return input_cell_name, abs(input_cell_line_number)
+
+    except IndexError:
+        return "", line_number
 
 
 class NotebookParser:
     original_notebook_paths = []
     intermediate_py_file_paths = []
+    input_line_mappings = []
     temp_path = ""
 
     def __init__(self, original_notebook_paths: List[str] = None):
-        if original_notebook_paths:
-            self.original_notebook_paths = original_notebook_paths
-        self.create_intermediate_notebooks()
+        self.new_notebooks = False
 
-    def create_intermediate_notebooks(self):
-        if self.original_notebook_paths:
+        if original_notebook_paths:
+            self.new_notebooks = True
+            NotebookParser.original_notebook_paths = original_notebook_paths
+        self.create_intermediate_py_file_paths()
+
+    def create_intermediate_py_file_paths(self):
+        if self.original_notebook_paths and self.new_notebooks:
             import tempfile
 
-            self.temp_path = tempfile.mkdtemp()
+            NotebookParser.input_line_mappings = []
+            NotebookParser.intermediate_py_file_paths = []
+
+            NotebookParser.temp_path = tempfile.mkdtemp()
             for original_notebook_path in self.original_notebook_paths:
-                intermediate_py_file_path = create_intermediate_py_file(
+                intermediate_py_file_path, input_line_mapping = create_intermediate_py_file(
                     original_notebook_path, self.temp_path
                 )
-                self.intermediate_py_file_paths.append(intermediate_py_file_path)
+                NotebookParser.intermediate_py_file_paths.append(
+                    intermediate_py_file_path
+                )
+                NotebookParser.input_line_mappings.append(input_line_mapping)
 
-    def get_path_mapping(self) -> Iterator[Tuple[str, str]]:
+    @staticmethod
+    def get_mappings() -> Iterator[Tuple[str, str]]:
         rel_original_notebook_paths = get_rel_paths(
-            self.original_notebook_paths, os.curdir
+            NotebookParser.original_notebook_paths, os.curdir
         )
-        rel_intermediate_py_file_paths = get_rel_paths(
-            self.intermediate_py_file_paths, self.temp_path
+        return zip(
+            rel_original_notebook_paths,
+            NotebookParser.intermediate_py_file_paths,
+            NotebookParser.input_line_mappings,
         )
-        return zip(rel_original_notebook_paths, rel_intermediate_py_file_paths)
 
-    def clean_up(self):
+    @staticmethod
+    def clean_up():
         import shutil
 
-        if self.original_notebook_paths and self.temp_path:
-            shutil.rmtree(self.temp_path, ignore_errors=True)
+        if NotebookParser.temp_path:
+            shutil.rmtree(NotebookParser.temp_path, ignore_errors=True)
+
+        NotebookParser.original_notebook_paths = []
+        NotebookParser.intermediate_py_file_paths = []
+        NotebookParser.input_line_mappings = []
+        NotebookParser.temp_path = ""

@@ -1,3 +1,4 @@
+import os
 from typing import List, Tuple, Union
 
 import pytest
@@ -16,23 +17,18 @@ class TempIpynbArgs:
 
     def get_args_and_result(self) -> Tuple[List[str], Union[bool, None]]:
         if self.kind == "file":
-            return ([str(self.top_level), "random_arg"], True)
+            return ([str(self.top_level), "random_arg"], (["random_arg"], True))
         elif self.kind == "dir":
-            return ([str(self.sub_level_dir), "random_arg"], True)
+            return (
+                [str(self.sub_level_dir), "random_arg"],
+                ([self.sub_level_dir, "random_arg"], True),
+            )
         elif self.kind == "random":
-            return (["random_arg"], False)
+            return (["random_arg"], (["random_arg"], False))
         else:
-            return ([], True)
+            return ([], ([os.curdir], True))
 
 
 @pytest.fixture(scope="session", params=["file", "dir", "random", ""])
 def temp_ipynb_args(request, tmpdir_factory):
     return TempIpynbArgs(request.param, tmpdir_factory)
-
-
-# def test_create_file(tmpdir):
-#     p = tmpdir.mkdir("sub").join("hello.txt")
-#     p.write("content")
-#     assert p.read() == "content"
-#     assert len(tmpdir.listdir()) == 1
-#     assert 0
