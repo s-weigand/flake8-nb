@@ -8,4 +8,6 @@ __version__ = "0.1.0"
 
 import flake8
 
+from .flake8_integration.formatter import IpynbFormatter  # noqa: F401
+
 FLAKE8_VERSION_TUPLE = tuple(map(int, flake8.__version__.split(".")))
