@@ -152,16 +152,10 @@ def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
     -------
     List[str]
         List of `file_paths` relative to `base_path`
-
-    Notes
-    -----
-    Windows paths will be seperated by '/' instead of '\\'.
     """
     rel_paths = []
     for file_path in file_paths:
         rel_path = os.path.normpath(os.path.relpath(file_path, base_path))
-        if os.path.altsep:
-            rel_path = rel_path.replace(os.path.sep, os.path.altsep)
         rel_paths.append(rel_path)
     return rel_paths
 

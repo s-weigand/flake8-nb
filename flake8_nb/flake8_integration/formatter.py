@@ -50,5 +50,5 @@ class IpynbFormatter(Default):
                 input_cell_name, input_cell_line_number = map_intermediate_to_input(
                     input_line_mapping, intermediate_line_number
                 )
-                filename = f"{original_notebook}#{input_cell_name}"
+                filename = f".{os.sep}{original_notebook}#{input_cell_name}"
                 return filename, input_cell_line_number

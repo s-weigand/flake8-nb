@@ -155,7 +155,11 @@ def test_get_notebook_code_cells(
             os.curdir,
             [".", "file.foo"],
         ),
-        ([os.path.join(os.curdir, "..", "file.foo")], os.curdir, ["../file.foo"]),
+        (
+            [os.path.join(os.curdir, "..", "file.foo")],
+            os.curdir,
+            [f"..{os.sep}file.foo"],
+        ),
     ],
 )
 def test_get_rel_paths(

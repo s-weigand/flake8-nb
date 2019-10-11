@@ -39,7 +39,7 @@ def get_notebooks_from_args(
     def is_notebook(filename: str, nb_list: List, root="."):
         filename = os.path.abspath(os.path.join(root, filename))
         if os.path.isfile(filename) and filename.endswith(".ipynb"):
-            nb_list.append(filename)
+            nb_list.append(os.path.normcase(filename))
             return True
 
     nb_list = []

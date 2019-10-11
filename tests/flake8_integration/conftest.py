@@ -6,7 +6,7 @@ import pytest
 from ..parsers.test_notebook_parsers import TEST_NOTEBOOK_BASE_PATH
 
 TEST_NOTEBOOK_PATHS = [
-    os.path.join(TEST_NOTEBOOK_BASE_PATH, filename)
+    os.path.normcase(os.path.join(TEST_NOTEBOOK_BASE_PATH, filename))
     for filename in [
         "not_a_notebook.ipynb",
         "notebook_with_flake8_tags.ipynb",
@@ -31,12 +31,15 @@ class TempIpynbArgs:
         if self.kind == "file":
             return (
                 [str(self.top_level), "random_arg"],
-                [["random_arg"], [str(self.top_level)]],
+                [["random_arg"], [str(os.path.normcase(self.top_level))]],
             )
         elif self.kind == "dir":
             return (
                 [str(self.sub_level_dir), "random_arg"],
-                ([self.sub_level_dir, "random_arg"], [self.sub_level]),
+                (
+                    [self.sub_level_dir, "random_arg"],
+                    [os.path.normcase(self.sub_level)],
+                ),
             )
         elif self.kind == "random":
             return (["random_arg"], (["random_arg"], []))
