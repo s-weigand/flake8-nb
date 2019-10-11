@@ -131,9 +131,12 @@ def create_intermediate_py_file(
         lines_of_code += intermediate_dict["lines_of_code"]
 
     intermediate_code += "".join(intermediate_py_str_list).rstrip("\n")
-    with open(intermediate_file_path, "w+") as intermediate_file:
-        intermediate_file.write(f"{intermediate_code}\n")
-    return intermediate_file_path, input_line_mapping
+    if intermediate_code:
+        with open(intermediate_file_path, "w+") as intermediate_file:
+            intermediate_file.write(f"{intermediate_code}\n")
+        return intermediate_file_path, input_line_mapping
+    else:
+        return "", input_line_mapping
 
 
 def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
@@ -227,14 +230,18 @@ class NotebookParser:
             NotebookParser.intermediate_py_file_paths = []
 
             NotebookParser.temp_path = tempfile.mkdtemp()
-            for original_notebook_path in self.original_notebook_paths:
+            index_orig_list = list(enumerate(self.original_notebook_paths))[::1]
+            for index, original_notebook_path in index_orig_list:
                 intermediate_py_file_path, input_line_mapping = create_intermediate_py_file(
                     original_notebook_path, self.temp_path
                 )
-                NotebookParser.intermediate_py_file_paths.append(
-                    intermediate_py_file_path
-                )
-                NotebookParser.input_line_mappings.append(input_line_mapping)
+                if intermediate_py_file_path:
+                    NotebookParser.intermediate_py_file_paths.append(
+                        intermediate_py_file_path
+                    )
+                    NotebookParser.input_line_mappings.append(input_line_mapping)
+                else:
+                    NotebookParser.original_notebook_paths.pop(index)
 
     @staticmethod
     def get_mappings() -> Iterator[Tuple[str, str]]:

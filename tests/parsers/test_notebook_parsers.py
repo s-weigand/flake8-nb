@@ -18,7 +18,7 @@ from flake8_nb.parsers.notebook_parsers import (
 )
 
 TEST_NOTEBOOK_BASE_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "data", "test_notebooks")
+    os.path.join(os.path.dirname(__file__), "..", "data", "notebooks")
 )
 
 INTERMEDIATE_PY_FILE_BASE_PATH = os.path.abspath(
@@ -30,7 +30,7 @@ def get_expected_intermediate_file_results(
     result_name: str, base_path: str
 ) -> Tuple[str, str]:
     expected_result_path = os.path.join(
-        base_path, "tests", "data", "test_notebooks", result_name
+        base_path, "tests", "data", "notebooks", result_name
     )
     expected_result_file_path = os.path.join(
         INTERMEDIATE_PY_FILE_BASE_PATH, result_name
@@ -86,10 +86,8 @@ def test_create_intermediate_py_file(
             intermediate_file_path, input_line_mapping = create_intermediate_py_file(
                 notebook_path, tmp_base_path
             )
-            assert intermediate_file_path == expected_result_path
+            assert intermediate_file_path == ""
             assert input_line_mapping == expected_input_line_mapping
-            with open(intermediate_file_path) as result_file:
-                assert result_file.read() == expected_result_str
     else:
         intermediate_file_path, input_line_mapping = create_intermediate_py_file(
             notebook_path, tmp_base_path
@@ -262,9 +260,9 @@ def test_NotebookParser_create_intermediate_py_file_paths(notebook_parser):
     original_count = len(notebook_parser.original_notebook_paths)
     intermediate_count = len(notebook_parser.intermediate_py_file_paths)
     input_line_mapping_count = len(notebook_parser.input_line_mappings)
-    assert original_count == 4
-    assert intermediate_count == 4
-    assert input_line_mapping_count == 4
+    assert original_count == 3
+    assert intermediate_count == 3
+    assert input_line_mapping_count == 3
 
 
 def test_NotebookParser_cross_instance_value_propagation(notebook_parser):
@@ -274,9 +272,9 @@ def test_NotebookParser_cross_instance_value_propagation(notebook_parser):
     original_count = len(new_parser_instance.original_notebook_paths)
     intermediate_count = len(new_parser_instance.intermediate_py_file_paths)
     input_line_mapping_count = len(new_parser_instance.input_line_mappings)
-    assert original_count == 4
-    assert intermediate_count == 4
-    assert input_line_mapping_count == 4
+    assert original_count == 3
+    assert intermediate_count == 3
+    assert input_line_mapping_count == 3
 
 
 def test_NotebookParser_clean_up(notebook_parser):
