@@ -3,7 +3,7 @@ import os
 
 from typing import List, Optional, Tuple
 
-from flake8 import utils
+from flake8 import utils, defaults
 from flake8.options import aggregator
 from flake8.main.application import Application
 from flake8.utils import matches_filename
@@ -80,6 +80,16 @@ class Flake8NbApplication(Application):
             comma_separated_list=True,
             help="Only check for filenames matching the patterns in this comma-"
             "separated list. (Default: %default)",
+        )
+        self.overwrite_flake8_option(
+            "--exclude",
+            metavar="patterns",
+            default=f'{",".join(defaults.EXCLUDE)},*.ipynb_checkpoints/*',
+            comma_separated_list=True,
+            parse_from_config=True,
+            normalize_paths=True,
+            help="Comma-separated list of files or directories to exclude."
+            " (Default: %default)",
         )
 
     def overwrite_flake8_program_and_version(self, program: str, version: str):
