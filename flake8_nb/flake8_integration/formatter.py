@@ -8,9 +8,9 @@ from ..parsers.notebook_parsers import NotebookParser, map_intermediate_to_input
 
 
 class IpynbFormatter(Default):
-    """
-    Default flake8 formatter for jupyter notebooks.
-    If the file to be formated is a *.py file,
+    r"""
+    Default flake8_nb formatter for jupyter notebooks.
+    If the file to be formated is a \*.py file,
     it uses flake8's default formatter.
     """
 
@@ -23,7 +23,23 @@ class IpynbFormatter(Default):
         if self.options.format.lower() != "default_notebook":
             self.error_format = self.options.format
 
-    def format(self, error: Violation):
+    def format(self, error: Violation) -> str:
+        r"""
+        Formats the error detected by a flake8 checker,
+        depending on if the error was caused by a \*.py file
+        or by a parsed notebook.
+
+        Parameters
+        ----------
+        error : Violation
+            Error a checker reported.
+
+        Returns
+        -------
+        str
+            Formatted error message, which will be displayed
+            in the terminal.
+        """
         filename = error.filename
         if filename.lower().endswith(".py"):
             return super().format(error)
@@ -42,6 +58,21 @@ class IpynbFormatter(Default):
             return super().format(error)
 
     def map_notebook_error(self, error: Violation):
+        """
+        Maps the error caused by an intermediate file back
+        to a notebook, the input cell it caused and the
+        respective line number in that cell.
+
+        Parameters
+        ----------
+        error : Violation
+            [description]
+
+        Returns
+        -------
+        [type]
+            [description]
+        """
         intermediate_filename = os.path.abspath(error.filename)
         intermediate_line_number = error.line_number
         mappings = NotebookParser.get_mappings()

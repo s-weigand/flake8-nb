@@ -13,7 +13,6 @@ from flake8_nb.parsers.notebook_parsers import (
     InvalidNotebookWarning,
     map_intermediate_to_input,
     read_notebook_to_cells,
-    warn_invalid_notebook,
     NotebookParser,
 )
 
@@ -209,17 +208,6 @@ def test_read_notebook_to_cells(notebook_name: str, number_of_cells: int):
             assert len(read_notebook_to_cells(notebook_path)) == number_of_cells
     else:
         assert len(read_notebook_to_cells(notebook_path)) == number_of_cells
-
-
-def test_warn_invalid_notebook():
-    with pytest.warns(
-        InvalidNotebookWarning,
-        match=(
-            "Error parsing notebook at path 'invalid_notebook.ipynb'. "
-            "Make sure this is a valid notebook."
-        ),
-    ):
-        warn_invalid_notebook("invalid_notebook.ipynb")
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,5 @@
 Welcome to flake8-nb's documentation!
-======================================
+=====================================
 
 .. toctree::
    :maxdepth: 2
@@ -8,6 +8,7 @@ Welcome to flake8-nb's documentation!
    readme
    installation
    usage
+   api_docs
    contributing
    authors
    history
