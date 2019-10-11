@@ -1,12 +1,10 @@
 import json
 import os
-
-# import tempfile
 from typing import Dict, Iterator, List, Tuple
-
 import warnings
 
 from nbconvert.filters import ipython2python
+
 
 from .cell_parsers import notebook_cell_to_intermediate_dict
 
@@ -230,7 +228,7 @@ class NotebookParser:
             NotebookParser.intermediate_py_file_paths = []
 
             NotebookParser.temp_path = tempfile.mkdtemp()
-            index_orig_list = list(enumerate(self.original_notebook_paths))[::1]
+            index_orig_list = list(enumerate(self.original_notebook_paths))[::-1]
             for index, original_notebook_path in index_orig_list:
                 intermediate_py_file_path, input_line_mapping = create_intermediate_py_file(
                     original_notebook_path, self.temp_path

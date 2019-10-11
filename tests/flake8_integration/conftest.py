@@ -3,6 +3,18 @@ from typing import List, Tuple, Union
 
 import pytest
 
+from ..parsers.test_notebook_parsers import TEST_NOTEBOOK_BASE_PATH
+
+TEST_NOTEBOOK_PATHS = [
+    os.path.join(TEST_NOTEBOOK_BASE_PATH, filename)
+    for filename in [
+        "not_a_notebook.ipynb",
+        "notebook_with_flake8_tags.ipynb",
+        "notebook_with_out_flake8_tags.ipynb",
+        "notebook_with_out_ipython_magic.ipynb",
+    ]
+]
+
 
 @pytest.mark.usefixtures("tmpdir")
 class TempIpynbArgs:
@@ -12,23 +24,26 @@ class TempIpynbArgs:
         self.top_level = tmpdir.join("top_level.ipynb")
         self.top_level.write("top_level")
         self.sub_level_dir = tmpdir.mkdir("sub")
-        sub_level = self.sub_level_dir.join("sub_level.ipynb")
-        sub_level.write("sub_level")
+        self.sub_level = self.sub_level_dir.join("sub_level.ipynb")
+        self.sub_level.write("sub_level")
 
     def get_args_and_result(self) -> Tuple[List[str], Union[bool, None]]:
         if self.kind == "file":
-            return ([str(self.top_level), "random_arg"], (["random_arg"], True))
+            return (
+                [str(self.top_level), "random_arg"],
+                [["random_arg"], [str(self.top_level)]],
+            )
         elif self.kind == "dir":
             return (
                 [str(self.sub_level_dir), "random_arg"],
-                ([self.sub_level_dir, "random_arg"], True),
+                ([self.sub_level_dir, "random_arg"], [self.sub_level]),
             )
         elif self.kind == "random":
-            return (["random_arg"], (["random_arg"], False))
+            return (["random_arg"], (["random_arg"], []))
         else:
-            return ([], ([os.curdir], True))
+            return ([], ([os.curdir], TEST_NOTEBOOK_PATHS))
 
 
-@pytest.fixture(scope="session", params=["file", "dir", "random", ""])
+@pytest.fixture(scope="session", params=["file", "dir", "random", None])
 def temp_ipynb_args(request, tmpdir_factory):
     return TempIpynbArgs(request.param, tmpdir_factory)

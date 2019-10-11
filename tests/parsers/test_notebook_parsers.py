@@ -35,8 +35,11 @@ def get_expected_intermediate_file_results(
     expected_result_file_path = os.path.join(
         INTERMEDIATE_PY_FILE_BASE_PATH, result_name
     )
-    with open(expected_result_file_path) as result_file:
-        expected_result_str = result_file.read()
+    if result_name.startswith("not_a_notebook"):
+        expected_result_str = ""
+    else:
+        with open(expected_result_file_path) as result_file:
+            expected_result_str = result_file.read()
     return expected_result_path, expected_result_str
 
 

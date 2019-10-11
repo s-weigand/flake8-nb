@@ -1,13 +1,14 @@
-import argparse
 import logging
 import os
 
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple
 
+from flake8 import utils
+from flake8.options import aggregator
 from flake8.main.application import Application
 from flake8.utils import matches_filename
 
-from .. import __version__, FLAKE8_VERSION_TUPLE
+from .. import __version__
 
 from ..parsers.notebook_parsers import NotebookParser
 
@@ -71,6 +72,15 @@ class Flake8NbApplication(Application):
             parse_from_config=True,
             help="Format errors according to the chosen formatter.",
         )
+        self.overwrite_flake8_option(
+            "--filename",
+            metavar="patterns",
+            default="*.py,*.ipynb_parsed",
+            parse_from_config=True,
+            comma_separated_list=True,
+            help="Only check for filenames matching the patterns in this comma-"
+            "separated list. (Default: %default)",
+        )
 
     def overwrite_flake8_program_and_version(self, program: str, version: str):
         """
@@ -109,61 +119,41 @@ class Flake8NbApplication(Application):
             self.option_manager.parser.remove_option(long_option_name)
             self.option_manager.add_option(long_option_name, *args, **kwargs)
 
-    def _run(self, argv: Optional[List[str]]) -> None:
-        self.initialize(argv)
-        self.run_checks(self.prelim_args)
-        self.report()
+    def hack_args(self, args: List[str]):
 
-    def parse_preliminary_options_and_args(
-        self, argv: Union[None, List[str]]
-    ) -> Union[None, Tuple[argparse.Namespace, List[str]]]:
-        """
-        Get preliminary options and args from CLI, pre-plugin-loading.
+        args, nb_list = get_notebooks_from_args(args)
+        notebook_parser = NotebookParser(nb_list)
+        return args + notebook_parser.intermediate_py_file_paths
 
-        We need to know the values of a few standard options and args now, so
-        that we can find config files and configure logging.
+    def parse_configuration_and_cli(self, argv=None):
+        # type: (Optional[List[str]]) -> None
+        """Parse configuration files and the CLI options.
 
-        Since plugins aren't loaded yet, there may be some as-yet-unknown
-        options; we ignore those for now, they'll be parsed later when we do
-        real option parsing.
-
-        Sets self.prelim_opts and self.prelim_args.
-
-        Parameters
-        ----------
-        argv : Union[None, List[str]]
+        :param list argv:
             Command-line arguments passed in directly.
-
-        Returns
-        -------
-        Union[None, Tuple[argparse.Namespace, List[str]]]
-            [description]
         """
-        if FLAKE8_VERSION_TUPLE > (3, 7, 8):
-            # compat for code after b54164f (flake8>3.7.8)
-            # see https://github.com/PyCQA/flake8/commit/b54164f916922725c17e6d0df75998ada6b27eef#diff-d5a0050fc6e4a3978782bdca39900c59  # noqa
-            # pylint: disable=assignment-from-no-return
-            prelim_opts, prelim_args = super().parse_preliminary_options_and_args(argv)
-            # print(prelim_opts, prelim_args)
-            args, nb_list = get_notebooks_from_args(prelim_args)
-            notebook_parser = NotebookParser(nb_list)
-            total_args = args + notebook_parser.intermediate_py_file_paths
-            return prelim_opts, total_args
+        if self.options is None and self.args is None:
+            self.options, self.args = aggregator.aggregate_options(
+                self.option_manager, self.config_finder, argv
+            )
 
-        else:
-            # TODO: remove compat after flake8>3.7.8 release
-            super().parse_preliminary_options_and_args(argv)
-            args, nb_list = get_notebooks_from_args(self.prelim_args)
-            notebook_parser = NotebookParser(nb_list)
-            total_args = args + notebook_parser.intermediate_py_file_paths
-            print(total_args)
-            self.prelim_args = total_args
-            # print(self.prelim_opts, self.prelim_args)
-        self.cleaned_args = args
+        self.args = self.hack_args(self.args)
+
+        self.running_against_diff = self.options.diff
+        if self.running_against_diff:
+            self.parsed_diff = utils.parse_unified_diff()
+            if not self.parsed_diff:
+                self.exit()
+
+        self.options._running_from_vcs = False
+
+        self.check_plugins.provide_options(self.option_manager, self.options, self.args)
+        self.formatting_plugins.provide_options(
+            self.option_manager, self.options, self.args
+        )
 
     def initialize(self, argv: List[str]) -> None:
         super().initialize(argv)
-        print("self.args", self.args)
 
     def exit(self):
         # type: () -> None
