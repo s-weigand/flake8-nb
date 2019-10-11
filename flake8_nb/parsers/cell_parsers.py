@@ -64,19 +64,19 @@ def extract_flake8_inline_tags(notebook_cell: Dict):
     return flake8_inline_tags
 
 
-def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List]:
+def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
     match = re.match(FLAKE8_TAG_PATTERN, flake8_tag)
     if match:
         if match.group("cell_rules"):
-            cell_rules = match.group("cell_rules")
-            cell_rules = cell_rules.split("-")
+            cell_rules_str = match.group("cell_rules")
+            cell_rules = cell_rules_str.split("-")
             return {"cell": cell_rules}
         elif match.group("ignore_cell"):
             return {"cell": ["noqa"]}
         elif match.group("line_nr") and match.group("line_rules"):
             line_nr = str(match.group("line_nr"))
-            line_rules = match.group("line_rules")
-            line_rules = line_rules.split("-")
+            line_rules_str = match.group("line_rules")
+            line_rules = line_rules_str.split("-")
             return {line_nr: line_rules}
         elif match.group("ignore_line_nr"):  # pragma: no branch
             line_nr = str(match.group("ignore_line_nr"))
@@ -99,7 +99,7 @@ def update_rules_dict(
 def get_flake8_rules_dict(notebook_cell: Dict) -> Dict[str, List]:
     flake8_tags = extract_flake8_tags(notebook_cell)
     flake8_inline_tags = extract_flake8_inline_tags(notebook_cell)
-    total_rules_dict = {}
+    total_rules_dict: Dict[str, List] = {}
     for flake8_tag in set(flake8_tags + flake8_inline_tags):
         new_rules_dict = flake8_tag_to_rules_dict(flake8_tag)
         update_rules_dict(total_rules_dict, new_rules_dict)
@@ -112,12 +112,12 @@ def generate_rules_list(source_index: int, rules_dict: Dict[str, List]) -> List:
     return line_rules + cell_rules
 
 
-def get_inline_flake8_noqa(source_line: str) -> List:
+def get_inline_flake8_noqa(source_line: str) -> List[str]:
     match = re.match(FLAKE8_NOQA_INLINE_PATTERN, source_line)
     if match:
-        flake8_noqa_rules = match.group("flake8_noqa_rules")
-        if flake8_noqa_rules:
-            flake8_noqa_rules = flake8_noqa_rules.split(",")
+        flake8_noqa_rules_str = match.group("flake8_noqa_rules")
+        if flake8_noqa_rules_str:
+            flake8_noqa_rules = flake8_noqa_rules_str.split(",")
             return [line.strip() for line in flake8_noqa_rules]
         elif match.group("has_flake8_noqa_all"):  # pragma: no branch
             return ["noqa"]
@@ -125,15 +125,15 @@ def get_inline_flake8_noqa(source_line: str) -> List:
         return []
 
 
-def update_inline_flake8_noqa(source_index: str, rules_list: List) -> str:
+def update_inline_flake8_noqa(source_index: str, rules_list: List[str]) -> str:
     inline_flake8_noqa = get_inline_flake8_noqa(source_index)
     source_index = source_index.rstrip("\n")
     if inline_flake8_noqa:
-        rules_list = set(inline_flake8_noqa + rules_list)
+        rules_list = list(set(inline_flake8_noqa + rules_list))
         source_index = re.sub(
             FLAKE8_NOQA_INLINE_REPLACE_PATTERN, r"\g<source_code>", source_index
         )
-    rules_list = sorted(list(rules_list))
+    rules_list = sorted(rules_list)
     if "noqa" in rules_list:
         noqa_str = ""
     else:

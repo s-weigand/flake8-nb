@@ -42,7 +42,7 @@ def get_notebooks_from_args(
             nb_list.append(os.path.normcase(filename))
             return True
 
-    nb_list = []
+    nb_list: List[str] = []
     if not args:
         args = [os.curdir]
     for index, arg in list(enumerate(args))[::-1]:
@@ -63,8 +63,49 @@ def get_notebooks_from_args(
 class Flake8NbApplication(Application):
     def __init__(self, program="flake8_nb", version=__version__):
         super().__init__(program, version)
-        self.cleaned_args = []
         self.overwrite_flake8_program_and_version(program, version)
+        self.hack_options()
+
+    def overwrite_flake8_program_and_version(self, program: str, version: str) -> None:
+        """
+        Another hack to overwrite the program name and version of flake8,
+        which is hard coded at creation of `self.option_manager`.
+
+        Parameters
+        ----------
+        program : str
+            Name of the program
+        version : str
+            Version of the program
+        """
+        # TODO Cleanup after flake8>3.7.8 release
+        # if https://gitlab.com/pycqa/flake8/merge_requests/359#note_226407899 gets merged
+        self.program = program
+        self.version = version
+        self.option_manager.parser.prog = program
+        self.option_manager.parser.version = version
+        self.option_manager.program_name = program
+        self.option_manager.version = version
+
+    def overwrite_flake8_option(self, long_option_name: str, *args, **kwargs) -> None:
+        """
+        First deletes and than adds an option to flake8's cli options
+
+        Parameters
+        ----------
+        long_option_name : str
+            Long name of the flake8 cli option.
+        """
+        is_option = False
+        for option_index, option in enumerate(self.option_manager.options):
+            if option.long_option_name == long_option_name:
+                self.option_manager.options.pop(option_index)
+                is_option = True
+        if is_option:
+            self.option_manager.parser.remove_option(long_option_name)
+            self.option_manager.add_option(long_option_name, *args, **kwargs)
+
+    def hack_options(self) -> None:
         self.overwrite_flake8_option(
             "--format",
             metavar="format",
@@ -92,52 +133,14 @@ class Flake8NbApplication(Application):
             " (Default: %default)",
         )
 
-    def overwrite_flake8_program_and_version(self, program: str, version: str):
-        """
-        Another hack to overwrite the program name and version of flake8,
-        which is hard coded at creation of `self.option_manager`.
-
-        Parameters
-        ----------
-        program : str
-            Name of the program
-        version : str
-            Version of the program
-        """
-        # TODO Cleanup after flake8>3.7.8 release
-        # if https://gitlab.com/pycqa/flake8/merge_requests/359#note_226407899 gets merged
-        self.option_manager.parser.prog = program
-        self.option_manager.parser.version = version
-        self.option_manager.program_name = program
-        self.option_manager.version = version
-
-    def overwrite_flake8_option(self, long_option_name: str, *args, **kwargs):
-        """
-        First deletes and than adds an option to flake8's cli options
-
-        Parameters
-        ----------
-        long_option_name : str
-            Long name of the flake8 cli option.
-        """
-        is_option = False
-        for option_index, option in enumerate(self.option_manager.options):
-            if option.long_option_name == long_option_name:
-                self.option_manager.options.pop(option_index)
-                is_option = True
-        if is_option:
-            self.option_manager.parser.remove_option(long_option_name)
-            self.option_manager.add_option(long_option_name, *args, **kwargs)
-
     @staticmethod
-    def hack_args(args: List[str]):
+    def hack_args(args: List[str]) -> List[str]:
 
         args, nb_list = get_notebooks_from_args(args)
         notebook_parser = NotebookParser(nb_list)
         return args + notebook_parser.intermediate_py_file_paths
 
-    def parse_configuration_and_cli(self, argv=None):
-        # type: (Optional[List[str]]) -> None
+    def parse_configuration_and_cli(self, argv: Optional[List[str]] = None) -> None:
         """Parse configuration files and the CLI options.
 
         :param list argv:
@@ -162,9 +165,6 @@ class Flake8NbApplication(Application):
         self.formatting_plugins.provide_options(
             self.option_manager, self.options, self.args
         )
-
-    def initialize(self, argv: List[str]) -> None:
-        super().initialize(argv)
 
     def exit(self):
         # type: () -> None

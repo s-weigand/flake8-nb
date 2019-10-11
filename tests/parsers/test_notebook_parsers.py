@@ -258,7 +258,9 @@ def notebook_parser() -> NotebookParser:
     parser_instance.clean_up()
 
 
-def test_NotebookParser_create_intermediate_py_file_paths(notebook_parser):
+def test_NotebookParser_create_intermediate_py_file_paths(
+    notebook_parser: NotebookParser
+):
     for original_notebook in notebook_parser.original_notebook_paths:
         assert os.path.isfile(original_notebook)
     for intermediate_py_file in notebook_parser.intermediate_py_file_paths:
@@ -273,7 +275,9 @@ def test_NotebookParser_create_intermediate_py_file_paths(notebook_parser):
     assert input_line_mapping_count == 3
 
 
-def test_NotebookParser_cross_instance_value_propagation(notebook_parser):
+def test_NotebookParser_cross_instance_value_propagation(
+    notebook_parser: NotebookParser
+):
     notebook_parser.get_mappings()
     new_parser_instance = NotebookParser()
 
@@ -285,7 +289,7 @@ def test_NotebookParser_cross_instance_value_propagation(notebook_parser):
     assert input_line_mapping_count == 3
 
 
-def test_NotebookParser_clean_up(notebook_parser):
+def test_NotebookParser_clean_up(notebook_parser: NotebookParser):
     temp_path = notebook_parser.temp_path
     notebook_parser.clean_up()
     assert not os.path.exists(temp_path)

@@ -47,7 +47,7 @@ def convert_source_line(source_line: str):
         return source_line
 
 
-def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[str]]:
+def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[Dict]]:
     uses_get_ipython = False
     notebook_cells = read_notebook_to_cells(notebook_path)
     for index, cell in list(enumerate(notebook_cells))[::-1]:
@@ -113,7 +113,7 @@ def create_intermediate_py_file(
 ) -> Tuple[str, Dict]:
     intermediate_file_path = create_temp_path(notebook_path, intermediate_dir_base_path)
     uses_get_ipython, notebook_cells = get_notebook_code_cells(notebook_path)
-    input_line_mapping = {"input_names": [], "code_lines": []}
+    input_line_mapping: Dict[str, List] = {"input_names": [], "code_lines": []}
     if uses_get_ipython:
         lines_of_code = 3
         intermediate_code = "from IPython import get_ipython\n\n\n"
@@ -197,9 +197,9 @@ def map_intermediate_to_input(
 
 
 class NotebookParser:
-    original_notebook_paths = []
-    intermediate_py_file_paths = []
-    input_line_mappings = []
+    original_notebook_paths: List[str] = []
+    intermediate_py_file_paths: List[str] = []
+    input_line_mappings: List[Dict[str, List]] = []
     temp_path = ""
 
     def __init__(self, original_notebook_paths: List[str] = None):
@@ -232,7 +232,7 @@ class NotebookParser:
                     NotebookParser.original_notebook_paths.pop(index)
 
     @staticmethod
-    def get_mappings() -> Iterator[Tuple[str, str]]:
+    def get_mappings() -> Iterator[Tuple[str, str, Dict]]:
         rel_original_notebook_paths = get_rel_paths(
             NotebookParser.original_notebook_paths, os.curdir
         )

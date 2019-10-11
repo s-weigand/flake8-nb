@@ -1,5 +1,5 @@
 import os
-from typing import List, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
 import pytest
 
@@ -27,11 +27,11 @@ class TempIpynbArgs:
         self.sub_level = self.sub_level_dir.join("sub_level.ipynb")
         self.sub_level.write("sub_level")
 
-    def get_args_and_result(self) -> Tuple[List[str], Union[bool, None]]:
+    def get_args_and_result(self) -> Tuple[List[str], Tuple[List[str], List[str]]]:
         if self.kind == "file":
             return (
                 [str(self.top_level), "random_arg"],
-                [["random_arg"], [str(os.path.normcase(self.top_level))]],
+                (["random_arg"], [str(os.path.normcase(self.top_level))]),
             )
         elif self.kind == "dir":
             return (
