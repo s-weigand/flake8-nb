@@ -196,14 +196,10 @@ def map_intermediate_to_input(
         lambda code_line: code_line < line_number, input_line_mapping["code_lines"]
     )
     entry_index = len(list(line_filter)) - 1
-    try:
-        input_cell_name = input_line_mapping["input_names"][entry_index]
-        code_starting_line_number = input_line_mapping["code_lines"][entry_index] + 2
-        input_cell_line_number = code_starting_line_number - line_number
-        return input_cell_name, abs(input_cell_line_number)
-
-    except IndexError:
-        return "", line_number
+    input_cell_name = input_line_mapping["input_names"][entry_index]
+    code_starting_line_number = input_line_mapping["code_lines"][entry_index] + 2
+    input_cell_line_number = code_starting_line_number - line_number
+    return input_cell_name, abs(input_cell_line_number)
 
 
 class NotebookParser:
