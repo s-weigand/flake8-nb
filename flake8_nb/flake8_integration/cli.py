@@ -119,7 +119,8 @@ class Flake8NbApplication(Application):
             self.option_manager.parser.remove_option(long_option_name)
             self.option_manager.add_option(long_option_name, *args, **kwargs)
 
-    def hack_args(self, args: List[str]):
+    @staticmethod
+    def hack_args(args: List[str]):
 
         args, nb_list = get_notebooks_from_args(args)
         notebook_parser = NotebookParser(nb_list)

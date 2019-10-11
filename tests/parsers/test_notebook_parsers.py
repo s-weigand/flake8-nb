@@ -248,7 +248,8 @@ def notebook_parser() -> NotebookParser:
     notebook_paths = [
         os.path.join(TEST_NOTEBOOK_BASE_PATH, notebook) for notebook in notebooks
     ]
-    parser_instance = NotebookParser(notebook_paths)
+    with pytest.warns(InvalidNotebookWarning):
+        parser_instance = NotebookParser(notebook_paths)
     yield parser_instance
     parser_instance.clean_up()
 
