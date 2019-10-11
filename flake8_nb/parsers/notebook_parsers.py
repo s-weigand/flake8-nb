@@ -230,6 +230,8 @@ class NotebookParser:
                     NotebookParser.input_line_mappings.append(input_line_mapping)
                 else:
                     NotebookParser.original_notebook_paths.pop(index)
+        NotebookParser.intermediate_py_file_paths.reverse()
+        NotebookParser.input_line_mappings.reverse()
 
     @staticmethod
     def get_mappings() -> Iterator[Tuple[str, str, Dict]]:
