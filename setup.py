@@ -41,7 +41,6 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Quality Assurance",
     ],
@@ -61,6 +60,7 @@ setup(
     packages=find_packages(include=["flake8_nb", "flake8_nb.*"]),
     setup_requires=setup_requirements,
     test_suite="tests",
+    platforms="any",
     entry_points={
         "console_scripts": ["flake8_nb = flake8_nb.__main__:main"],
         "flake8.report": "default_notebook = flake8_nb:IpynbFormatter",
