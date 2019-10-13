@@ -152,6 +152,8 @@ def notebook_cell_to_intermediate_dict(notebook_cell: Dict) -> Dict:
         rules_list = generate_rules_list(line_index, rules_dict)
         updated_source_line = update_inline_flake8_noqa(source_line, rules_list)
         updated_source_lines.append(updated_source_line)
+    if input_nr is None:
+        input_nr = " "
     input_name = f"In[{input_nr}]"
     return {
         "code": f"# {input_name}\n\n\n{''.join(updated_source_lines)}\n\n",
