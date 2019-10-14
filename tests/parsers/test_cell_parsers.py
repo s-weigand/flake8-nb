@@ -233,6 +233,18 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
                 "lines_of_code": 7,
             },
         ),
+        (
+            {
+                "execution_count": None,
+                "metadata": {"tags": ["flake8-noqa-cell", "flake8-noqa-line-1"]},
+                "source": ["for i in range(1):\n", "    print(i)  # noqa:F401, W391"],
+            },
+            {
+                "code": "# In[ ]\n\n\nfor i in range(1):  # noqa: \n    print(i)  # noqa: \n\n\n",
+                "input_name": "In[ ]",
+                "lines_of_code": 7,
+            },
+        ),
     ],
 )
 def test_notebook_cell_to_intermediate_py_str(
