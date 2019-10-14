@@ -10,4 +10,6 @@ import flake8
 
 from .flake8_integration.formatter import IpynbFormatter  # noqa: F401
 
+__all__ = "IpynbFormatter"
+
 FLAKE8_VERSION_TUPLE = tuple(map(int, flake8.__version__.split(".")))
