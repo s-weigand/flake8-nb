@@ -1,4 +1,6 @@
-"""Command-line implementation of flake8."""
+# -*- coding: utf-8 -*-
+
+"""Command-line implementation of flake8_nb."""
 import sys
 from typing import List, Optional
 
