@@ -1,19 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Tuple
 
 import pytest
-
-from ..parsers.test_notebook_parsers import notebook_parser
 
 from flake8_nb.flake8_integration.formatter import IpynbFormatter
 from flake8_nb.parsers.notebook_parsers import NotebookParser
 
 
 class MockedOption:
-    output_file = ""
-    format = "default_notebook"
+    def __init__(self, *args, **kwargs):
+        self.output_file = ""
+        self.format = "default_notebook"
 
 
 class MockError:
@@ -32,7 +30,8 @@ def test_IpynbFormatter__map_notebook_error(
     expected_input_number: int,
     expected_line_number: int,
 ):
-    formatter = IpynbFormatter(MockedOption)
+    mocked_option = MockedOption()
+    formatter = IpynbFormatter(mocked_option)
     expected_filename = os.path.join(
         "tests",
         "data",

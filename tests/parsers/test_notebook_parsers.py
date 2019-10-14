@@ -231,23 +231,6 @@ def test_map_intermediate_to_input_line(
 #################################
 
 
-@pytest.fixture(scope="function")
-def notebook_parser() -> NotebookParser:
-    notebooks = [
-        "not_a_notebook.ipynb",
-        "notebook_with_flake8_tags.ipynb",
-        "notebook_with_out_flake8_tags.ipynb",
-        "notebook_with_out_ipython_magic.ipynb",
-    ]
-    notebook_paths = [
-        os.path.join(TEST_NOTEBOOK_BASE_PATH, notebook) for notebook in notebooks
-    ]
-    with pytest.warns(InvalidNotebookWarning):
-        parser_instance = NotebookParser(notebook_paths)
-    yield parser_instance
-    parser_instance.clean_up()
-
-
 def test_NotebookParser_create_intermediate_py_file_paths(
     notebook_parser: NotebookParser
 ):
