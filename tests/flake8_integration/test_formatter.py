@@ -58,7 +58,7 @@ def test_IpynbFormatter__map_notebook_error(
 
 
 @pytest.mark.parametrize(
-    "format_str,is_notebook,result",
+    "format_str,is_notebook,expected_result_str",
     [
         (
             "default_notebook",
@@ -73,14 +73,17 @@ def test_IpynbFormatter__map_notebook_error(
         (
             "default_notebook",
             False,
-            "{expected_filename}:2:2: AB123 This is just for the coverage",
+            "{expected_filename}:8:2: AB123 This is just for the coverage",
         ),
     ],
 )
 def test_IpynbFormatter__format(
-    notebook_parser: NotebookParser, is_notebook: bool, format_str: str, result: str
+    notebook_parser: NotebookParser,
+    is_notebook: bool,
+    format_str: str,
+    expected_result_str: str,
 ):
-    mocked_option = MockedOption()
+    mocked_option = MockedOption(format_str)
     formatter = IpynbFormatter(mocked_option)
     if is_notebook:
         expected_filename = TEST_NOTEBOOK_PATH.format(1)
@@ -88,11 +91,10 @@ def test_IpynbFormatter__format(
             notebook_parser.intermediate_py_file_paths
         )
     else:
-        expected_filename = os.path.join(
+        filename = expected_filename = os.path.join(
             "tests", "data", "notebooks", "falsy_python_file.py"
         )
-        filename = expected_filename
     mock_error = MockError(filename, 8)
     result = formatter.format(mock_error)
-    expected_result = result.format(expected_filename)
+    expected_result = expected_result_str.format(expected_filename=expected_filename)
     assert result == expected_result
