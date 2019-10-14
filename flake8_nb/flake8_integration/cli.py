@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+
+r"""Module containing the notebook gatherer and hack of flake8.
+This is the main implementation of ``flake8_nb``, it relies on
+overwriting ``flake8`` 's CLI default options, searching and parsing
+``*.ipynb`` files and injecting the parsed files, during the loading
+of the CLI argv and config of ``flake8``.
+"""
+
 import logging
 import os
 
@@ -61,6 +70,12 @@ def get_notebooks_from_args(
 
 
 class Flake8NbApplication(Application):
+    r"""
+    Subclass of ```flake8.main.application.Application``, with
+    overwritten default options and an injection of intermediate parsed
+    ``*.ipynb`` files to be checked.
+    """
+
     def __init__(self, program="flake8_nb", version=__version__):
         super().__init__(program, version)
         self.overwrite_flake8_program_and_version(program, version)
@@ -135,15 +150,33 @@ class Flake8NbApplication(Application):
 
     @staticmethod
     def hack_args(args: List[str]) -> List[str]:
+        r"""
+        Checks the passed args if ``*.ipynb`` can be found and
+        appends intermediate parsed files to the list of files,
+        which should be checked.
+
+        Parameters
+        ----------
+        args : List[str]
+            List of commandline arguments provided to ``flake8_nb``
+
+        Returns
+        -------
+        List[str]
+            The original args + intermediate parsed ``*.ipynb`` files.
+        """
 
         args, nb_list = get_notebooks_from_args(args)
         notebook_parser = NotebookParser(nb_list)
         return args + notebook_parser.intermediate_py_file_paths
 
     def parse_configuration_and_cli(self, argv: Optional[List[str]] = None) -> None:
-        """Parse configuration files and the CLI options.
+        """
+        Parse configuration files and the CLI options.
 
-        :param list argv:
+        Parameters
+        ----------
+        argv: List[str]
             Command-line arguments passed in directly.
         """
         if self.options is None and self.args is None:

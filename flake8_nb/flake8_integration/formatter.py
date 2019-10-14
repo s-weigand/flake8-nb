@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+
+"""Module containing the report formatter.
+This also includes the code to map parsed error back to the
+original notebook and the cell the code in."""
+
 import optparse
 import os
 

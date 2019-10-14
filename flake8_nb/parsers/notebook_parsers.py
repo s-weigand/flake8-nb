@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
-"""Module for parsing whole jupyter notebooks utilizing ``flake8_nb.parser.cell_parsers``."""
+"""Module for parsing whole jupyter notebooks.
+This utilizes ``flake8_nb.parser.cell_parsers``."""
+
 import json
 import os
 from typing import Dict, Iterator, List, Tuple
@@ -92,7 +94,7 @@ def convert_source_line(source_line: str) -> str:
         Valid python code, as string, even if it was a
         jupyter magic line.
     """
-    if source_line.startswith(("!", "?", "%")):
+    if source_line.startswith(("!", "?", "%")) or source_line.endswith(("?")):
         return ipython2python(source_line)
     else:
         return source_line
@@ -341,9 +343,13 @@ class NotebookParser:
     """
 
     original_notebook_paths: List[str] = []
+    """List of paths to the original Notebooks"""
     intermediate_py_file_paths: List[str] = []
+    """List of paths to the parsed Notebooks"""
     input_line_mappings: List[Dict[str, List]] = []
+    """List of input_line_mapping"""
     temp_path = ""
+    """Path of the temp folder the parsed notebooks were saved in"""
 
     def __init__(self, original_notebook_paths: List[str] = None):
         """

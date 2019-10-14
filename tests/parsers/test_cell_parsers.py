@@ -10,10 +10,10 @@ from typing import Dict, List
 from flake8_nb.parsers.cell_parsers import (
     extract_flake8_tags,
     extract_flake8_inline_tags,
+    extract_inline_flake8_noqa,
     flake8_tag_to_rules_dict,
     generate_rules_list,
     get_flake8_rules_dict,
-    get_inline_flake8_noqa,
     InvalidFlake8TagWarning,
     notebook_cell_to_intermediate_dict,
     update_rules_dict,
@@ -167,8 +167,8 @@ def test_flake8_tag_to_rules_dict(
         ("get_ipython().run_cell_magic('bash', '', 'echo test')\n", []),
     ],
 )
-def test_get_inline_flake8_noqa(source_index: str, expected_result: List):
-    assert get_inline_flake8_noqa(source_index) == expected_result
+def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
+    assert extract_inline_flake8_noqa(source_index) == expected_result
 
 
 @pytest.mark.parametrize(
