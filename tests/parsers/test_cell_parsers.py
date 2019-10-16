@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-"""Tests for `flake8_nb` package."""
+from typing import Dict, List
+import warnings
 
 import pytest
-
-from typing import Dict, List
 
 from flake8_nb.parsers.cell_parsers import (
     extract_flake8_tags,
@@ -17,7 +16,6 @@ from flake8_nb.parsers.cell_parsers import (
     notebook_cell_to_intermediate_dict,
     update_rules_dict,
     update_inline_flake8_noqa,
-    warn_wrong_tag_pattern,
 )
 
 
@@ -304,7 +302,7 @@ def test_update_inline_flake8_noqa(
     assert update_inline_flake8_noqa(source_index, rules_list) == expected_result
 
 
-def test_warn_wrong_tag_pattern():
+def test_InvalidFlake8TagWarning():
     with pytest.warns(
         InvalidFlake8TagWarning,
         match=(
@@ -314,31 +312,4 @@ def test_warn_wrong_tag_pattern():
             "you used: 'user-pattern'"
         ),
     ):
-        warn_wrong_tag_pattern("user-pattern")
-
-
-# TODO clean up
-# Test Expression
-
-# Normal flake8
-
-# foo  # noqa: E402, Fasd401
-# foo  # noqa : E402,      Fasd401
-# foo  # noqa
-# foo  # noqa   :
-# foo  # noqa    \n
-# "foo  # noqa : E402, Fasd401"
-# foo  # noqa : E402, Fasd401 some randome stuff
-# get_ipython().run_cell_magic('bash', '', 'echo test')\n
-
-
-# Inline flake8 tags
-
-# foo  # flake8-noqa-cell-E402
-# foo  # flake8-noqa-cell
-# foo  # flake8-noqa-line-1-E402
-# foo  # flake8-noqa-line-1
-# foo  # noqa    \n
-# "foo  # noqa : E402, Fasd401"
-# foo  # noqa : E402, Fasd401 some randome stuff
-# get_ipython().run_cell_magic('bash', '', 'echo test')\n
+        warnings.warn(InvalidFlake8TagWarning("user-pattern"))

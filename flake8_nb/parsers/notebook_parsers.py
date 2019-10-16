@@ -41,7 +41,11 @@ class InvalidNotebookWarning(UserWarning):
     Warning that is given when a jupyter notebook can't be parsed as JSON.
     """
 
-    pass
+    def __init__(self, notebook_path, *args, **kwargs):
+        super().__init__(
+            f"Error parsing notebook at path '{notebook_path}'. "
+            "Make sure this is a valid notebook."
+        )
 
 
 def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
@@ -70,11 +74,7 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
             notebook_cells = json.load(notebook_file)["cells"]
             return notebook_cells
     except json.JSONDecodeError:
-        warnings.warn(
-            f"Error parsing notebook at path '{notebook_path}'. "
-            "Make sure this is a valid notebook.",
-            InvalidNotebookWarning,
-        )
+        warnings.warn(InvalidNotebookWarning(notebook_path))
         return []
 
 

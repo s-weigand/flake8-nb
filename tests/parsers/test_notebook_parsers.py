@@ -2,6 +2,7 @@
 
 import os
 from typing import Dict, List, Tuple
+import warnings
 
 import pytest
 
@@ -210,6 +211,17 @@ def test_read_notebook_to_cells(notebook_name: str, number_of_cells: int):
             assert len(read_notebook_to_cells(notebook_path)) == number_of_cells
     else:
         assert len(read_notebook_to_cells(notebook_path)) == number_of_cells
+
+
+def test_InvalidNotebookWarning():
+    with pytest.warns(
+        InvalidNotebookWarning,
+        match=(
+            "Error parsing notebook at path 'dummy_path'. "
+            "Make sure this is a valid notebook."
+        ),
+    ):
+        warnings.warn(InvalidNotebookWarning("dummy_path"))
 
 
 @pytest.mark.parametrize(

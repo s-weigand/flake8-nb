@@ -41,26 +41,13 @@ class InvalidFlake8TagWarning(UserWarning):
     they have a typo in their tags.
     """
 
-    pass
-
-
-def warn_wrong_tag_pattern(flake8_tag: str):
-    """
-    Convenience function to throw ``InvalidFlake8TagWarning`` if
-    ``flake8_tag`` doesn't match ``FLAKE8_TAG_PATTERN``.
-
-    Parameters
-    ----------
-    flake8_tag : str
-        Cell tag string that started with 'flake8-noqa-'.
-    """
-    warnings.warn(
-        "flake8-noqa-line/cell-tags should be of form "
-        "'flake8-noqa-cell-<rule1>-<rule2>'|'flake8-noqa-cell'/"
-        "'flake8-noqa-line-<line_nr>-<rule1>-<rule2>'|'flake8-noqa-line-<rule1>', "
-        f"you used: '{flake8_tag}'",
-        InvalidFlake8TagWarning,
-    )
+    def __init__(self, flake8_tag, *args, **kwargs):
+        super().__init__(
+            "flake8-noqa-line/cell-tags should be of form "
+            "'flake8-noqa-cell-<rule1>-<rule2>'|'flake8-noqa-cell'/"
+            "'flake8-noqa-line-<line_nr>-<rule1>-<rule2>'|'flake8-noqa-line-<rule1>', "
+            f"you used: '{flake8_tag}'"
+        )
 
 
 def extract_flake8_tags(notebook_cell: Dict) -> List[str]:
@@ -174,7 +161,7 @@ def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
         elif match.group("ignore_line_nr"):  # pragma: no branch
             line_nr = str(match.group("ignore_line_nr"))
             return {line_nr: ["noqa"]}
-    warn_wrong_tag_pattern(flake8_tag)
+    warnings.warn(InvalidFlake8TagWarning(flake8_tag))
     return {}
 
 
