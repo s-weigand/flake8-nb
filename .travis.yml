@@ -73,6 +73,14 @@ jobs:
       script:
         - appveyor-artifacts -m download
 
+    - stage: deploy
+      name: trigger binder build
+      if: branch = master AND type != pull_request
+      script:
+        # Use Binder build API to trigger repo2docker to build image on GKE and OVH Binder Federation clusters
+        - bash binder/trigger_binder.sh https://gke.mybinder.org/build/gh/s-weigand/flake8-nb/master
+        - bash binder/trigger_binder.sh https://ovh.mybinder.org/build/gh/s-weigand/flake8-nb/master
+
   allow_failures:
     #      this tests are allowed to fail since they rely external resources
     - name: docs-links

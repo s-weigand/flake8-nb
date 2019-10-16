@@ -1,0 +1,12 @@
+channels:
+  - conda-forge
+dependencies:
+  # Jupyter
+  - jupyterlab=1.0
+  - nodejs=11
+  - widgetsnbextension=3.5
+  # Python Kernel
+  - python=3.7
+  - pip
+    - pip:
+      - git+https://github.com/s-weigand/flake8-nb.git

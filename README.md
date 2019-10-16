@@ -9,6 +9,7 @@
 [![Updates](https://pyup.io/repos/github/s-weigand/flake8-nb/shield.svg)](https://pyup.io/repos/github/s-weigand/flake8-nb/)
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 [![Code style Python: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/s-weigand/flake8-nb.git/master?urlpath=lab%2Ftree%2Ftests%2Fdata%2Fnotebooks)
 
 `flake8` based checking for jupyter notebooks.
 Basically this is a hack on the `flake8`'s `Application` class, which adds parsing and a cell based formatter for `*.ipynb` files.
