@@ -103,5 +103,5 @@ deploy:
     secure: PLEASE_REPLACE_ME
   on:
     tags: true
-    repo: s-weigand/flake8_nb
+    repo: s-weigand/flake8-nb
     python: 3.7
