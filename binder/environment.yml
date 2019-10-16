@@ -8,5 +8,5 @@ dependencies:
   # Python Kernel
   - python=3.7
   - pip
-    - pip:
+  - pip:
       - git+https://github.com/s-weigand/flake8-nb.git
