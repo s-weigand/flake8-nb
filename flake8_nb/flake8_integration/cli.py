@@ -17,7 +17,7 @@ from flake8.options import aggregator
 from flake8.main.application import Application
 from flake8.utils import matches_filename
 
-from .. import __version__
+from .. import __version__, FLAKE8_VERSION_TUPLE
 
 from ..parsers.notebook_parsers import NotebookParser
 
@@ -126,7 +126,16 @@ class Flake8NbApplication(Application):
                 self.option_manager.options.pop(option_index)
                 is_option = True
         if is_option:
-            self.option_manager.parser.remove_option(long_option_name)
+            parser = self.option_manager.parser
+            if FLAKE8_VERSION_TUPLE > (3, 7, 8):
+                for index, action in enumerate(parser._actions):
+                    if long_option_name in action.option_strings:
+                        parser._handle_conflict_resolve(
+                            None, [(long_option_name, parser._actions[index])]
+                        )
+                        break
+            else:
+                parser.remove_option(long_option_name)
         self.option_manager.add_option(long_option_name, *args, **kwargs)
 
     def hack_options(self) -> None:
@@ -199,7 +208,7 @@ class Flake8NbApplication(Application):
         self.args = self.hack_args(self.args)
 
         self.running_against_diff = self.options.diff
-        if self.running_against_diff:
+        if self.running_against_diff:  # pragma: no cover
             self.parsed_diff = utils.parse_unified_diff()
             if not self.parsed_diff:
                 self.exit()

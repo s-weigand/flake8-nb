@@ -34,6 +34,16 @@ jobs:
       python: "3.7"
       name: linux-py37
 
+    - python: 3.6
+      name: flake8-nightly
+      env: TOXENV=flake8-nightly
+      notifications:
+        email:
+          if: branch = master
+          recipients:
+            - s.weigand.phy@gmail.com
+          on_failure: always # default: always
+
     - language: generic
       python: 3.6
       name: osx-py36
@@ -93,6 +103,7 @@ jobs:
     #      this tests are allowed to fail since they rely external resources
     - name: docs-links
     - name: win-coverage
+    - name: flake8-nightly
 
 install:
   - python -m pip install -U pip>=8.1.2
