@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from .conftest import TempIpynbArgs
+import os
 
+import pytest
 
 from flake8_nb import __version__
 from flake8_nb.flake8_integration.cli import (
     get_notebooks_from_args,
     Flake8NbApplication,
 )
+from flake8_nb.parsers.notebook_parsers import NotebookParser, InvalidNotebookWarning
+
+from .conftest import TempIpynbArgs
 
 
 def test_get_notebooks_from_args(temp_ipynb_args: TempIpynbArgs):
@@ -37,3 +41,40 @@ def test_Flake8NbApplication__option_defaults():
     assert option_dict["filename"].default == "*.py,*.ipynb_parsed"
     assert option_dict["exclude"].default.endswith(",*.ipynb_checkpoints/*")
     assert option_dict["keep_parsed_notebooks"].default is False
+
+
+@pytest.mark.filterwarnings(InvalidNotebookWarning)
+def test_Flake8NbApplication__hack_args(temp_ipynb_args: TempIpynbArgs):
+    orig_args, (expected_args, _) = temp_ipynb_args.get_args_and_result()
+    result = Flake8NbApplication.hack_args(orig_args)
+    expected_parsed_nb_list = NotebookParser.intermediate_py_file_paths
+
+    assert result == expected_args + expected_parsed_nb_list
+
+
+@pytest.mark.filterwarnings(InvalidNotebookWarning)
+def test_Flake8NbApplication__parse_configuration_and_cli():
+    orig_args = [os.path.join("tests", "data", "notebooks")]
+    app = Flake8NbApplication()
+    # parse_configuration_and_cli is called by initialize
+    app.initialize(orig_args)
+    expected_parsed_nb_list = NotebookParser.intermediate_py_file_paths
+
+    assert app.args == orig_args + expected_parsed_nb_list
+
+
+@pytest.mark.parametrize("keep_parsed_notebooks", [False, True])
+def test_Flake8NbApplication__exit(keep_parsed_notebooks: bool):
+    with pytest.warns(InvalidNotebookWarning):
+        orig_args = [os.path.join("tests", "data", "notebooks")]
+        app = Flake8NbApplication()
+        app.set_flake8_option("--keep-parsed-notebooks", default=keep_parsed_notebooks)
+        app.initialize(orig_args)
+        temp_path = NotebookParser.temp_path
+        try:
+            app.exit()
+        except SystemExit:
+            pass
+
+    assert os.path.exists(temp_path) == keep_parsed_notebooks
+    NotebookParser.clean_up()

@@ -211,8 +211,7 @@ class Flake8NbApplication(Application):
             self.option_manager, self.options, self.args
         )
 
-    def exit(self):
-        # type: () -> None
+    def exit(self) -> None:
         """Handle finalization and exiting the program.
 
         This should be the last thing called on the application instance. It
@@ -220,7 +219,7 @@ class Flake8NbApplication(Application):
         """
         if self.options.keep_parsed_notebooks:
             temp_path = NotebookParser.temp_path
-            print(f"The parsed notebooks, are still resent at:\n\t{temp_path}")
+            print(f"The parsed notebooks, are still present at:\n\t{temp_path}")
         else:
             NotebookParser.clean_up()
         super().exit()
