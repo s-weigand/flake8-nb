@@ -48,9 +48,7 @@ class IpynbFormatter(Default):
             in the terminal.
         """
         filename = error.filename
-        if filename.lower().endswith(".py"):
-            return super().format(error)
-        elif filename.lower().endswith(".ipynb_parsed"):
+        if filename.lower().endswith(".ipynb_parsed"):
             map_result = self.map_notebook_error(error)
             if map_result:
                 filename, line_number = self.map_notebook_error(error)
@@ -62,6 +60,8 @@ class IpynbFormatter(Default):
                     "col": error.column_number,
                 }
 
+            return super().format(error)
+        else:
             return super().format(error)
 
     def map_notebook_error(self, error: Violation) -> Tuple[str, int]:
@@ -88,12 +88,9 @@ class IpynbFormatter(Default):
         intermediate_line_number = error.line_number
         mappings = NotebookParser.get_mappings()
         for original_notebook, intermediate_py, input_line_mapping in mappings:
-            # print("#### map_notebook_error:")
-            # print(original_notebook, intermediate_py, input_line_mapping)
             if os.path.samefile(intermediate_py, intermediate_filename):
                 input_cell_name, input_cell_line_number = map_intermediate_to_input(
                     input_line_mapping, intermediate_line_number
                 )
                 filename = f"{original_notebook}#{input_cell_name}"
                 return filename, input_cell_line_number
-        return intermediate_filename, intermediate_line_number

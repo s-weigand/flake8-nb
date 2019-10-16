@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from typing import List
 
 import pytest
 
@@ -58,41 +59,49 @@ def test_IpynbFormatter__map_notebook_error(
 
 
 @pytest.mark.parametrize(
-    "format_str,is_notebook,expected_result_str",
+    "format_str,file_path_list,expected_result_str",
     [
         (
             "default_notebook",
-            True,
+            [],
             "{expected_filename}:2:2: AB123 This is just for the coverage",
         ),
         (
             "%(path)s:%(row)d: %(text)s",
-            True,
+            [],
             "{expected_filename}:2: This is just for the coverage",
         ),
         (
             "default_notebook",
-            False,
+            ["tests", "data", "notebooks", "falsy_python_file.py"],
+            "{expected_filename}:8:2: AB123 This is just for the coverage",
+        ),
+        (
+            "default_notebook",
+            [
+                "tests",
+                "data",
+                "intermediate_py_files",
+                "notebook_with_flake8_tags.ipynb_parsed",
+            ],
             "{expected_filename}:8:2: AB123 This is just for the coverage",
         ),
     ],
 )
 def test_IpynbFormatter__format(
     notebook_parser: NotebookParser,
-    is_notebook: bool,
+    file_path_list: List[str],
     format_str: str,
     expected_result_str: str,
 ):
     mocked_option = MockedOption(format_str)
     formatter = IpynbFormatter(mocked_option)
-    if is_notebook:
+    if file_path_list:
+        filename = expected_filename = os.path.join(*file_path_list)
+    else:
         expected_filename = TEST_NOTEBOOK_PATH.format(1)
         filename = get_test_intermediate_path(
             notebook_parser.intermediate_py_file_paths
-        )
-    else:
-        filename = expected_filename = os.path.join(
-            "tests", "data", "notebooks", "falsy_python_file.py"
         )
     mock_error = MockError(filename, 8)
     result = formatter.format(mock_error)
