@@ -16,6 +16,9 @@ __all__ = "IpynbFormatter"
 
 FLAKE8_VERSION_TUPLE = tuple(map(int, flake8.__version__.split(".")))
 
+# this is yet another hack, since the flake8 master still has
+# the same version string as the latest PyPi release
 tox_env_name = os.environ.get("TOX_ENV_NAME", None)
 if tox_env_name and tox_env_name == "flake8-nightly":
+    raise Exception("test travis mail notification on failing nightly")
     FLAKE8_VERSION_TUPLE = (3, 8, 0)
