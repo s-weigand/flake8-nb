@@ -387,7 +387,7 @@ class NotebookParser:
             NotebookParser.input_line_mappings = []
             NotebookParser.intermediate_py_file_paths = []
 
-            NotebookParser.temp_path = tempfile.mkdtemp()
+            NotebookParser.temp_path = tempfile.mkdtemp(prefix="flake8_nb_")
             index_orig_list = list(enumerate(self.original_notebook_paths))[::-1]
             for index, original_notebook_path in index_orig_list:
                 intermediate_py_file_path, input_line_mapping = create_intermediate_py_file(

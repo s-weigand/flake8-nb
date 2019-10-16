@@ -78,10 +78,17 @@ class Flake8NbApplication(Application):
 
     def __init__(self, program="flake8_nb", version=__version__):
         super().__init__(program, version)
-        self.overwrite_flake8_program_and_version(program, version)
+        self.hack_flake8_program_and_version(program, version)
         self.hack_options()
+        self.set_flake8_option(
+            "--keep-parsed-notebooks",
+            default=False,
+            action="store_true",
+            parse_from_config=True,
+            help="Keep the temporary parsed notebooks, i.e. for debugging.",
+        )
 
-    def overwrite_flake8_program_and_version(self, program: str, version: str) -> None:
+    def hack_flake8_program_and_version(self, program: str, version: str) -> None:
         """
         Another hack to overwrite the program name and version of flake8,
         which is hard coded at creation of `self.option_manager`.
@@ -102,9 +109,11 @@ class Flake8NbApplication(Application):
         self.option_manager.program_name = program
         self.option_manager.version = version
 
-    def overwrite_flake8_option(self, long_option_name: str, *args, **kwargs) -> None:
+    def set_flake8_option(self, long_option_name: str, *args, **kwargs) -> None:
         """
-        First deletes and than adds an option to flake8's cli options
+        First deletes and than readds an option to `flake8`'s cli options, if it was present.
+        If the option wasn't present, it just adds it.
+
 
         Parameters
         ----------
@@ -118,17 +127,20 @@ class Flake8NbApplication(Application):
                 is_option = True
         if is_option:
             self.option_manager.parser.remove_option(long_option_name)
-            self.option_manager.add_option(long_option_name, *args, **kwargs)
+        self.option_manager.add_option(long_option_name, *args, **kwargs)
 
     def hack_options(self) -> None:
-        self.overwrite_flake8_option(
+        """
+        Overwrites ``flake8``'s default options, with ``flake8_nb`` defaults.
+        """
+        self.set_flake8_option(
             "--format",
             metavar="format",
             default="default_notebook",
             parse_from_config=True,
             help="Format errors according to the chosen formatter.",
         )
-        self.overwrite_flake8_option(
+        self.set_flake8_option(
             "--filename",
             metavar="patterns",
             default="*.py,*.ipynb_parsed",
@@ -137,7 +149,7 @@ class Flake8NbApplication(Application):
             help="Only check for filenames matching the patterns in this comma-"
             "separated list. (Default: %default)",
         )
-        self.overwrite_flake8_option(
+        self.set_flake8_option(
             "--exclude",
             metavar="patterns",
             default=f'{",".join(defaults.EXCLUDE)},*.ipynb_checkpoints/*',
@@ -206,5 +218,9 @@ class Flake8NbApplication(Application):
         This should be the last thing called on the application instance. It
         will check certain options and exit appropriately.
         """
-        NotebookParser.clean_up()
+        if self.options.keep_parsed_notebooks:
+            temp_path = NotebookParser.temp_path
+            print(f"The parsed notebooks, are still resent at:\n\t{temp_path}")
+        else:
+            NotebookParser.clean_up()
         super().exit()
