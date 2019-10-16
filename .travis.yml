@@ -81,6 +81,10 @@ jobs:
         - bash binder/trigger_binder.sh https://gke.mybinder.org/build/gh/s-weigand/flake8-nb/master
         - bash binder/trigger_binder.sh https://ovh.mybinder.org/build/gh/s-weigand/flake8-nb/master
 
+    - stage: deploy
+      name: PiPy-release
+      if: branch = master AND type != pull_request AND tag != ""
+
   allow_failures:
     #      this tests are allowed to fail since they rely external resources
     - name: docs-links
@@ -113,3 +117,4 @@ deploy:
     tags: true
     repo: s-weigand/flake8-nb
     python: 3.7
+    name: PiPy-release
