@@ -83,7 +83,11 @@ jobs:
 
     - stage: deploy
       name: PiPy-release
-      if: branch = master AND type != pull_request AND tag != ""
+      if: branch = master AND type == push AND tag IS present
+      install: echo "skip install"
+      before_script: echo "skip before_script"
+      script: echo "skip install"
+      after_success: echo "skip after_success"
 
   allow_failures:
     #      this tests are allowed to fail since they rely external resources
@@ -116,5 +120,4 @@ deploy:
   on:
     tags: true
     repo: s-weigand/flake8-nb
-    python: 3.7
-    name: PiPy-release
+    condition: $TRAVIS_JOB_NAME =~ ^PiPy-release$
