@@ -18,13 +18,6 @@ Basically this is a hack on the `flake8`'s `Application` class, which adds parsi
 
 - TODO
 
-## Credits
-
-This package was created with
-[Cookiecutter](https://github.com/cookiecutter/cookiecutter) and the
-[audreyr/cookiecutter-pypackage](https://github.com/audreyr/cookiecutter-pypackage)
-project template.
-
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
