@@ -22,4 +22,4 @@ def notebook_parser() -> NotebookParser:
     with pytest.warns(InvalidNotebookWarning):
         parser_instance = NotebookParser(notebook_paths)
     yield parser_instance
-    # parser_instance.clean_up()
+    parser_instance.clean_up()
