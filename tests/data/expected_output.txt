@@ -1,0 +1,9 @@
+falsy_python_file.py:1:1: F401 'foo' imported but unused
+notebook_with_flake8_tags.ipynb#In[1]:2:5: E231 missing whitespace after ':'
+notebook_with_flake8_tags.ipynb#In[2]:2:5: E231 missing whitespace after ':'
+notebook_with_flake8_tags.ipynb#In[4]:3:5: E231 missing whitespace after ':'
+notebook_with_flake8_tags.ipynb#In[5]:3:5: E231 missing whitespace after ':'
+notebook_with_flake8_tags.ipynb#In[7]:2:5: E231 missing whitespace after ':'
+notebook_with_out_flake8_tags.ipynb#In[1]:1:1: F401 'not_a_package' imported but unused
+notebook_with_out_flake8_tags.ipynb#In[2]:1:5: E231 missing whitespace after ':'
+notebook_with_out_ipython_magic.ipynb#In[1]:1:4: E222 multiple spaces after operator

@@ -9,6 +9,7 @@ of the CLI argv and config of ``flake8``.
 
 import logging
 import os
+import sys
 
 from typing import List, Optional, Tuple
 
@@ -228,7 +229,10 @@ class Flake8NbApplication(Application):
         """
         if self.options.keep_parsed_notebooks:
             temp_path = NotebookParser.temp_path
-            print(f"The parsed notebooks, are still present at:\n\t{temp_path}")
+            print(
+                f"The parsed notebooks, are still present at:\n\t{temp_path}",
+                file=sys.stderr,
+            )
         else:
             NotebookParser.clean_up()
         super().exit()
