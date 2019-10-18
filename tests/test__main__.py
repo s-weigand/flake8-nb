@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import re
-import subprocess
 
 import pytest
 
