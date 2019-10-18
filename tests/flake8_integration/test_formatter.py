@@ -24,9 +24,9 @@ def get_test_intermediate_path(intermediate_names):
 
 
 class MockedOption:
-    def __init__(self, format="default_notebook"):
+    def __init__(self, formatter="default_notebook"):
         self.output_file = ""
-        self.format = format
+        self.format = formatter
 
 
 class MockError:

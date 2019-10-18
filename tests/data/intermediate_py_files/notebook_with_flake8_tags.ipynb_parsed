@@ -25,9 +25,9 @@ import not_a_package  # noqa: F401
 # In[4]
 
 
-# flake8-noqa-cell-F401  # noqa: F401
-import not_a_package  # noqa: F401
-{"4":1}  # noqa: F401
+# flake8-noqa-cell-F401-F811  # noqa: F401, F811
+import not_a_package  # noqa: F401, F811
+{"4":1}  # noqa: F401, F811
 
 
 # In[5]
@@ -47,6 +47,13 @@ import not_a_package  # noqa: F401
 
 
 # In[7]
+
+
+{"5":1}  # noqa: E231
+{"5":2}
+
+
+# In[8]
 
 
 get_ipython().system('flake8_nb notebook_with_flake8_tags.ipynb')
