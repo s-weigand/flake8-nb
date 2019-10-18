@@ -72,7 +72,7 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
         with open(notebook_path) as notebook_file:
             notebook_cells = json.load(notebook_file)["cells"]
             return notebook_cells
-    except json.JSONDecodeError:
+    except (json.JSONDecodeError, KeyError):
         warnings.warn(InvalidNotebookWarning(notebook_path))
         return []
 
