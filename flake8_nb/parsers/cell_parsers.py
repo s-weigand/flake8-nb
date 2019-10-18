@@ -5,10 +5,8 @@ This also inclues parsers for the cell and inline tags.
 It heavily utilizes the mutability of lists."""
 
 import re
-
-from typing import Dict, List
 import warnings
-
+from typing import Dict, List
 
 FLAKE8_TAG_PATTERN = re.compile(
     r"^flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)"

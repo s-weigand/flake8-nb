@@ -10,18 +10,15 @@ of the CLI argv and config of ``flake8``.
 import logging
 import os
 import sys
-
 from typing import List, Optional, Tuple
 
-from flake8 import utils, defaults
-from flake8.options import aggregator
+from flake8 import defaults, utils
 from flake8.main.application import Application
+from flake8.options import aggregator
 from flake8.utils import matches_filename
 
-from .. import __version__, FLAKE8_VERSION_TUPLE
-
+from .. import FLAKE8_VERSION_TUPLE, __version__
 from ..parsers.notebook_parsers import NotebookParser
-
 
 LOG = logging.getLogger(__name__)
 

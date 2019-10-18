@@ -1,27 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Dict, List, Tuple
 import warnings
+from typing import Dict, List, Tuple
 
 import pytest
 
 from flake8_nb.parsers.notebook_parsers import (
+    InvalidNotebookWarning,
+    NotebookParser,
     create_intermediate_py_file,
     create_temp_path,
     get_notebook_code_cells,
     get_rel_paths,
     ignore_cell,
     is_parent_dir,
-    InvalidNotebookWarning,
     map_intermediate_to_input,
     read_notebook_to_cells,
-    NotebookParser,
 )
 
-TEST_NOTEBOOK_BASE_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "data", "notebooks")
-)
+from .. import TEST_NOTEBOOK_BASE_PATH
 
 INTERMEDIATE_PY_FILE_BASE_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "data", "intermediate_py_files")

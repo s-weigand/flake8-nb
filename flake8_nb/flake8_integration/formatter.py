@@ -6,7 +6,6 @@ original notebook and the cell the code in."""
 
 import optparse
 import os
-
 from typing import Tuple
 
 from flake8.formatting.default import Default

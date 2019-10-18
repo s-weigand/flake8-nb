@@ -8,7 +8,6 @@ import pytest
 from flake8_nb.flake8_integration.formatter import IpynbFormatter
 from flake8_nb.parsers.notebook_parsers import NotebookParser
 
-
 TEST_NOTEBOOK_PATH = os.path.join(
     "tests", "data", "notebooks", "notebook_with_flake8_tags.ipynb#In[{}]"
 )

@@ -5,11 +5,10 @@ This utilizes ``flake8_nb.parser.cell_parsers``."""
 
 import json
 import os
-from typing import Dict, Iterator, List, Tuple
 import warnings
+from typing import Dict, Iterator, List, Tuple
 
 from nbconvert.filters import ipython2python
-
 
 from .cell_parsers import notebook_cell_to_intermediate_dict
 

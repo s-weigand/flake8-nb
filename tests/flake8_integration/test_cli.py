@@ -6,10 +6,10 @@ import pytest
 
 from flake8_nb import __version__
 from flake8_nb.flake8_integration.cli import (
-    get_notebooks_from_args,
     Flake8NbApplication,
+    get_notebooks_from_args,
 )
-from flake8_nb.parsers.notebook_parsers import NotebookParser, InvalidNotebookWarning
+from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning, NotebookParser
 
 from .conftest import TempIpynbArgs
 

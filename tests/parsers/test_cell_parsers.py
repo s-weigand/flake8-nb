@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List
 import warnings
+from typing import Dict, List
 
 import pytest
 
 from flake8_nb.parsers.cell_parsers import (
-    extract_flake8_tags,
+    InvalidFlake8TagWarning,
     extract_flake8_inline_tags,
+    extract_flake8_tags,
     extract_inline_flake8_noqa,
     flake8_tag_to_rules_dict,
     generate_rules_list,
     get_flake8_rules_dict,
-    InvalidFlake8TagWarning,
     notebook_cell_to_intermediate_dict,
-    update_rules_dict,
     update_inline_flake8_noqa,
+    update_rules_dict,
 )
 
 

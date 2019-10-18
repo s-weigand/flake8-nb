@@ -9,7 +9,7 @@ import pytest
 from flake8_nb.__main__ import main
 from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning, NotebookParser
 
-from .parsers.test_notebook_parsers import TEST_NOTEBOOK_BASE_PATH
+from . import TEST_NOTEBOOK_BASE_PATH
 
 
 @pytest.mark.parametrize("keep_intermediate", [True, False])
