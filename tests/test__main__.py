@@ -29,6 +29,7 @@ def test_run_main(capsys, keep_intermediate: bool):
     )
     with open(expected_result_path, "r") as result_file:
         expected_result_list = result_file.readlines()
+    assert len(expected_result_list) == len(result_list)
     for expected_result in expected_result_list:
         assert any(
             [result.endswith(expected_result.rstrip("\n")) for result in result_list]
