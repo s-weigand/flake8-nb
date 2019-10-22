@@ -8,6 +8,7 @@ Welcome to flake8-nb's documentation!
    readme
    installation
    usage
+   examples
    api_docs
    contributing
    authors

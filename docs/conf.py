@@ -34,12 +34,14 @@ import flake8_nb
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
+    "nbsphinx",
+    "nbsphinx_link",
+    "recommonmark",
+    "sphinx_copybutton",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
-    "recommonmark",
-    "sphinx_copybutton",
 ]
 
 autoclass_content = "both"
@@ -51,6 +53,12 @@ numpydoc_class_members_toctree = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
+
+# List of arguments to be passed to the kernel that executes the notebooks:
+nbsphinx_execute_arguments = [
+    "--InlineBackend.figure_formats={'svg', 'pdf'}",
+    "--InlineBackend.rc={'figure.dpi': 96}",
+]
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -85,7 +93,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "**.ipynb_checkpoints"]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -94,6 +102,34 @@ pygments_style = "sphinx"
 todo_include_todos = False
 
 
+# This is processed by Jinja2 and inserted before each notebook
+nbsphinx_prolog = r"""
+{% set docname = env.metadata[env.docname]['nbsphinx-link-target'][3:] %}
+{% set binder_urls = 'lab/tree/' + env.metadata[env.docname]['nbsphinx-link-target'][3:] %}
+.. only:: html
+
+    .. role:: raw-html(raw)
+        :format: html
+
+    .. nbinfo::
+
+        This page was generated from `{{ docname }}`__.
+        Interactive online version:
+        :raw-html:`<a href="https://mybinder.org/v2/gh/s-weigand/flake8-nb/master?urlpath={{ binder_urls | replace('/','%2F') }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
+
+    __ https://github.com/s-weigand/flake8-nb/blob/master/{{ docname | urlencode }}
+
+
+"""
+
+# This is processed by Jinja2 and inserted after each notebook
+nbsphinx_epilog = r"""
+{% set docname = env.metadata[env.docname]['nbsphinx-link-target'][3:] %}
+.. raw:: latex
+    \nbsphinxstopnotebook{\scriptsize\noindent\strut
+    \textcolor{gray}{\dotfill\ \sphinxcode{\sphinxupquote{\strut
+    {{ docname | escape_latex }}}} ends here.}}
+"""
 # -- Options for HTML output -------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
