@@ -53,10 +53,10 @@ Per cell/line configuration
 There are multiple ways to fine grade configure ``flake8_nb``
 on a line or cell basis.
 
-flake8 ``noqa``
-^^^^^^^^^^^^^^^
+flake8 ``noqa`` comments
+^^^^^^^^^^^^^^^^^^^^^^^^
 The most intuitive way for experienced ``flake8`` users is
-to utilize the known `flake8 noqa`_ comment on line, to ignore specific
+to utilize the known `flake8 noqa`_ comment on a line, to ignore specific
 or all errors, ``flake8`` would report on that given line.
 
 .. note::
@@ -67,13 +67,51 @@ or all errors, ``flake8`` would report on that given line.
 
 Cell tags
 ^^^^^^^^^
+Cell tags are meta information, which can be added to cells,
+to augment their behavior.
+Depending on the editor you use for the notebook, they aren't
+directly visible, which is a nice way to hide certain internals
+which aren't important for the user/reader.
+For example if write a book like notebook and want to demonstrate
+some bad code examples an still pass your ``flake8_nb`` tests you
+can use ``flake8-noqa-tags``.
+Or if you want to demonstrate a raised exception and still want
+then whole notebook to be executed when you run all cells, you
+can use the ``raises-exception`` tag.
+
+The patterns for `flake8-noqa-tags` are the following:
+
+* ``flake8-noqa-cell``
+    ignores all reports from a cell
+
+* ``flake8-noqa-cell-<rule1>-<rule2>``
+    ignores given rules for the cell
+    i.e. ``flake8-noqa-cell-F401-F811``
+
+* ``flake8-noqa-line-<line_nr>``
+    ignores all reports from a given line in a cell,
+    i.e. ``flake8-noqa-line-1``
+
+* ``flake8-noqa-line-<line_nr>-<rule1>-<rule2>``
+    ignores given rules from a given line for the cell
+    i.e. ``flake8-noqa-line-1-F401-F811``
 
 
 Inline cell tags
 ^^^^^^^^^^^^^^^^
+If you want your users/reader to directly see which ``flake8`` rules
+are ignored, you can also use the ``flake8-noqa-tag`` pattern as
+comment in a cell.
+
+
+.. note::
+
+    If you use jupyter magic to run code other than Python (i.e. ``%%bash``)
+    you should ignore the whole cell with ``flake8-noqa-cell``.
 
 
 .. _`flake8 invocation`: http://flake8.pycqa.org/en/latest/user/invocation.html
 .. _`flake8 configuration`: http://flake8.pycqa.org/en/latest/user/configuration.html
 .. _`flake8 documentation`: http://flake8.pycqa.org/en/latest/index.html
 .. _`flake8 noqa`: http://flake8.pycqa.org/en/latest/user/violations.html#in-line-ignoring-errors
+.. _`jupyterlab-celltags`: https://github.com/jupyterlab/jupyterlab-celltags
