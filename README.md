@@ -1,5 +1,7 @@
 # flake8-nb
 
+[![](https://img.shields.io/pypi/v/flake8_nb.svg)](https://pypi.org/project/flake8-nb/)
+[![](https://img.shields.io/pypi/pyversions/flake8_nb.svg)](https://pypi.org/project/flake8-nb/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 [![Test Status Linux and OsX](https://api.travis-ci.org/s-weigand/flake8-nb.svg?branch=master)](https://travis-ci.org/s-weigand/flake8-nb)
