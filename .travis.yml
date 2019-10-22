@@ -113,11 +113,21 @@ jobs:
 
     - stage: deploy
       name: PiPy-release
-      if: branch = master AND type == push AND tag IS present
+      if: type == push AND tag IS present
       install: echo "skip install"
       before_script: echo "skip before_script"
       script: echo "skip install"
       after_success: echo "skip after_success"
+      deploy:
+        provider: pypi
+        distributions: sdist bdist_wheel
+        user: s-weigand
+        password:
+          secure: I6VwUxVLsrOcFV8ubAK70+G03S3bGUqBN0TXYlkTctTmPZ6x4x1G7pHIj0B1HEZ348m+ZNCDpq6KI4MYe9O5SfdjE1XSyRhhqS+FjdVc2fPbZpw6I7fSyAOsFopRmpxLEh0z8JqQnRnw/XtDq3MRKsSBIcWQcRMF92QMYgsVrW0KCm21LYD+w4P7nAFce4Hgv93vd2Wl7OVWxxIHSL1YbSb0f03A9pRDZgpk1M3A4tjoREi3NUd5nRspvEjmjynPXtX0NBEf4521y9NgV+L0cDQZXx/CaOdr4sUcBPIqDXQn7Rd6Z2K8aSDmlcW2b1YExEozn4wVZMHdKgstGigp2USKEwTlDXiiFSCgL4XcSE3HFzqqCdD6G/OXIHq2gv/wkuOwgGdjtMq9+8m49ePslKKPMmGKlZhvFOZOcUInuCeh5mGQ43ImN1mgFyImnEvZk42tochXASobj5fhgyRKUna+hHsCsmse/4mBBprQMYKrRK6Z5L8yAb3brLPzCJv6bgzCOVqC8Aqy/PrgqfCmUz1DjJjmJQP+kI/hONYJ6avPRl6zD75UHWCeV8+sPcNGHQ+7j5+olazXZMdraUdT3f8Kg9fnEIbrJzkwB3/0ZXtDDZnai54//ZeR0aTlccvJuEBf7bJKLSSa4D7/gGvoVfB6dCxJcqjQ2QpWTDxUo0U=
+        on:
+          tags: true
+          branch: master
+          repo: s-weigand/flake8-nb
 
   allow_failures:
     #      this tests are allowed to fail since they rely external resources
@@ -136,18 +146,3 @@ script: tox
 after_success:
   - coveralls
   - coverage erase
-
-# Assuming you have installed the travis-ci CLI tool, after you
-# create the Github repo and add it to Travis, run the
-# following command to finish PyPI deployment setup:
-# $ travis encrypt --add deploy.password
-deploy:
-  provider: pypi
-  distributions: sdist bdist_wheel
-  user: s-weigand
-  password:
-    secure: pCTYz4edHigG+t59il5MY8NwDaHiIjdMovhKkWmYP5fZuYGLmvfE4/14WxXz8pOa7poNQCi6kv6M2E7O6n3J+hGUaiMbXBen7hnGgwnuikiSArE7lHoTJKO3UwcTuDUswgooh8ab2ZIs0AZKRf2Bi0AR73dHs2FTD2h0x4XYuXTlJLbJpSYx4fOijVgzV77lpbuVj4nJd/UtJ1NwajRSDW2Lh9rOplMMIo0EGgCDzy/aolXhumGlnXcKpkfBTR7upJbNJ0Dp2r1Da51NnxB6oH4y/fPy4UWPMQjlDIzCCC0QFqP1QMFZjUX2B3cbu4KeiWZaYd2ii3ITj2+3X+OU2gBYq6TfTl6BINoXo+KcoLGMXPCxZVNrDPODxqq3VnBTmwdoKfaqmpRpQMVBLxuYrmxtDpRqEf7tNUcSTbrE61vdY1wPK1vYL9c417OAvkuyhSNDGp4ysNQxSKMHIWV29tiQ7inOVrTqBRSCpxUh8eBJDUqfI993+jxXcSV9sUDxVrivpSizqBd4UI3OdJSMJ7rdEUgqKrg9L/5dxtjo7NX8HxBjWTboXzROrcZEGQCjBJgzZXlB0Y+fh78w5sIQzXAD3/wIOSVvpxi0mQ3uGy14pN+URVLXRO7LiWCcWk7jozEG3F2RAU/whGbteLgbEpGuvVqYWKimbHD6dZA0qO4=
-  on:
-    tags: true
-    repo: s-weigand/flake8-nb
-    condition: $TRAVIS_JOB_NAME =~ ^PiPy-release$

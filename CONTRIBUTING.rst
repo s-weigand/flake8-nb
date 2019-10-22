@@ -65,11 +65,12 @@ Ready to contribute? Here's how to set up `flake8_nb` for local development.
     $ git clone git@github.com:your_name_here/flake8_nb.git
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed,
-    this is how you set up your fork for local development::
+   this is how you set up your fork for local development::
 
     $ mkvirtualenv flake8_nb
     $ cd flake8_nb/
-    $ python setup.py develop
+    $ pip install -r requirements_dev.txt
+    $ pip install -e .
 
 4. Create a branch for local development::
 
@@ -80,8 +81,6 @@ Ready to contribute? Here's how to set up `flake8_nb` for local development.
 5. When you're done making changes, check that your changes pass flake8 and the
    tests, including testing other Python versions with tox::
 
-    $ flake8 flake8_nb tests
-    $ python setup.py test or pytest
     $ tox
 
    To get flake8 and tox, just pip install them into your virtualenv.
@@ -104,7 +103,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 3.6 and 3.7, and for PyPy. Check
-   https://travis-ci.org/s-weigand/flake8_nb/pull_requests
+   https://travis-ci.org/s-weigand/flake8-nb/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
 Tips
