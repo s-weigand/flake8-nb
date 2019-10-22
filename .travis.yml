@@ -12,17 +12,43 @@ jobs:
       after_success:
         - echo "done"
 
-    - python: 3.6
+    - language: generic
+      python: 3.6
       name: docs
-      env: TOXENV=docs
-      after_success:
-        - echo "done"
+      before_install:
+        - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+        - bash miniconda.sh -b -p $HOME/miniconda
+        - export PATH="$HOME/miniconda/bin:$PATH"
+        - conda update conda -y
+        - conda create -n py36 python=3.6 -y
+      install:
+        - source activate py36
+        - conda config --add channels conda-forge
+        - conda install -y --name py36 tox pandoc
+        - pip freeze
+        - pandoc -v
+      before_script: echo "skip before_script"
+      script: tox -e docs
+      after_success: echo "skip after_success"
 
-    - python: 3.6
+    - language: generic
+      python: 3.6
       name: docs-links
-      env: TOXENV=docs-links
-      after_success:
-        - echo "done"
+      before_install:
+        - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+        - bash miniconda.sh -b -p $HOME/miniconda
+        - export PATH="$HOME/miniconda/bin:$PATH"
+        - conda update conda -y
+        - conda create -n py36 python=3.6 -y
+      install:
+        - source activate py36
+        - conda config --add channels conda-forge
+        - conda install -y --name py36 tox pandoc
+        - pip freeze
+        - pandoc -v
+      before_script: echo "skip before_script"
+      script: tox -e docs-links
+      after_success: echo "skip after_success"
 
     - language: python
       python: 3.6
