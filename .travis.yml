@@ -120,7 +120,7 @@ deploy:
   distributions: sdist bdist_wheel
   user: s-weigand
   password:
-    secure: PLEASE_REPLACE_ME
+    secure: pCTYz4edHigG+t59il5MY8NwDaHiIjdMovhKkWmYP5fZuYGLmvfE4/14WxXz8pOa7poNQCi6kv6M2E7O6n3J+hGUaiMbXBen7hnGgwnuikiSArE7lHoTJKO3UwcTuDUswgooh8ab2ZIs0AZKRf2Bi0AR73dHs2FTD2h0x4XYuXTlJLbJpSYx4fOijVgzV77lpbuVj4nJd/UtJ1NwajRSDW2Lh9rOplMMIo0EGgCDzy/aolXhumGlnXcKpkfBTR7upJbNJ0Dp2r1Da51NnxB6oH4y/fPy4UWPMQjlDIzCCC0QFqP1QMFZjUX2B3cbu4KeiWZaYd2ii3ITj2+3X+OU2gBYq6TfTl6BINoXo+KcoLGMXPCxZVNrDPODxqq3VnBTmwdoKfaqmpRpQMVBLxuYrmxtDpRqEf7tNUcSTbrE61vdY1wPK1vYL9c417OAvkuyhSNDGp4ysNQxSKMHIWV29tiQ7inOVrTqBRSCpxUh8eBJDUqfI993+jxXcSV9sUDxVrivpSizqBd4UI3OdJSMJ7rdEUgqKrg9L/5dxtjo7NX8HxBjWTboXzROrcZEGQCjBJgzZXlB0Y+fh78w5sIQzXAD3/wIOSVvpxi0mQ3uGy14pN+URVLXRO7LiWCcWk7jozEG3F2RAU/whGbteLgbEpGuvVqYWKimbHD6dZA0qO4=
   on:
     tags: true
     repo: s-weigand/flake8-nb
