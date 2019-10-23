@@ -66,7 +66,7 @@ setup(
         "flake8.report": "default_notebook = flake8_nb:IpynbFormatter",
     },
     tests_require=test_requirements,
-    url="https://github.com/s-weigand/flake8_nb",
+    url="https://github.com/s-weigand/flake8-nb",
     version="0.1.0",
     zip_safe=False,
 )
