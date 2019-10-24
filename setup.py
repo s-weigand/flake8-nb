@@ -62,7 +62,7 @@ setup(
     test_suite="tests",
     platforms="any",
     entry_points={
-        "console_scripts": ["flake8_nb = flake8_nb.__main__:main"],
+        "console_scripts": ["flake8_nb = flake8_nb.__main__:main", "flake8-nb = flake8_nb.__main__:main"],
         "flake8.report": "default_notebook = flake8_nb:IpynbFormatter",
     },
     tests_require=test_requirements,
