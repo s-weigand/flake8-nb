@@ -12,7 +12,7 @@ To install flake8-nb, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install flake8_nb
+    $ pip install flake8-nb
 
 This is the preferred method to install flake8-nb, as it will always install the most recent stable release.
 
