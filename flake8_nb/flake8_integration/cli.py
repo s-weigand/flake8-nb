@@ -125,7 +125,7 @@ class Flake8NbApplication(Application):
                 is_option = True
         if is_option:
             parser = self.option_manager.parser
-            if FLAKE8_VERSION_TUPLE > (3, 7, 8):
+            if FLAKE8_VERSION_TUPLE > (3, 7, 9):
                 for index, action in enumerate(parser._actions):  # pragma: no branch
                     if long_option_name in action.option_strings:
                         parser._handle_conflict_resolve(

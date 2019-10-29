@@ -63,6 +63,7 @@ jobs:
     - python: 3.6
       name: flake8-nightly
       env: TOXENV=flake8-nightly
+      after_script: pip freeze
 
     - language: generic
       python: 3.6

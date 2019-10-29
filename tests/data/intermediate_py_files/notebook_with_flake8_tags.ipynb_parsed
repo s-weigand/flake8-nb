@@ -25,9 +25,9 @@ import not_a_package  # noqa: F401
 # In[4]
 
 
-# flake8-noqa-cell-F401-F811  # noqa: F401, F811
-import not_a_package  # noqa: F401, F811
-{"4":1}  # noqa: F401, F811
+# flake8-noqa-cell-E402-F401-F811  # noqa: E402, F401, F811
+import not_a_package  # noqa: E402, F401, F811
+{"4":1}  # noqa: E402, F401, F811
 
 
 # In[5]
