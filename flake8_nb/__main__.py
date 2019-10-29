@@ -20,8 +20,8 @@ def main(argv: Optional[List[str]] = None) -> None:
     argv: List[str], optional
         The arguments to be passed to the application for parsing.
     """
-    # TODO: remove compat after flake8>3.7.8 release
-    if FLAKE8_VERSION_TUPLE > (3, 7, 8):
+    # TODO: remove compat after flake8>3.7.9 release
+    if FLAKE8_VERSION_TUPLE > (3, 7, 9):
         if argv is None:
             argv = sys.argv[1:]
 
