@@ -61,6 +61,7 @@ Exceptions
 
     .. autosummary::
         :toctree: {{ fullname | replace("flake8_nb.", "") | replace(".", "/") }}/exceptions
+        :nosignatures:
     {% for item in exceptions %}
         {{ item }}
     {%- endfor %}

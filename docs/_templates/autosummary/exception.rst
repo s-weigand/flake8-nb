@@ -1,3 +1,3 @@
 {{ name  | escape | underline }}
 
-.. autofunction:: {{ fullname }}
+.. autoexception:: {{ fullname }}
