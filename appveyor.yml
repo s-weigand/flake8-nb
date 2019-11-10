@@ -36,7 +36,7 @@ cache:
   - '%LOCALAPPDATA%\pip\Cache\http'
   - '%LOCALAPPDATA%\pip\Cache\wheels'
   # Cache Tox envs
-  - '%APPVEYOR_BUILD_FOLDER%\.tox'
+  # - '%APPVEYOR_BUILD_FOLDER%\.tox'
 
 install:
   # Show size of cache
@@ -54,14 +54,16 @@ install:
 
   # TODO: Remove after problem is resolved
   # https://github.com/mhammond/pywin32/issues/1439
-  - "%CMD_IN_ENV% python -m pip install pywin32<226"
+  - "%CMD_IN_ENV% python -m pip install -U -r requirements_dev.txt"
 
 build: off
 
 test_script:
   # delete old .coverage file
   - coverage erase
-  - tox
+  # - tox
+  - "%CMD_IN_ENV% python -m pip install -e ."
+  - py.test --cov=flake8_nb --cov-append --cov-config .coveragerc tests
 
 artifacts:
   - path: .coverage
@@ -77,8 +79,8 @@ on_finish:
   - C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -type f -mtime +360 -delete
   - C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -type f -size +10M -delete
   - C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -empty -delete
-  - C:\cygwin\bin\find "%APPVEYOR_BUILD_FOLDER%\.tox" -type f -mtime +360 -delete
-  - C:\cygwin\bin\find "%APPVEYOR_BUILD_FOLDER%\.tox" -empty -delete
+  # - C:\cygwin\bin\find "%APPVEYOR_BUILD_FOLDER%\.tox" -type f -mtime +360 -delete
+  # - C:\cygwin\bin\find "%APPVEYOR_BUILD_FOLDER%\.tox" -empty -delete
   # Show size of cache
   - C:\cygwin\bin\du -hs "%LOCALAPPDATA%\pip\Cache"
-  - C:\cygwin\bin\du -hs "%APPVEYOR_BUILD_FOLDER%\.tox"
+  # - C:\cygwin\bin\du -hs "%APPVEYOR_BUILD_FOLDER%\.tox"
