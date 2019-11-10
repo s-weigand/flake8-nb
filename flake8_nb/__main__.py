@@ -21,7 +21,9 @@ def main(argv: Optional[List[str]] = None) -> None:
         The arguments to be passed to the application for parsing.
     """
     # TODO: remove compat after flake8>3.8.0 release
-    if FLAKE8_VERSION_TUPLE > (3, 7, 9):
+    # tested with flake8-nightly, in test__main__.py,
+    # but not picked up by by coverage
+    if FLAKE8_VERSION_TUPLE > (3, 7, 9):  # pragma: no cover
         if argv is None:
             argv = sys.argv[1:]
 
