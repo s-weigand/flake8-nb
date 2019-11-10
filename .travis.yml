@@ -163,5 +163,7 @@ before_script: coverage erase
 script: tox
 
 after_success:
+  - export COVERALLS_FLAG_NAME="$TRAVIS_JOB_NAME"
+  - echo $COVERALLS_FLAG_NAME
   - coveralls
   - coverage erase
