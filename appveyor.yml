@@ -52,6 +52,10 @@ install:
   # install tox
   - "%CMD_IN_ENV% python -m pip install -U tox coverage"
 
+  # TODO: Remove after problem is resolved
+  # https://github.com/mhammond/pywin32/issues/1439
+  - "%CMD_IN_ENV% python -m pip install pywin32<226"
+
 build: off
 
 test_script:
