@@ -7,12 +7,15 @@ environment:
   PYTEST: py.test -n3 --maxfail 5 --durations=10 --junitxml=junit-results.xml
   # uncomment to disable cache restore
   #  APPVEYOR_CACHE_SKIP_RESTORE: true
-  APPVEYOR_SAVE_CACHE_ON_ERROR: true
+  APPVEYOR_SAVE_CACHE_ON_ERROR: false
 
   matrix:
-    - PYTHON: C:\Python36-x64
-      PYTHON_VERSION: 3.6
-      PYTHON_ARCH: 64
+    - TOXENV: py36
+      PYTHON: C:/Python36-x64
+    - TOXENV: py37
+      PYTHON: C:/Python37-x64
+    - TOXENV: py38
+      PYTHON: C:/Python38-x64
 
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
@@ -49,12 +52,12 @@ install:
   # install tox
   - "%CMD_IN_ENV% python -m pip install -U tox coverage"
 
-build: none
+build: off
 
 test_script:
   # delete old .coverage file
   - coverage erase
-  - tox -e py{36,37}
+  - tox
 
 artifacts:
   - path: .coverage
