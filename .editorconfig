@@ -17,7 +17,7 @@ end_of_line = crlf
 [.gitattributes]
 indent_style = tab
 
-[*.{yml,json,md}]
+[*.{yml,json,md,ini}]
 indent_size = 2
 
 [LICENSE]
