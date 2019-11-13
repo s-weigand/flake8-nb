@@ -8,14 +8,7 @@ environment:
   # uncomment to disable cache restore
   #  APPVEYOR_CACHE_SKIP_RESTORE: true
   APPVEYOR_SAVE_CACHE_ON_ERROR: false
-
-  matrix:
-    - TOXENV: py36
-      PYTHON: C:/Python36-x64
-    - TOXENV: py37
-      PYTHON: C:/Python37-x64
-    - TOXENV: py38
-      PYTHON: C:/Python38-x64
+  PYTHON: C:/Python37-x64
 
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
@@ -52,10 +45,6 @@ install:
   # install tox
   - "%CMD_IN_ENV% python -m pip install -U tox coverage"
 
-  # TODO: Remove after problem is resolved
-  # https://github.com/mhammond/pywin32/issues/1439
-  - "%CMD_IN_ENV% python -m pip install -U -r requirements_dev.txt"
-
 build: off
 
 test_script:
@@ -63,7 +52,7 @@ test_script:
   - coverage erase
   # - tox
   - "%CMD_IN_ENV% python -m pip install -e ."
-  - py.test --cov=flake8_nb --cov-append --cov-config .coveragerc tests
+  - tox -e py{36,37,38}
 
 artifacts:
   - path: .coverage
