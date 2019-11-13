@@ -7,12 +7,8 @@ environment:
   PYTEST: py.test -n3 --maxfail 5 --durations=10 --junitxml=junit-results.xml
   # uncomment to disable cache restore
   #  APPVEYOR_CACHE_SKIP_RESTORE: true
-  APPVEYOR_SAVE_CACHE_ON_ERROR: true
-
-  matrix:
-    - PYTHON: C:\Python36-x64
-      PYTHON_VERSION: 3.6
-      PYTHON_ARCH: 64
+  APPVEYOR_SAVE_CACHE_ON_ERROR: false
+  PYTHON: C:/Python37-x64
 
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
@@ -33,7 +29,7 @@ cache:
   - '%LOCALAPPDATA%\pip\Cache\http'
   - '%LOCALAPPDATA%\pip\Cache\wheels'
   # Cache Tox envs
-  - '%APPVEYOR_BUILD_FOLDER%\.tox'
+  # - '%APPVEYOR_BUILD_FOLDER%\.tox'
 
 install:
   # Show size of cache
@@ -49,12 +45,14 @@ install:
   # install tox
   - "%CMD_IN_ENV% python -m pip install -U tox coverage"
 
-build: none
+build: off
 
 test_script:
   # delete old .coverage file
   - coverage erase
-  - tox -e py{36,37}
+  # - tox
+  - "%CMD_IN_ENV% python -m pip install -e ."
+  - tox -e py{36,37,38}
 
 artifacts:
   - path: .coverage
@@ -70,8 +68,8 @@ on_finish:
   - C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -type f -mtime +360 -delete
   - C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -type f -size +10M -delete
   - C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -empty -delete
-  - C:\cygwin\bin\find "%APPVEYOR_BUILD_FOLDER%\.tox" -type f -mtime +360 -delete
-  - C:\cygwin\bin\find "%APPVEYOR_BUILD_FOLDER%\.tox" -empty -delete
+  # - C:\cygwin\bin\find "%APPVEYOR_BUILD_FOLDER%\.tox" -type f -mtime +360 -delete
+  # - C:\cygwin\bin\find "%APPVEYOR_BUILD_FOLDER%\.tox" -empty -delete
   # Show size of cache
   - C:\cygwin\bin\du -hs "%LOCALAPPDATA%\pip\Cache"
-  - C:\cygwin\bin\du -hs "%APPVEYOR_BUILD_FOLDER%\.tox"
+  # - C:\cygwin\bin\du -hs "%APPVEYOR_BUILD_FOLDER%\.tox"

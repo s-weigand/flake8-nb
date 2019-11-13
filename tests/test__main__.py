@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import subprocess
 
 import pytest
 
@@ -36,3 +37,25 @@ def test_run_main(capsys, keep_intermediate: bool):
     if keep_intermediate:
         assert os.path.exists(NotebookParser.temp_path)
         NotebookParser.clean_up()
+
+
+@pytest.mark.parametrize("keep_intermediate", [True, False])
+@pytest.mark.parametrize("cli_entrypoint", ["flake8_nb", "flake8-nb"])
+def test_syscall(cli_entrypoint: str, keep_intermediate: bool):
+    argv = [cli_entrypoint, TEST_NOTEBOOK_BASE_PATH]
+    if keep_intermediate:
+        argv.append("--keep-parsed-notebooks")
+    proc = subprocess.Popen(argv, stdout=subprocess.PIPE, universal_newlines=True)
+    result_list = []
+    for line in proc.stdout:
+        result_list.append(str(line))
+    expected_result_path = os.path.join(
+        os.path.dirname(__file__), "data", "expected_output.txt"
+    )
+    with open(expected_result_path, "r") as result_file:
+        expected_result_list = result_file.readlines()
+
+    assert len(expected_result_list) == len(result_list)
+
+    for expected_result in expected_result_list:
+        assert any([result.endswith(expected_result) for result in result_list])
