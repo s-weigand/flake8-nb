@@ -1,5 +1,9 @@
 # History
 
+## 0.1.3 (2019-11-13)
+
+- Added official Python 3.8 support and tests
+
 ## 0.1.2 (2019-10-29)
 
 - Fixed compatibility with `flake8==3.7.9`
