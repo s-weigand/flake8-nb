@@ -5,9 +5,9 @@
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/flake8_nb.svg)](https://pypi.org/project/flake8-nb/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[![Actions Status](https://github.com/s-weigand/flake8-nb/workflows/test/badge.svg)](https://github.com/s-weigand/flake8-nb/actions)
+[![Actions Status](https://github.com/s-weigand/flake8-nb/workflows/Test/badge.svg)](https://github.com/s-weigand/flake8-nb/actions)
 [![Documentation Status](https://readthedocs.org/projects/flake8-nb/badge/?version=latest)](https://flake8-nb.readthedocs.io/en/latest/?badge=latest)
-[![Test Coverage](https://coveralls.io/repos/github/s-weigand/flake8-nb/badge.svg?branch=master)](https://coveralls.io/github/s-weigand/flake8-nb?branch=master)
+[![codecov](https://codecov.io/gh/s-weigand/flake8-nb/branch/master/graph/badge.svg)](https://codecov.io/gh/s-weigand/flake8-nb)
 [![Updates](https://pyup.io/repos/github/s-weigand/flake8-nb/shield.svg)](https://pyup.io/repos/github/s-weigand/flake8-nb/)
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/s-weigand/flake8-nb?branch=master)](https://bettercodehub.com/)
