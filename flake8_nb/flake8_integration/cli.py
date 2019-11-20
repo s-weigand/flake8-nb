@@ -56,7 +56,7 @@ def get_notebooks_from_args(
         if is_notebook(arg, nb_list):
             args.pop(index)
         for root, _, filenames in os.walk(arg):
-            if not matches_filename(
+            if not matches_filename(  # pragma: no branch
                 root,
                 patterns=exclude,
                 log_message='"%(path)s" has %(whether)sbeen excluded',
