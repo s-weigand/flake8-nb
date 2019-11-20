@@ -5,8 +5,7 @@
 [![Supported Python Versions](https://img.shields.io/pypi/pyversions/flake8_nb.svg)](https://pypi.org/project/flake8-nb/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[![Test Status Linux and OsX](https://api.travis-ci.org/s-weigand/flake8-nb.svg?branch=master)](https://travis-ci.org/s-weigand/flake8-nb)
-[![Test Status Windows](https://ci.appveyor.com/api/projects/status/gf2hgt9p2vb8y08y/branch/master?svg=true)](https://ci.appveyor.com/project/s-weigand/flake8-nb/branch/master)
+[![Actions Status](https://github.com/s-weigand/flake8-nb/workflows/test/badge.svg)](https://github.com/s-weigand/flake8-nb/actions)
 [![Documentation Status](https://readthedocs.org/projects/flake8-nb/badge/?version=latest)](https://flake8-nb.readthedocs.io/en/latest/?badge=latest)
 [![Test Coverage](https://coveralls.io/repos/github/s-weigand/flake8-nb/badge.svg?branch=master)](https://coveralls.io/github/s-weigand/flake8-nb?branch=master)
 [![Updates](https://pyup.io/repos/github/s-weigand/flake8-nb/shield.svg)](https://pyup.io/repos/github/s-weigand/flake8-nb/)

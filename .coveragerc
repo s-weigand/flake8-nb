@@ -1,12 +1,13 @@
 [run]
 branch = True
-#include = flake8_nb/*
-#          tests/*
-# uncomment the above line if you want to see if all tests did run
+source = flake8_nb/*
+include = flake8_nb/*
 omit = setup.py
        flake8_nb/__init__.py
        flake8_nb/*/__init__.py
        tests/__init__.py
+       */tests/*
+# uncomment the above line if you want to see if all tests did run
 
 [report]
 # Regexes for lines to exclude from consideration
