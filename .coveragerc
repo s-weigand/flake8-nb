@@ -1,6 +1,7 @@
 [run]
 branch = True
-#include = flake8_nb/*
+source = flake8_nb/*
+include = flake8_nb/*
 #          tests/*
 # uncomment the above line if you want to see if all tests did run
 omit = setup.py
