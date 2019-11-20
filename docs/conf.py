@@ -192,6 +192,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [(master_doc, "flake8_nb", u"flake8-nb Documentation", [author], 1)]
 
+linkcheck_ignore = [r'https://github\.com/s-weigand/flake8-nb/actions']
 
 # -- Options for Texinfo output ----------------------------------------
 
