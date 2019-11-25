@@ -14,7 +14,7 @@ from typing import List, Optional, Tuple
 
 from flake8 import defaults, utils
 from flake8.main.application import Application
-from flake8.options import aggregator
+from flake8.options import aggregator, config
 from flake8.utils import matches_filename
 
 from .. import FLAKE8_VERSION_TUPLE, __version__
@@ -85,6 +85,8 @@ class Flake8NbApplication(Application):
             parse_from_config=True,
             help="Keep the temporary parsed notebooks, i.e. for debugging.",
         )
+        if FLAKE8_VERSION_TUPLE > (3, 7, 9):
+            self.parse_configuration_and_cli = self.parse_configuration_and_cli_nightly
 
     def hack_flake8_program_and_version(self, program: str, version: str) -> None:
         """
@@ -201,6 +203,42 @@ class Flake8NbApplication(Application):
         if self.options is None and self.args is None:  # pragma: no branch
             self.options, self.args = aggregator.aggregate_options(
                 self.option_manager, self.config_finder, argv
+            )
+
+        self.args = self.hack_args(self.args)
+
+        self.running_against_diff = self.options.diff
+        if self.running_against_diff:  # pragma: no cover
+            self.parsed_diff = utils.parse_unified_diff()
+            if not self.parsed_diff:
+                self.exit()
+
+        self.options._running_from_vcs = False
+
+        self.check_plugins.provide_options(self.option_manager, self.options, self.args)
+        self.formatting_plugins.provide_options(
+            self.option_manager, self.options, self.args
+        )
+
+    def parse_configuration_and_cli_nightly(
+        self, config_finder: config.ConfigFileFinder, argv: Optional[List[str]] = None
+    ) -> None:
+        """
+        Compat version of self.parse_configuration_and_cli to work with nightly
+        build of flake8 master
+        https://gitlab.com/pycqa/flake8/blob/master/src/flake8/main/application.py#L194
+
+        Parse configuration files and the CLI options.
+
+        Parameters
+        ----------
+        config_finder: config.ConfigFileFinder
+        argv: List[str]
+            Command-line arguments passed in directly.
+        """
+        if self.options is None and self.args is None:  # pragma: no branch
+            self.options, self.args = aggregator.aggregate_options(
+                self.option_manager, config_finder, argv
             )
 
         self.args = self.hack_args(self.args)

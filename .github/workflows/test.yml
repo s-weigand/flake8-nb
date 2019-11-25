@@ -28,11 +28,14 @@ jobs:
           conda-channels: conda-forge
       - name: Install dependencies
         run: |
-          conda install -y tox pandoc
+          conda install -y pandoc
+          pip install -U -q -c constraints.txt -r requirements_dev.txt
+      - name: Show installed dependencies
+        run: |
           pip freeze
           pandoc -v
       - name: Build docs
-        run: tox -e docs
+        run: make --directory=docs clean_all html
 
   docs-link:
     runs-on: ubuntu-latest
@@ -44,11 +47,14 @@ jobs:
           conda-channels: conda-forge
       - name: Install dependencies
         run: |
-          conda install -y tox pandoc
+          conda install -y pandoc
+          pip install -U -q -c constraints.txt -r requirements_dev.txt
+      - name: Show installed dependencies
+        run: |
           pip freeze
           pandoc -v
       - name: Build docs
-        run: tox -e docs-links
+        run: make --directory=docs clean_all linkcheck
 
   flake8-nightly:
     runs-on: ubuntu-latest
@@ -70,7 +76,7 @@ jobs:
         env:
           TOX_ENV_NAME: flake8-nightly
         run: |
-          py.test --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
+          py.test -vv --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
       - name: Codecov Upload
         uses: codecov/codecov-action@v1
         with:
