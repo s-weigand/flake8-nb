@@ -1,7 +1,7 @@
 name: "Tests"
 on:
   schedule:
-    - 0 7 * * 1 # At 07:00 on each Monday.
+    - cron: "0 7 * * 1" # At 07:00 on each Monday.
 
 jobs:
   flake8-nightly:
