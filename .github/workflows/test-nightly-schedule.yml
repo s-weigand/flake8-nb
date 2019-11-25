@@ -22,7 +22,7 @@ jobs:
         env:
           TOX_ENV_NAME: flake8-nightly
         run: |
-          py.test --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
+          py.test -vv --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
       - name: Codecov Upload
         uses: codecov/codecov-action@v1
         with:
