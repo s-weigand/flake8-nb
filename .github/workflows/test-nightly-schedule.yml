@@ -1,4 +1,4 @@
-name: "Tests"
+name: "Scheduled Tests"
 on:
   schedule:
     - cron: "0 7 * * 1" # At 07:00 on each Monday.
