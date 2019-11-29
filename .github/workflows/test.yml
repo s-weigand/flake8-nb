@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   flake8:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Set up Python 3.7
@@ -50,6 +50,7 @@ jobs:
           conda install -y pandoc
           pip install -U -q -c constraints.txt -r requirements_dev.txt
       - name: Show installed dependencies
+        continue-on-error: true
         run: |
           pip freeze
           pandoc -v
@@ -78,16 +79,17 @@ jobs:
         run: |
           py.test -vv --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
       - name: Codecov Upload
+        continue-on-error: true
         uses: codecov/codecov-action@v1
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage.xml
+          name: flake8-nightly
 
   test:
     runs-on: ${{ matrix.os }}
     needs: [flake8, docs]
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
         python-version: [3.6, 3.7, 3.8]
@@ -107,13 +109,15 @@ jobs:
         run: |
           py.test --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
       - name: Codecov Upload
+        continue-on-error: true
         uses: codecov/codecov-action@v1
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           file: ./coverage.xml
+          name: ${{ matrix.os }}-py${{ matrix.python-version }}
 
   deploy:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
     needs: [test, flake8-nightly]
     steps:
