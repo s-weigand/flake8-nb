@@ -21,4 +21,4 @@ ipykernel>=5.1.2
 # package requirements
 flake8==3.7.9
 nbconvert==5.6.1
-ipython==7.10.0
+ipython==7.10.1
