@@ -79,7 +79,6 @@ jobs:
         run: |
           py.test -vv --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
       - name: Codecov Upload
-        continue-on-error: true
         uses: codecov/codecov-action@v1
         with:
           token: ${{secrets.CODECOV_TOKEN}}
@@ -109,7 +108,6 @@ jobs:
         run: |
           py.test --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
       - name: Codecov Upload
-        continue-on-error: true
         uses: codecov/codecov-action@v1
         with:
           token: ${{secrets.CODECOV_TOKEN}}
