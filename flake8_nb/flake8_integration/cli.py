@@ -221,7 +221,11 @@ class Flake8NbApplication(Application):
         )
 
     def parse_configuration_and_cli_nightly(
-        self, config_finder: config.ConfigFileFinder, argv: Optional[List[str]] = None
+        self,
+        config_finder: config.ConfigFileFinder,
+        config_file: Optional[str],
+        ignore_config_files: bool,
+        argv: Optional[List[str]] = None,
     ) -> None:
         """
         Compat version of self.parse_configuration_and_cli to work with nightly
@@ -230,16 +234,20 @@ class Flake8NbApplication(Application):
 
         Parse configuration files and the CLI options.
 
-        Parameters
-        ----------
-        config_finder: config.ConfigFileFinder
-        argv: List[str]
+        :param config.ConfigFileFinder config_finder:
+            The finder for finding and reading configuration files.
+        :param str config_file:
+            The optional configuraiton file to override all other configuration
+            files (i.e., the --config option).
+        :param bool ignore_config_files:
+            Determine whether to parse configuration files or not. (i.e., the
+            --isolated option).
+        :param list argv:
             Command-line arguments passed in directly.
         """
-        if self.options is None and self.args is None:  # pragma: no branch
-            self.options, self.args = aggregator.aggregate_options(
-                self.option_manager, config_finder, argv
-            )
+        self.options, self.args = aggregator.aggregate_options(
+            self.option_manager, config_finder, config_file, ignore_config_files, argv,
+        )
 
         self.args = self.hack_args(self.args)
 
