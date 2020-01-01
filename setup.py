@@ -17,7 +17,7 @@ with open("README.md", encoding="utf-8") as readme_file:
 with open("HISTORY.md", encoding="utf-8") as history_file:
     history = history_file.read()
 
-requirements = ["flake8>=3.0.0", "nbconvert>=5.6.0", "ipython>=7.8.0"]
+requirements = ["flake8>=3.0.0,<3.8.0", "nbconvert>=5.6.0", "ipython>=7.8.0"]
 
 
 setup_requirements = ["pytest-runner"]
