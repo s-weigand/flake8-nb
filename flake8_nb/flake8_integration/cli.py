@@ -242,7 +242,7 @@ class Flake8NbApplication(Application):
         self.args = self.hack_args(self.args)
 
         self.running_against_diff = self.options.diff
-        if self.running_against_diff:
+        if self.running_against_diff:  # pragma: no cover
             self.parsed_diff = utils.parse_unified_diff()
             if not self.parsed_diff:
                 self.exit()
