@@ -8,7 +8,7 @@
 [![Actions Status](https://github.com/s-weigand/flake8-nb/workflows/Tests/badge.svg)](https://github.com/s-weigand/flake8-nb/actions)
 [![Documentation Status](https://readthedocs.org/projects/flake8-nb/badge/?version=latest)](https://flake8-nb.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/s-weigand/flake8-nb/branch/master/graph/badge.svg)](https://codecov.io/gh/s-weigand/flake8-nb)
-[![Updates](https://pyup.io/repos/github/s-weigand/flake8-nb/shield.svg)](https://pyup.io/repos/github/s-weigand/flake8-nb/)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=s-weigand/flake8-nb)](https://dependabot.com)
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/s-weigand/flake8-nb?branch=master)](https://bettercodehub.com/)
 [![Code quality](https://api.codacy.com/project/badge/Grade/d02b436a637243a1b626b74d018c3bbe)](https://www.codacy.com/manual/s.weigand.phy/flake8-nb?utm_source=github.com&utm_medium=referral&utm_content=s-weigand/flake8-nb&utm_campaign=Badge_Grade)
