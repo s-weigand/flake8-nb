@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup conda
-        uses: s-weigand/setup-conda@master
+        uses: s-weigand/setup-conda@v1
         with:
           conda-channels: conda-forge
       - name: Install dependencies
@@ -42,7 +42,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup conda
-        uses: s-weigand/setup-conda@master
+        uses: s-weigand/setup-conda@v1
         with:
           conda-channels: conda-forge
       - name: Install dependencies
