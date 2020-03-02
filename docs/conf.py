@@ -193,8 +193,9 @@ latex_documents = [
 man_pages = [(master_doc, "flake8_nb", u"flake8-nb Documentation", [author], 1)]
 
 linkcheck_ignore = [
-    r'https://github\.com/s-weigand/flake8-nb/actions',
-    r'https://gitlab\.com/pycqa/flake8/blob/master/src/flake8/main/application\.py#L194',
+    r"https://github\.com/s-weigand/flake8-nb/actions",
+    r"https://github\.com/s-weigand/flake8-nb/workflows/Tests/badge\.svg",
+    r"https://gitlab\.com/pycqa/flake8/blob/master/src/flake8/main/application\.py#L194",
 ]
 
 # -- Options for Texinfo output ----------------------------------------
