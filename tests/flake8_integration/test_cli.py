@@ -16,7 +16,9 @@ from .conftest import TempIpynbArgs
 
 def test_get_notebooks_from_args(temp_ipynb_args: TempIpynbArgs):
     orig_args, (expected_args, expected_nb_list) = temp_ipynb_args.get_args_and_result()
-    args, nb_list = get_notebooks_from_args(orig_args)
+    args, nb_list = get_notebooks_from_args(
+        orig_args, exclude=["*.tox/*", "*.ipynb_checkpoints*", "*/docs/*"]
+    )
     assert sorted(args) == sorted(expected_args)
     assert sorted(nb_list) == sorted(expected_nb_list)
 
