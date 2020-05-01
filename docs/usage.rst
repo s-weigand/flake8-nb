@@ -36,7 +36,7 @@ Project wide configuration
 --------------------------
 
 Configuration of a project can be saved in one of the following files
-``setup.cfg``, ``tox.ini`` or ``.flake8``, on the top level of your project
+``setup.cfg``, ``tox.ini`` or ``.flake8_nb``, on the top level of your project
 (see `flake8 configuration`_).
 
 .. code-block:: ini
