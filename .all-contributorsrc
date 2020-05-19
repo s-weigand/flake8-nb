@@ -28,6 +28,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "peisenha",
+      "name": "Philipp Eisenhauer",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3607591?v=4",
+      "profile": "http://eisenhauer.io",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
