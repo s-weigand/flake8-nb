@@ -40,6 +40,22 @@ def test_run_main(capsys, keep_intermediate: bool):
         NotebookParser.clean_up()
 
 
+def test_run_main_all_excluded(capsys):
+    argv = ["flake8_nb", TEST_NOTEBOOK_BASE_PATH]
+    argv += [
+        "--exclude",
+        f"*.tox/*,*.ipynb_checkpoints*,*/docs/*,{TEST_NOTEBOOK_BASE_PATH}",
+    ]
+    with pytest.raises(SystemExit):
+        with pytest.warns(InvalidNotebookWarning):
+            main(argv)
+    captured = capsys.readouterr()
+    result_output = captured.out
+    result_list = result_output.replace("\r", "").split("\n")
+    result_list.remove("")
+    assert len(result_list) == 0
+
+
 @pytest.mark.parametrize("keep_intermediate", [True, False])
 @pytest.mark.parametrize("cli_entrypoint", ["flake8_nb", "flake8-nb"])
 def test_syscall(cli_entrypoint: str, keep_intermediate: bool):
