@@ -170,7 +170,7 @@ class Flake8NbApplication(Application):
         )
 
     @staticmethod
-    def hack_args(args: List[str]) -> List[str]:
+    def hack_args(args: List[str], exclude: List[str]) -> List[str]:
         r"""
         Checks the passed args if ``*.ipynb`` can be found and
         appends intermediate parsed files to the list of files,
@@ -180,6 +180,8 @@ class Flake8NbApplication(Application):
         ----------
         args : List[str]
             List of commandline arguments provided to ``flake8_nb``
+        exclude : List[str]
+            File-/Folderpatterns that should be excluded
 
         Returns
         -------
@@ -187,7 +189,7 @@ class Flake8NbApplication(Application):
             The original args + intermediate parsed ``*.ipynb`` files.
         """
 
-        args, nb_list = get_notebooks_from_args(args)
+        args, nb_list = get_notebooks_from_args(args, exclude=exclude)
         notebook_parser = NotebookParser(nb_list)
         return args + notebook_parser.intermediate_py_file_paths
 
@@ -205,7 +207,7 @@ class Flake8NbApplication(Application):
                 self.option_manager, self.config_finder, argv
             )
 
-        self.args = self.hack_args(self.args)
+        self.args = self.hack_args(self.args, self.options.exclude)
 
         self.running_against_diff = self.options.diff
         if self.running_against_diff:  # pragma: no cover
@@ -239,7 +241,7 @@ class Flake8NbApplication(Application):
             self.option_manager, config_finder, argv,
         )
 
-        self.args = self.hack_args(self.args)
+        self.args = self.hack_args(self.args, self.options.exclude)
 
         self.running_against_diff = self.options.diff
         if self.running_against_diff:  # pragma: no cover
