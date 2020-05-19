@@ -4,7 +4,7 @@
 
 __author__ = """Sebastian Weigand"""
 __email__ = "s.weigand.phy@gmail.com"
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 import flake8
 
