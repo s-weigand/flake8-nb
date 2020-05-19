@@ -35,7 +35,8 @@ def get_notebooks_from_args(
     args : List[str]
         The left over arguments that were not parsed by :attr:`option_manager`
     exclude : List[str], optional
-        File-/Folderpatterns that should be excluded, by default ["*.tox/*"]
+        File-/Folderpatterns that should be excluded,
+        by default ["*.tox/*", "*.ipynb_checkpoints*"]
 
     Returns
     -------
