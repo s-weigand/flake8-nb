@@ -48,7 +48,9 @@ def test_Flake8NbApplication__option_defaults():
 @pytest.mark.filterwarnings(InvalidNotebookWarning)
 def test_Flake8NbApplication__hack_args(temp_ipynb_args: TempIpynbArgs):
     orig_args, (expected_args, _) = temp_ipynb_args.get_args_and_result()
-    result = Flake8NbApplication.hack_args(orig_args)
+    result = Flake8NbApplication.hack_args(
+        orig_args, exclude=["*.tox/*", "*.ipynb_checkpoints*", "*/docs/*"]
+    )
     expected_parsed_nb_list = NotebookParser.intermediate_py_file_paths
 
     assert result == expected_args + expected_parsed_nb_list

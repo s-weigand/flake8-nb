@@ -16,6 +16,7 @@ def test_run_main(capsys, keep_intermediate: bool):
     argv = ["flake8_nb", TEST_NOTEBOOK_BASE_PATH]
     if keep_intermediate:
         argv.append("--keep-parsed-notebooks")
+    argv += ["--exclude", "*.tox/*,*.ipynb_checkpoints*,*/docs/*"]
     with pytest.raises(SystemExit):
         with pytest.warns(InvalidNotebookWarning):
             main(argv)
@@ -45,6 +46,7 @@ def test_syscall(cli_entrypoint: str, keep_intermediate: bool):
     argv = [cli_entrypoint, TEST_NOTEBOOK_BASE_PATH]
     if keep_intermediate:
         argv.append("--keep-parsed-notebooks")
+    argv += ["--exclude", "*.tox/*,*.ipynb_checkpoints*,*/docs/*"]
     proc = subprocess.Popen(argv, stdout=subprocess.PIPE, universal_newlines=True)
     result_list = []
     for line in proc.stdout:
