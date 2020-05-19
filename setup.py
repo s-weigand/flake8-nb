@@ -35,6 +35,7 @@ setup(
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
+        "Framework :: Jupyter",
         "Framework :: Flake8",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
