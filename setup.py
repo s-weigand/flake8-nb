@@ -33,7 +33,7 @@ setup(
     author_email="s.weigand.phy@gmail.com",
     python_requires=">=3.6",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Environment :: Console",
         "Framework :: Flake8",
         "Intended Audience :: Developers",
