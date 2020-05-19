@@ -26,15 +26,21 @@ you through the process.
 From sources
 ------------
 
-The sources for flake8-nb can be downloaded from the `Github repo`_.
+You can either pip install it directly from github:
 
-You can either clone the public repository:
+.. code-block:: console
+
+    $ pip install git+git://github.com/s-weigand/flake8-nb@<branch_name>
+
+Or get the sources for flake8-nb, which can be downloaded from the `Github repo`_.
+
+By cloning the public repository:
 
 .. code-block:: console
 
     $ git clone git://github.com/s-weigand/flake8-nb
 
-Or download the `tarball`_:
+Or downloading the `tarball`_:
 
 .. code-block:: console
 

@@ -110,8 +110,8 @@ comment in a cell.
     you should ignore the whole cell with ``flake8-noqa-cell``.
 
 
-.. _`flake8 invocation`: http://flake8.pycqa.org/en/latest/user/invocation.html
-.. _`flake8 configuration`: http://flake8.pycqa.org/en/latest/user/configuration.html
-.. _`flake8 documentation`: http://flake8.pycqa.org/en/latest/index.html
-.. _`flake8 noqa`: http://flake8.pycqa.org/en/latest/user/violations.html#in-line-ignoring-errors
+.. _`flake8 invocation`: https://flake8.pycqa.org/en/latest/user/invocation.html
+.. _`flake8 configuration`: https://flake8.pycqa.org/en/latest/user/configuration.html
+.. _`flake8 documentation`: https://flake8.pycqa.org/en/latest/index.html
+.. _`flake8 noqa`: https://flake8.pycqa.org/en/latest/user/violations.html#in-line-ignoring-errors
 .. _`jupyterlab-celltags`: https://github.com/jupyterlab/jupyterlab-celltags
