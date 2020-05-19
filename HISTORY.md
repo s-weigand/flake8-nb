@@ -1,5 +1,10 @@
 # History
 
+## 0.1.5 (2020-05-19)
+
+- Set max version of `flake8` to be `<=3.8.1`
+- Fixed bug with `--exclude` option
+
 ## 0.1.4 (2020-01-01)
 
 - Set max version of `flake8` to be `<3.8.0`, to prevent breaking due to changes of `flake8`'s inner workings.
