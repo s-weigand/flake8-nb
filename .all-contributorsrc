@@ -19,11 +19,21 @@
         "test",
         "doc"
       ]
+    },
+    {
+      "login": "jtmiclat",
+      "name": "Jt Miclat",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/30991698?v=4",
+      "profile": "https://jtmiclat.me",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "flake8-nb",
   "projectOwner": "s-weigand",
   "repoType": "github",
-  "repoHost": "https://github.com"
+  "repoHost": "https://github.com",
+  "skipCi": true
 }
