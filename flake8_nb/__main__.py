@@ -26,6 +26,8 @@ def main(argv: Optional[List[str]] = None) -> None:
     if FLAKE8_VERSION_TUPLE > (3, 7, 9):  # pragma: no cover
         if argv is None:
             argv = sys.argv[1:]
+        else:
+            argv = argv[1:]
 
     app = Flake8NbApplication()
     app.run(argv)
