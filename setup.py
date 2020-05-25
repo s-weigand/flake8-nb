@@ -17,7 +17,7 @@ with open("README.md", encoding="utf-8") as readme_file:
 with open("HISTORY.md", encoding="utf-8") as history_file:
     history = history_file.read()
 
-requirements = ["flake8>=3.7.0,<=3.8.1", "nbconvert>=5.6.0", "ipython>=7.8.0"]
+requirements = ["flake8>=3.7.0,<3.8.3", "nbconvert>=5.6.0", "ipython>=7.8.0"]
 
 # This is a hack to test against the flake8 master branch
 tox_env_name = os.environ.get("TOX_ENV_NAME", None)
