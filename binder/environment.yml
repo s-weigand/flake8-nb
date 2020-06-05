@@ -3,7 +3,7 @@ channels:
 dependencies:
   # Jupyter
   - jupyterlab=2
-  - nodejs=11
+  - nodejs=12
   - widgetsnbextension=3.5
   # Python Kernel
   - python=3.7
