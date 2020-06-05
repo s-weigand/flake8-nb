@@ -2,11 +2,12 @@ channels:
   - conda-forge
 dependencies:
   # Jupyter
-  - jupyterlab=1.0
-  - nodejs=11
+  - jupyterlab=2
+  - nodejs=12
   - widgetsnbextension=3.5
   # Python Kernel
   - python=3.7
   - pip
   - pip:
+      - jupyter-offlinenotebook>=0.1.0
       - git+https://github.com/s-weigand/flake8-nb.git
