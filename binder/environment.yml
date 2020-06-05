@@ -9,4 +9,5 @@ dependencies:
   - python=3.7
   - pip
   - pip:
+      - jupyter-offlinenotebook>=0.1.0
       - git+https://github.com/s-weigand/flake8-nb.git
