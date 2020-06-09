@@ -76,6 +76,6 @@ setup(
     },
     tests_require=test_requirements,
     url="https://github.com/s-weigand/flake8-nb",
-    version="0.1.7",
+    version="0.1.8",
     zip_safe=False,
 )
