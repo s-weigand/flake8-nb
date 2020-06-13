@@ -37,6 +37,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "shmokmt",
+      "name": "Shoma Okamoto",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/32533860?v=4",
+      "profile": "https://shmokmt.github.io/",
+      "contributions": [
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
