@@ -12,7 +12,7 @@
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/s-weigand/flake8-nb?branch=master)](https://bettercodehub.com/)
 [![Code quality](https://api.codacy.com/project/badge/Grade/d02b436a637243a1b626b74d018c3bbe)](https://www.codacy.com/manual/s.weigand.phy/flake8-nb?utm_source=github.com&utm_medium=referral&utm_content=s-weigand/flake8-nb&utm_campaign=Badge_Grade)
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
 [![Code style Python: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Binder](https://static.mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/s-weigand/flake8-nb.git/master?urlpath=lab%2Ftree%2Ftests%2Fdata%2Fnotebooks)
 
@@ -55,6 +55,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/s-weigand"><img src="https://avatars2.githubusercontent.com/u/9513634?v=4" width="100px;" alt=""/><br /><sub><b>Sebastian Weigand</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/commits?author=s-weigand" title="Code">💻</a> <a href="#ideas-s-weigand" title="Ideas, Planning, & Feedback">🤔</a> <a href="#maintenance-s-weigand" title="Maintenance">🚧</a> <a href="#projectManagement-s-weigand" title="Project Management">📆</a> <a href="#infra-s-weigand" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/s-weigand/flake8-nb/commits?author=s-weigand" title="Tests">⚠️</a> <a href="https://github.com/s-weigand/flake8-nb/commits?author=s-weigand" title="Documentation">📖</a></td>
     <td align="center"><a href="https://jtmiclat.me"><img src="https://avatars0.githubusercontent.com/u/30991698?v=4" width="100px;" alt=""/><br /><sub><b>Jt Miclat</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/issues?q=author%3Ajtmiclat" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://eisenhauer.io"><img src="https://avatars3.githubusercontent.com/u/3607591?v=4" width="100px;" alt=""/><br /><sub><b>Philipp Eisenhauer</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/issues?q=author%3Apeisenha" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://shmokmt.github.io/"><img src="https://avatars1.githubusercontent.com/u/32533860?v=4" width="100px;" alt=""/><br /><sub><b>Shoma Okamoto</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/commits?author=shmokmt" title="Tests">⚠️</a></td>
   </tr>
 </table>
 
