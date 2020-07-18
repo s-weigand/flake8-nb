@@ -116,8 +116,6 @@ Add the following to your :code:`.pre-commit-config.yaml` file:
 
 .. code-block:: yaml
 
-You can then use this as a pre-commit hook by making a .pre-commit-config.yaml file containing:
-
   - repo: https://github.com/s-weigand/flake8-nb
     rev: 0.2.0  # specify version here
     hooks:
