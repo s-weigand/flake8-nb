@@ -1,5 +1,9 @@
 # History
 
+## 0.2.0 (2020-07-18)
+
+- Added pre-commit hook ([#47](https://github.com/s-weigand/flake8-nb/pull/47))
+
 ## 0.1.8 (2020-06-09)
 
 - Set max supported version of `flake8` to be `<=3.8.3`
