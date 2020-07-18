@@ -46,6 +46,16 @@
       "contributions": [
         "test"
       ]
+    },
+    {
+      "login": "MarcoGorelli",
+      "name": "Marco Gorelli",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/33491632?v=4",
+      "profile": "https://marcogorelli.github.io/",
+      "contributions": [
+        "tool",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

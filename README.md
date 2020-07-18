@@ -56,12 +56,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://jtmiclat.me"><img src="https://avatars0.githubusercontent.com/u/30991698?v=4" width="100px;" alt=""/><br /><sub><b>Jt Miclat</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/issues?q=author%3Ajtmiclat" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://eisenhauer.io"><img src="https://avatars3.githubusercontent.com/u/3607591?v=4" width="100px;" alt=""/><br /><sub><b>Philipp Eisenhauer</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/issues?q=author%3Apeisenha" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://shmokmt.github.io/"><img src="https://avatars1.githubusercontent.com/u/32533860?v=4" width="100px;" alt=""/><br /><sub><b>Shoma Okamoto</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/commits?author=shmokmt" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://marcogorelli.github.io/"><img src="https://avatars2.githubusercontent.com/u/33491632?v=4" width="100px;" alt=""/><br /><sub><b>Marco Gorelli</b></sub></a><br /><a href="#tool-MarcoGorelli" title="Tools">🔧</a> <a href="https://github.com/s-weigand/flake8-nb/commits?author=MarcoGorelli" title="Documentation">📖</a></td>
   </tr>
 </table>
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
-
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
