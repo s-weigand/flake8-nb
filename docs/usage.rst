@@ -109,9 +109,25 @@ comment in a cell.
     If you use jupyter magic to run code other than Python (i.e. ``%%bash``)
     you should ignore the whole cell with ``flake8-noqa-cell``.
 
+As pre-commit hook
+^^^^^^^^^^^^^^^^^^
+
+Add the following to your :code:`.pre-commit-config.yaml` file:
+
+.. code-block:: yaml
+
+You can then use this as a pre-commit hook by making a .pre-commit-config.yaml file containing:
+
+  - repo: https://github.com/s-weigand/flake8-nb
+    rev: 0.2.0  # specify version here
+    hooks:
+    - id: flake8-nb
+
+See `pre-commit docs`_ for more on pre-commit.
 
 .. _`flake8 invocation`: https://flake8.pycqa.org/en/latest/user/invocation.html
 .. _`flake8 configuration`: https://flake8.pycqa.org/en/latest/user/configuration.html
 .. _`flake8 documentation`: https://flake8.pycqa.org/en/latest/index.html
 .. _`flake8 noqa`: https://flake8.pycqa.org/en/latest/user/violations.html#in-line-ignoring-errors
 .. _`jupyterlab-celltags`: https://github.com/jupyterlab/jupyterlab-celltags
+.. _`pre-commit docs`: https://pre-commit.com/
