@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from typing import Iterator
 
 import pytest
 
@@ -9,7 +10,7 @@ from .parsers.test_notebook_parsers import TEST_NOTEBOOK_BASE_PATH
 
 
 @pytest.fixture(scope="function")
-def notebook_parser() -> NotebookParser:
+def notebook_parser() -> Iterator[NotebookParser]:
     notebooks = [
         "not_a_notebook.ipynb",
         "notebook_with_flake8_tags.ipynb",

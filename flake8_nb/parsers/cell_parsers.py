@@ -118,8 +118,7 @@ def extract_inline_flake8_noqa(source_line: str) -> List[str]:
             return [line.strip() for line in flake8_noqa_rules]
         elif match.group("has_flake8_noqa_all"):  # pragma: no branch
             return ["noqa"]
-    else:
-        return []
+    return []
 
 
 def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
@@ -165,7 +164,7 @@ def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
 
 def update_rules_dict(
     total_rules_dict: Dict[str, List], new_rules_dict: Dict[str, List]
-) -> Dict[str, List]:
+) -> None:
     """
     Updates the rules dict ``total_rules_dict`` with ``new_rules_dict``.
     If any entry of a key is 'noqa' (ignore all), the rules will be
