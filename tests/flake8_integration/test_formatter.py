@@ -8,7 +8,7 @@ import pytest
 from optparse import Values
 from flake8.style_guide import Violation
 
-from flake8_nb.flake8_integration.formatter import IpynbFormatter
+from flake8_nb.flake8_integration.formatter import IpynbFormatter, map_notebook_error
 from flake8_nb.parsers.notebook_parsers import NotebookParser
 
 TEST_NOTEBOOK_PATH = os.path.join(
@@ -50,12 +50,10 @@ def test_IpynbFormatter__map_notebook_error(
     expected_input_number: int,
     expected_line_number: int,
 ):
-    mocked_option = get_mocked_option()
-    formatter = IpynbFormatter(mocked_option)
     expected_filename = TEST_NOTEBOOK_PATH.format(expected_input_number)
     filename = get_test_intermediate_path(notebook_parser.intermediate_py_file_paths)
     mock_error = get_mocked_violation(filename, line_number)
-    map_result = formatter.map_notebook_error(mock_error)
+    map_result = map_notebook_error(mock_error)
     assert map_result is not None
     filename, input_cell_line_number = map_result
     assert input_cell_line_number == expected_line_number
@@ -65,16 +63,8 @@ def test_IpynbFormatter__map_notebook_error(
 @pytest.mark.parametrize(
     "format_str,file_path_list,expected_result_str",
     [
-        (
-            "default_notebook",
-            [],
-            "{expected_filename}:2:2: AB123 This is just for the coverage",
-        ),
-        (
-            "%(path)s:%(row)d: %(text)s",
-            [],
-            "{expected_filename}:2: This is just for the coverage",
-        ),
+        ("default_notebook", [], "{expected_filename}:2:2: AB123 This is just for the coverage",),
+        ("%(path)s:%(row)d: %(text)s", [], "{expected_filename}:2: This is just for the coverage",),
         (
             "default_notebook",
             ["tests", "data", "notebooks", "falsy_python_file.py"],
@@ -82,12 +72,7 @@ def test_IpynbFormatter__map_notebook_error(
         ),
         (
             "default_notebook",
-            [
-                "tests",
-                "data",
-                "intermediate_py_files",
-                "notebook_with_flake8_tags.ipynb_parsed",
-            ],
+            ["tests", "data", "intermediate_py_files", "notebook_with_flake8_tags.ipynb_parsed"],
             "{expected_filename}:8:2: AB123 This is just for the coverage",
         ),
     ],
@@ -104,9 +89,7 @@ def test_IpynbFormatter__format(
         filename = expected_filename = os.path.join(*file_path_list)
     else:
         expected_filename = TEST_NOTEBOOK_PATH.format(1)
-        filename = get_test_intermediate_path(
-            notebook_parser.intermediate_py_file_paths
-        )
+        filename = get_test_intermediate_path(notebook_parser.intermediate_py_file_paths)
     mock_error = get_mocked_violation(filename, 8)
     result = formatter.format(mock_error)
     expected_result = expected_result_str.format(expected_filename=expected_filename)
