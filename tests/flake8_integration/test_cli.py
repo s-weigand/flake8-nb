@@ -30,7 +30,7 @@ def test_Flake8NbApplication__hack_flake8_program_and_version():
     assert app.program == program
     assert app.version == __version__
     assert app.option_manager.parser.prog == program
-    assert app.option_manager.parser.version == __version__
+    assert app.option_manager.parser.version == __version__  # type: ignore
     assert app.option_manager.program_name == program
     assert app.option_manager.version == __version__
 

@@ -87,7 +87,9 @@ class Flake8NbApplication(Application):
             help="Keep the temporary parsed notebooks, i.e. for debugging.",
         )
         if FLAKE8_VERSION_TUPLE > (3, 7, 9):
-            self.parse_configuration_and_cli = self.parse_configuration_and_cli_nightly
+            self.parse_configuration_and_cli = (  # type: ignore
+                self.parse_configuration_and_cli_nightly
+            )
 
     def hack_flake8_program_and_version(self, program: str, version: str) -> None:
         """
@@ -101,12 +103,10 @@ class Flake8NbApplication(Application):
         version : str
             Version of the program
         """
-        # TODO Cleanup after flake8>3.7.8 release
-        # if https://gitlab.com/pycqa/flake8/merge_requests/359#note_226407899 gets merged
         self.program = program
         self.version = version
         self.option_manager.parser.prog = program
-        self.option_manager.parser.version = version
+        self.option_manager.parser.version = version  # type: ignore
         self.option_manager.program_name = program
         self.option_manager.version = version
 
@@ -132,11 +132,11 @@ class Flake8NbApplication(Application):
                 for index, action in enumerate(parser._actions):  # pragma: no branch
                     if long_option_name in action.option_strings:
                         parser._handle_conflict_resolve(
-                            None, [(long_option_name, parser._actions[index])]
+                            None, [(long_option_name, parser._actions[index])]  # type: ignore
                         )
                         break
             else:
-                parser.remove_option(long_option_name)
+                parser.remove_option(long_option_name)  # type: ignore
         self.option_manager.add_option(long_option_name, *args, **kwargs)
 
     def hack_options(self) -> None:
@@ -166,8 +166,7 @@ class Flake8NbApplication(Application):
             comma_separated_list=True,
             parse_from_config=True,
             normalize_paths=True,
-            help="Comma-separated list of files or directories to exclude."
-            " (Default: %default)",
+            help="Comma-separated list of files or directories to exclude." " (Default: %default)",
         )
 
     @staticmethod
@@ -196,6 +195,8 @@ class Flake8NbApplication(Application):
 
     def parse_configuration_and_cli(self, argv: Optional[List[str]] = None) -> None:
         """
+        Compat version of self.parse_configuration_and_cli to work with flake8 >=3.7.0,<= 3.7.9
+
         Parse configuration files and the CLI options.
 
         Parameters
@@ -205,7 +206,7 @@ class Flake8NbApplication(Application):
         """
         if self.options is None and self.args is None:  # pragma: no branch
             self.options, self.args = aggregator.aggregate_options(
-                self.option_manager, self.config_finder, argv
+                self.option_manager, self.config_finder, argv  # type: ignore
             )
 
         self.args = self.hack_args(self.args, self.options.exclude)
@@ -219,16 +220,13 @@ class Flake8NbApplication(Application):
         self.options._running_from_vcs = False
 
         self.check_plugins.provide_options(self.option_manager, self.options, self.args)
-        self.formatting_plugins.provide_options(
-            self.option_manager, self.options, self.args
-        )
+        self.formatting_plugins.provide_options(self.option_manager, self.options, self.args)
 
     def parse_configuration_and_cli_nightly(
         self, config_finder: config.ConfigFileFinder, argv: List[str]
     ) -> None:
         """
-        Compat version of self.parse_configuration_and_cli to work with nightly
-        build of flake8 master
+        Compat version of self.parse_configuration_and_cli to work with flake8 > 3.7.9 and master
         https://gitlab.com/pycqa/flake8/blob/master/src/flake8/main/application.py#L194
 
         Parse configuration files and the CLI options.
@@ -253,9 +251,7 @@ class Flake8NbApplication(Application):
         self.options._running_from_vcs = False
 
         self.check_plugins.provide_options(self.option_manager, self.options, self.args)
-        self.formatting_plugins.provide_options(
-            self.option_manager, self.options, self.args
-        )
+        self.formatting_plugins.provide_options(self.option_manager, self.options, self.args)
 
     def exit(self) -> None:
         """Handle finalization and exiting the program.
@@ -266,8 +262,7 @@ class Flake8NbApplication(Application):
         if self.options.keep_parsed_notebooks:
             temp_path = NotebookParser.temp_path
             print(
-                f"The parsed notebooks, are still present at:\n\t{temp_path}",
-                file=sys.stderr,
+                f"The parsed notebooks, are still present at:\n\t{temp_path}", file=sys.stderr,
             )
         else:
             NotebookParser.clean_up()

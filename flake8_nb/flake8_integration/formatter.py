@@ -6,7 +6,7 @@ original notebook and the cell the code in."""
 
 import optparse
 import os
-from typing import Tuple
+from typing import Tuple, Union
 
 from flake8.formatting.default import Default
 from flake8.style_guide import Violation
@@ -50,7 +50,7 @@ class IpynbFormatter(Default):
         if filename.lower().endswith(".ipynb_parsed"):
             map_result = self.map_notebook_error(error)
             if map_result:
-                filename, line_number = self.map_notebook_error(error)
+                filename, line_number = map_result
                 return self.error_format % {
                     "code": error.code,
                     "text": error.text,
@@ -63,7 +63,7 @@ class IpynbFormatter(Default):
         else:
             return super().format(error)
 
-    def map_notebook_error(self, error: Violation) -> Tuple[str, int]:
+    def map_notebook_error(self, error: Violation) -> Union[Tuple[str, int], None]:
         """
         Maps the error caused by an intermediate file back
         to a notebook, the input cell it caused and the
