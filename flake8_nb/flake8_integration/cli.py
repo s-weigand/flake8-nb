@@ -10,9 +10,10 @@ of the CLI argv and config of ``flake8``.
 import logging
 import os
 import sys
-from typing import List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple
 
 from flake8 import defaults, utils
+import flake8
 from flake8.main.application import Application
 from flake8.options import aggregator, config
 from flake8.utils import matches_filename
@@ -68,6 +69,17 @@ def get_notebooks_from_args(
     return args, nb_list
 
 
+def hack_option_manager_generate_versions(generate_versions: Callable) -> Callable:
+    def hacked_generate_versions(*args, **kwargs):
+        original_output = generate_versions(*args, **kwargs)
+        format_str = "%(name)s: %(version)s"
+        join_on = ", "
+        additional_output = format_str % {"name": "flake8", "version": flake8.__version__}
+        return f"{additional_output}{join_on}{original_output}"
+
+    return hacked_generate_versions
+
+
 class Flake8NbApplication(Application):
     r"""
     Subclass of ```flake8.main.application.Application``, with
@@ -85,6 +97,9 @@ class Flake8NbApplication(Application):
             action="store_true",
             parse_from_config=True,
             help="Keep the temporary parsed notebooks, i.e. for debugging.",
+        )
+        self.option_manager.generate_versions = hack_option_manager_generate_versions(
+            self.option_manager.generate_versions
         )
         if FLAKE8_VERSION_TUPLE > (3, 7, 9):
             self.parse_configuration_and_cli = (  # type: ignore

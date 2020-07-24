@@ -3,9 +3,9 @@ version: 2
 formats: all
 
 build:
-    image: latest
+  image: latest
 
 python:
-    version: 3.7
-    install:
-        - requirements: requirements_dev.txt
+  version: 3.7
+  install:
+    - requirements: requirements_dev.txt
