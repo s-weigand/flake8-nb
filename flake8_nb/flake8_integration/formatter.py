@@ -4,7 +4,6 @@
 This also includes the code to map parsed error back to the
 original notebook and the cell the code in."""
 
-import optparse
 import os
 from typing import Tuple, Union
 
@@ -52,9 +51,6 @@ class IpynbFormatter(Default):
     If the file to be formated is a ``*.py`` file,
     it uses flake8's default formatter.
     """
-
-    def __init__(self, options: optparse.Values) -> None:
-        super().__init__(options)
 
     def after_init(self) -> None:
         """Check for a custom format string."""

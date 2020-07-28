@@ -45,11 +45,29 @@ def get_notebooks_from_args(
         List of found notebooks absolute paths.
     """
 
-    def is_notebook(filename: str, nb_list: List, root="."):
-        filename = os.path.abspath(os.path.join(root, filename))
-        if os.path.isfile(filename) and filename.endswith(".ipynb"):
-            nb_list.append(os.path.normcase(filename))
+    def is_notebook(file_path: str, nb_list: List[str], root=".") -> bool:
+        """
+        Checks if a file is a notebook and appends it to nb_list if it is.
+
+        Parameters
+        ----------
+        filename : str
+            File to check if it is a notebook
+        nb_list : List[str]
+            List of notebooks
+        root : str, optional
+            Root directory, by default "."
+
+        Returns
+        -------
+        bool
+            Whether the given file is a notebook
+        """
+        file_path = os.path.abspath(os.path.join(root, file_path))
+        if os.path.isfile(file_path) and file_path.endswith(".ipynb"):
+            nb_list.append(os.path.normcase(file_path))
             return True
+        return False
 
     nb_list: List[str] = []
     if not args:
@@ -70,7 +88,29 @@ def get_notebooks_from_args(
 
 
 def hack_option_manager_generate_versions(generate_versions: Callable) -> Callable:
-    def hacked_generate_versions(*args, **kwargs):
+    """
+    Decorator to prepend the flake8 version to option_manager.generate_versions
+
+    Parameters
+    ----------
+    generate_versions : Callable
+        option_manager.generate_versions of flake8.options.manager.OptionManager
+
+    Returns
+    -------
+    Callable
+        hacked_generate_versions
+    """
+
+    def hacked_generate_versions(*args, **kwargs) -> str:
+        """
+        Wrapper around option_manager.generate_versions
+
+        Returns
+        -------
+        str
+            Plugin versions string containing flake8
+        """
         original_output = generate_versions(*args, **kwargs)
         format_str = "%(name)s: %(version)s"
         join_on = ", "
@@ -88,6 +128,16 @@ class Flake8NbApplication(Application):
     """
 
     def __init__(self, program="flake8_nb", version=__version__):
+        """
+        Hacked initialization of flake8.Application
+
+        Parameters
+        ----------
+        program : str, optional
+            Application name, by default "flake8_nb"
+        version : [type], optional
+            Application version, by default __version__
+        """
         super().__init__(program, version)
         self.hack_flake8_program_and_version(program, version)
         self.hack_options()
