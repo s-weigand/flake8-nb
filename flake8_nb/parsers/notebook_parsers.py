@@ -69,7 +69,7 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
         If the notebook couldn't be parsed.
     """
     try:
-        with open(notebook_path) as notebook_file:
+        with open(notebook_path, encoding="utf8") as notebook_file:
             notebook_cells = json.load(notebook_file)["cells"]
             return notebook_cells
     except (json.JSONDecodeError, KeyError):
@@ -265,7 +265,7 @@ def create_intermediate_py_file(
 
     intermediate_code += "".join(intermediate_py_str_list).rstrip("\n")
     if intermediate_code:
-        with open(intermediate_file_path, "w+") as intermediate_file:
+        with open(intermediate_file_path, "w+", encoding="utf8") as intermediate_file:
             intermediate_file.write(f"{intermediate_code}\n")
         return intermediate_file_path, input_line_mapping
     else:
