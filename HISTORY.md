@@ -1,5 +1,10 @@
 # History
 
+## 0.2.1 (2020-08-11)
+
+- Forced uft8 encoding when reading notebooks,
+  this prevents errors on windows when console codepage is assumed
+
 ## 0.2.0 (2020-07-18)
 
 - Added pre-commit hook ([#47](https://github.com/s-weigand/flake8-nb/pull/47))
