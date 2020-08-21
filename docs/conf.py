@@ -36,7 +36,7 @@ import flake8_nb
 extensions = [
     "nbsphinx",
     "nbsphinx_link",
-    "recommonmark",
+    "myst_parser",
     "sphinx_copybutton",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
@@ -176,13 +176,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    (
-        master_doc,
-        "flake8_nb.tex",
-        u"flake8-nb Documentation",
-        u"Sebastian Weigand",
-        "manual",
-    )
+    (master_doc, "flake8_nb.tex", u"flake8-nb Documentation", u"Sebastian Weigand", "manual",)
 ]
 
 
