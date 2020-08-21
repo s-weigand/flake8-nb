@@ -110,6 +110,3 @@ venv.bak/
 # my local testing folder
 # testing
 
-# since they are symlinks they need no changing
-docs/history.md
-docs/readme.md

@@ -39,7 +39,14 @@ class InvalidFlake8TagWarning(UserWarning):
     they have a typo in their tags.
     """
 
-    def __init__(self, flake8_tag, *args, **kwargs):
+    def __init__(self, flake8_tag: str, *args, **kwargs):
+        """
+
+        Parameters
+        ----------
+        flake8_tag : str
+            Used improperly formatted flake8-nb tag
+        """
         super().__init__(
             "flake8-noqa-line/cell-tags should be of form "
             "'flake8-noqa-cell-<rule1>-<rule2>'|'flake8-noqa-cell'/"
@@ -162,9 +169,7 @@ def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
     return {}
 
 
-def update_rules_dict(
-    total_rules_dict: Dict[str, List], new_rules_dict: Dict[str, List]
-) -> None:
+def update_rules_dict(total_rules_dict: Dict[str, List], new_rules_dict: Dict[str, List]) -> None:
     """
     Updates the rules dict ``total_rules_dict`` with ``new_rules_dict``.
     If any entry of a key is 'noqa' (ignore all), the rules will be
@@ -277,9 +282,7 @@ def update_inline_flake8_noqa(source_line: str, rules_list: List[str]) -> str:
     source_line = source_line.rstrip("\n")
     if inline_flake8_noqa:
         rules_list = list(set(inline_flake8_noqa + rules_list))
-        source_line = re.sub(
-            FLAKE8_NOQA_INLINE_REPLACE_PATTERN, r"\g<source_code>", source_line
-        )
+        source_line = re.sub(FLAKE8_NOQA_INLINE_REPLACE_PATTERN, r"\g<source_code>", source_line)
     rules_list = sorted(rules_list)
     if "noqa" in rules_list:
         noqa_str = ""

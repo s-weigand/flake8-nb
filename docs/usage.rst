@@ -110,7 +110,7 @@ comment in a cell.
     you should ignore the whole cell with ``flake8-noqa-cell``.
 
 As pre-commit hook
-^^^^^^^^^^^^^^^^^^
+------------------
 
 Add the following to your :code:`.pre-commit-config.yaml` file:
 

@@ -1,5 +1,2 @@
 *	text=lf
 *.bat	text eol=crlf
-
-docs/history.md	symlink=file
-docs/readme.md	symlink=file

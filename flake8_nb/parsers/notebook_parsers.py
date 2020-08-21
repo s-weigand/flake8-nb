@@ -40,7 +40,13 @@ class InvalidNotebookWarning(UserWarning):
     Warning that is given when a jupyter notebook can't be parsed as JSON.
     """
 
-    def __init__(self, notebook_path, *args, **kwargs):
+    def __init__(self, notebook_path: str, *args, **kwargs):
+        """
+        Parameters
+        ----------
+        notebook_path : str
+            Path to a notebook
+        """
         super().__init__(
             f"Error parsing notebook at path '{notebook_path}'. "
             "Make sure this is a valid notebook."
@@ -393,9 +399,7 @@ class NotebookParser:
                     original_notebook_path, self.temp_path
                 )
                 if intermediate_py_file_path:
-                    NotebookParser.intermediate_py_file_paths.append(
-                        intermediate_py_file_path
-                    )
+                    NotebookParser.intermediate_py_file_paths.append(intermediate_py_file_path)
                     NotebookParser.input_line_mappings.append(input_line_mapping)
                 else:
                     NotebookParser.original_notebook_paths.pop(index)

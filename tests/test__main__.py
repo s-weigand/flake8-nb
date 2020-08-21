@@ -24,16 +24,12 @@ def test_run_main(capsys, keep_intermediate: bool):
     result_output = captured.out
     result_list = result_output.replace("\r", "").split("\n")
     result_list.remove("")
-    expected_result_path = os.path.join(
-        os.path.dirname(__file__), "data", "expected_output.txt"
-    )
+    expected_result_path = os.path.join(os.path.dirname(__file__), "data", "expected_output.txt")
     with open(expected_result_path, "r") as result_file:
         expected_result_list = result_file.readlines()
     assert len(expected_result_list) == len(result_list)
     for expected_result in expected_result_list:
-        assert any(
-            [result.endswith(expected_result.rstrip("\n")) for result in result_list]
-        )
+        assert any([result.endswith(expected_result.rstrip("\n")) for result in result_list])
 
     if keep_intermediate:
         assert os.path.exists(NotebookParser.temp_path)
@@ -67,9 +63,7 @@ def test_syscall(cli_entrypoint: str, keep_intermediate: bool):
     result_list = []
     for line in proc.stdout:
         result_list.append(str(line))
-    expected_result_path = os.path.join(
-        os.path.dirname(__file__), "data", "expected_output.txt"
-    )
+    expected_result_path = os.path.join(os.path.dirname(__file__), "data", "expected_output.txt")
     with open(expected_result_path, "r") as result_file:
         expected_result_list = result_file.readlines()
 
