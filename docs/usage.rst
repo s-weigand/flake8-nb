@@ -68,7 +68,7 @@ or all errors, ``flake8`` would report on that given line.
 Cell tags
 ^^^^^^^^^
 Cell tags are meta information, which can be added to cells,
-to augment their behavior.
+to augment their behavior (for ``jupyterlab<2.0``, you will need to install `jupyterlab-celltags`_  ).
 Depending on the editor you use for the notebook, they aren't
 directly visible, which is a nice way to hide certain internals
 which aren't important for the user/reader.
@@ -79,7 +79,7 @@ Or if you want to demonstrate a raised exception and still want
 then whole notebook to be executed when you run all cells, you
 can use the ``raises-exception`` tag.
 
-The patterns for `flake8-noqa-tags` are the following:
+The patterns for ``flake8-noqa-tags`` are the following:
 
 * ``flake8-noqa-cell``
     ignores all reports from a cell

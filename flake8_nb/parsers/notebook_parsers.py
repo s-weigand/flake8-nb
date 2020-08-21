@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
-
 """Module for parsing whole jupyter notebooks.
-This utilizes ``flake8_nb.parser.cell_parsers``."""
+
+This utilizes ``flake8_nb.parser.cell_parsers``.
+"""
 
 import json
 import os
@@ -14,8 +14,7 @@ from .cell_parsers import notebook_cell_to_intermediate_dict
 
 
 def ignore_cell(notebook_cell: Dict) -> bool:
-    """
-    Return True if the cell isn't a code cell or is empty.
+    """Return True if the cell isn't a code cell or is empty.
 
     Parameters
     ----------
@@ -36,12 +35,11 @@ def ignore_cell(notebook_cell: Dict) -> bool:
 
 
 class InvalidNotebookWarning(UserWarning):
-    """
-    Warning that is given when a jupyter notebook can't be parsed as JSON.
-    """
+    """Warning that is given when a jupyter notebook can't be parsed as JSON."""
 
     def __init__(self, notebook_path: str, *args, **kwargs):
-        """
+        """Initialize InvalidNotebookWarning.
+
         Parameters
         ----------
         notebook_path : str
@@ -54,9 +52,7 @@ class InvalidNotebookWarning(UserWarning):
 
 
 def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
-    r"""
-    Parses the notebook at ``notebook_path`` as Json and returns a list of notebook
-    cells.
+    r"""Parse the notebook at ``notebook_path`` as Json and returns a list of notebook cells.
 
     Parameters
     ----------
@@ -84,9 +80,9 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
 
 
 def convert_source_line(source_line: str) -> str:
-    """
-    Transforms jupyter magic commands to valid python code,
-    utilizing ``nbconvert.filters.ipython2python``.
+    """Transform jupyter magic commands to valid python code.
+
+    This utilizes ``nbconvert.filters.ipython2python``.
 
     Parameters
     ----------
@@ -106,10 +102,10 @@ def convert_source_line(source_line: str) -> str:
 
 
 def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[Dict]]:
-    """
-    Parses a notebook and returns a Tuple, with the first entry
-    beeing a bool which indedicates if juypter magic way used and
-    the second entry is a List of all code cells, as their dict
+    """Parse a notebook and returns a Tuple.
+
+    The first entry  being a bool which indicates if juypter magic was
+    used and the second entry is a List of all code cells, as their dict
     representation.
 
     Parameters
@@ -150,8 +146,7 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[Dict]]:
 
 
 def is_parent_dir(parent_dir: str, path: str) -> bool:
-    """
-    Checks if a given dir `parent_dir` is parent directory of `path`.
+    """Check if a given dir `parent_dir` is parent directory of `path`.
 
     Parameters
     ----------
@@ -181,9 +176,9 @@ def is_parent_dir(parent_dir: str, path: str) -> bool:
 
 
 def create_temp_path(notebook_path: str, temp_base_path: str) -> str:
-    """
-    Creates the path for a parsed jupyter notebook, which has
-    the same relative position to ``temp_base_path`` as
+    """Create the path for a parsed jupyter notebook.
+
+    The path has the same relative position to ``temp_base_path`` as
     ``notebook_path`` has to ``os.curdir``. If that would lead out
     of the ``temp_base_path``, the path will point to a file
     at the root of ``temp_base_path``, which has the same filename
@@ -218,10 +213,9 @@ def create_temp_path(notebook_path: str, temp_base_path: str) -> str:
 def create_intermediate_py_file(
     notebook_path: str, intermediate_dir_base_path: str
 ) -> Tuple[str, Dict]:
-    r"""
-    Parses a notebook at ``notebook_path`` and saves a parsed
-    version to the corresponding position relative to
-    ``intermediate_dir_base_path``.
+    r"""Parse a notebook at ``notebook_path`` and saves a parsed version.
+
+    The corresponding position is relative to ``intermediate_dir_base_path``.
 
     Parameters
     ----------
@@ -279,8 +273,7 @@ def create_intermediate_py_file(
 
 
 def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
-    """
-    Transforms `file_paths` in a list of paths relative to `base_path`.
+    """Transform `file_paths` in a list of paths relative to `base_path`.
 
     Parameters
     ----------
@@ -304,8 +297,9 @@ def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
 def map_intermediate_to_input(
     input_line_mapping: Dict[str, List], line_number: int
 ) -> Tuple[str, int]:
-    """
-    Remaps the line at `line_number` to the corresponding code cell
+    """Map intermediate file lines to notebooke cell and line.
+
+    Maps the line at `line_number` to the corresponding code cell
     (`input_cell_name`) and line number in the code cell
     (`input_cell_line_number`)
 
@@ -338,10 +332,10 @@ def map_intermediate_to_input(
 
 
 class NotebookParser:
-    """
-    Main parsing class for notebooks.
+    """Main parsing class for notebooks.
+
     ``NotebookParser`` utilizes that instance and class attributes
-    are seperated and class attributes allow sharing of information
+    are separated and class attributes allow sharing of information
     across instances. This is used to realize the mapping of checked
     parsed notebooks back to their original files.
 
@@ -357,10 +351,11 @@ class NotebookParser:
     """Path of the temp folder the parsed notebooks were saved in"""
 
     def __init__(self, original_notebook_paths: List[str] = None):
-        """
-        Initializing an instace of the class will save ``original_notebook_paths``,
+        """Initialize NotebookParser.
+
+        Initializing an instance of the class will save ``original_notebook_paths``,
         which is a List of paths to notebooks, to the class attributes, which can be
-        accessed by all instaces or all modules that know about the class.
+        accessed by all instances or all modules that know about the class.
         If ``original_notebook_paths`` isn't provided, the class attributes will stay
         as it was.
 
@@ -380,7 +375,8 @@ class NotebookParser:
         NotebookParser.input_line_mappings.reverse()
 
     def create_intermediate_py_file_paths(self):
-        """
+        """Create intermediate files needed for analysis.
+
         Parses all notebooks provided by ``self.original_notebook_paths``
         and saves them to a temporary directory, if ``original_notebook_paths``,
         was provided at initialization.
@@ -395,7 +391,7 @@ class NotebookParser:
             NotebookParser.temp_path = tempfile.mkdtemp(prefix="flake8_nb_")
             index_orig_list = list(enumerate(self.original_notebook_paths))[::-1]
             for index, original_notebook_path in index_orig_list:
-                intermediate_py_file_path, input_line_mapping = create_intermediate_py_file(
+                (intermediate_py_file_path, input_line_mapping,) = create_intermediate_py_file(
                     original_notebook_path, self.temp_path
                 )
                 if intermediate_py_file_path:
@@ -406,9 +402,9 @@ class NotebookParser:
 
     @staticmethod
     def get_mappings() -> Iterator[Tuple[str, str, Dict]]:
-        """
-        Return the mapping information needed to generate error messages
-        corresponding to the original notebook and not the actually checked
+        """Return the mapping information needed to generate error messages.
+
+        The message corresponds to the original notebook and not the actually checked
         parsed one.
 
         Returns
@@ -437,10 +433,7 @@ class NotebookParser:
 
     @staticmethod
     def clean_up():
-        """
-        Deletes the created temporary directory if it exists and
-        resets all class attributes.
-        """
+        """Delete the created temporary directory if it exists and resets all class attributes."""
         import shutil
 
         if NotebookParser.temp_path:

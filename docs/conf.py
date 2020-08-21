@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # flake8_nb documentation build configuration file, created by
 # sphinx-quickstart on Fri Jun  9 13:47:02 2017.
@@ -18,11 +17,6 @@
 # relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
 #
-import os
-import sys
-
-sys.path.insert(0, os.path.abspath(".."))
-
 import flake8_nb
 
 # -- General configuration ---------------------------------------------
@@ -70,9 +64,9 @@ source_suffix = [".rst", ".md"]
 master_doc = "index"
 
 # General information about the project.
-project = u"flake8-nb"
-copyright = u"2019, Sebastian Weigand"
-author = u"Sebastian Weigand"
+project = "flake8-nb"
+copyright = "2019, Sebastian Weigand"
+author = "Sebastian Weigand"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -115,7 +109,7 @@ nbsphinx_prolog = r"""
 
         This page was generated from `{{ docname }}`__.
         Interactive online version:
-        :raw-html:`<a href="https://mybinder.org/v2/gh/s-weigand/flake8-nb/master?urlpath={{ binder_urls | replace('/','%2F') }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`
+        :raw-html:`<a href="https://mybinder.org/v2/gh/s-weigand/flake8-nb/master?urlpath={{ binder_urls | replace('/','%2F') }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`  # noqa: E501
 
     __ https://github.com/s-weigand/flake8-nb/blob/master/{{ docname | urlencode }}
 
@@ -176,7 +170,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "flake8_nb.tex", u"flake8-nb Documentation", u"Sebastian Weigand", "manual",)
+    (master_doc, "flake8_nb.tex", "flake8-nb Documentation", "Sebastian Weigand", "manual",)
 ]
 
 
@@ -184,7 +178,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "flake8_nb", u"flake8-nb Documentation", [author], 1)]
+man_pages = [(master_doc, "flake8_nb", "flake8-nb Documentation", [author], 1)]
 
 linkcheck_ignore = [
     r"https://github\.com/s-weigand/flake8-nb/actions",
@@ -201,7 +195,7 @@ texinfo_documents = [
     (
         master_doc,
         "flake8_nb",
-        u"flake8-nb Documentation",
+        "flake8-nb Documentation",
         author,
         "flake8_nb",
         "One line description of project.",

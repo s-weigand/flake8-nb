@@ -57,9 +57,9 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `flake8_nb` for local development.
+Ready to contribute? Here's how to set up ``flake8_nb`` for local development.
 
-1. Fork the `flake8_nb` repo on GitHub.
+1. Fork the ``flake8_nb`` repo on GitHub.
 2. Clone your fork locally::
 
     $ git clone git@github.com:your_name_here/flake8_nb.git
@@ -102,8 +102,8 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 3.6 and 3.7, and for PyPy. Check
-   https://travis-ci.org/s-weigand/flake8-nb/pull_requests
+3. The pull request should work for Python 3.6 and 3.7, and 3.8. Check
+   https://github.com/s-weigand/flake8-nb/actions
    and make sure that the tests pass for all supported Python versions.
 
 Tips

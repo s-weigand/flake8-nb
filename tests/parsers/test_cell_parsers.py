@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
-
 import warnings
 from typing import Dict, List
 
 import pytest
-
 from flake8_nb.parsers.cell_parsers import (
     InvalidFlake8TagWarning,
     extract_flake8_inline_tags,
@@ -22,11 +19,7 @@ from flake8_nb.parsers.cell_parsers import (
 @pytest.mark.parametrize(
     "source_index,rules_dict,expected_result",
     [
-        (
-            0,
-            {"cell": ["noqa"], "1": ["E402", "F401", "W391"]},
-            ["E402", "F401", "W391", "noqa"],
-        ),
+        (0, {"cell": ["noqa"], "1": ["E402", "F401", "W391"]}, ["E402", "F401", "W391", "noqa"],),
         (1, {"cell": ["noqa"], "1": ["E402", "F401", "W391"]}, ["noqa"]),
         (1, {"1": ["E402", "F401", "W391"]}, []),
     ],
@@ -43,9 +36,7 @@ def test_generate_rules_list(
         (
             {
                 "execution_count": 8,
-                "metadata": {
-                    "tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]
-                },
+                "metadata": {"tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]},
                 "source": ["foo  "],
             },
             {"cell": ["E402", "F401"]},
@@ -68,9 +59,7 @@ def test_generate_rules_list(
         (
             {
                 "execution_count": 8,
-                "metadata": {
-                    "tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]
-                },
+                "metadata": {"tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]},
                 "source": ["foo  # flake8-noqa-cell     ", "bar # flake8-noqa-line-4"],
             },
             {"cell": ["noqa"], "4": ["noqa"]},
@@ -141,9 +130,7 @@ def test_extract_flake8_inline_tags():
         ("flake8-noqa-line-foo-E402-F401", {}),
     ],
 )
-def test_flake8_tag_to_rules_dict(
-    flake8_noqa_tag: str, expected_result: Dict[str, List]
-):
+def test_flake8_tag_to_rules_dict(flake8_noqa_tag: str, expected_result: Dict[str, List]):
     if flake8_noqa_tag == "flake8-noqa-line-foo-E402-F401":
         with pytest.warns(InvalidFlake8TagWarning):
             assert flake8_tag_to_rules_dict(flake8_noqa_tag) == expected_result
@@ -174,9 +161,7 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
         (
             {
                 "execution_count": 8,
-                "metadata": {
-                    "tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]
-                },
+                "metadata": {"tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]},
                 "source": ["for i in range(1):\n", "    print(i)"],
             },
             {
@@ -189,9 +174,7 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
         (
             {
                 "execution_count": 9,
-                "metadata": {
-                    "tags": ["flake8-noqa-line-1-E402-F401", "flake8-noqa-line-1-W391"]
-                },
+                "metadata": {"tags": ["flake8-noqa-line-1-E402-F401", "flake8-noqa-line-1-W391"]},
                 "source": ["for i in range(1):\n", "    print(i)"],
             },
             {
@@ -260,9 +243,7 @@ def test_notebook_cell_to_intermediate_py_str(
         ({"1": ["noqa"]}, {"cell": ["E402", "F401"], "1": ["noqa"]}),
     ],
 )
-def test_update_rules_dict(
-    new_rules_dict: Dict[str, List], expected_result: Dict[str, List]
-):
+def test_update_rules_dict(new_rules_dict: Dict[str, List], expected_result: Dict[str, List]):
     total_rules_dict = {"cell": ["E402", "F401"], "1": ["W391"]}
     update_rules_dict(total_rules_dict, new_rules_dict)
     assert sorted(total_rules_dict["cell"]) == sorted(expected_result["cell"])
@@ -296,9 +277,7 @@ def test_update_rules_dict(
         ),
     ],
 )
-def test_update_inline_flake8_noqa(
-    source_index: str, rules_list: List, expected_result: str
-):
+def test_update_inline_flake8_noqa(source_index: str, rules_list: List, expected_result: str):
     assert update_inline_flake8_noqa(source_index, rules_list) == expected_result
 
 

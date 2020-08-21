@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Command-line implementation of flake8_nb."""
 import sys
 from typing import List, Optional
@@ -9,8 +7,8 @@ from flake8_nb.flake8_integration.cli import Flake8NbApplication
 
 
 def main(argv: Optional[List[str]] = None) -> None:
-    """
-    Execute the main bit of the application.
+    """Execute the main bit of the application.
+
     This handles the creation of an instance of :class:`Application`, runs it,
     and then exits the application.
 

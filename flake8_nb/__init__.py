@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Top-level package for flake8-nb."""
 
 __author__ = """Sebastian Weigand"""
@@ -8,15 +6,16 @@ __version__ = "0.2.1"
 
 import flake8
 
-from .flake8_integration.formatter import IpynbFormatter  # noqa: F401
+from .flake8_integration.formatter import IpynbFormatter
 
-__all__ = "IpynbFormatter"
+__all__ = IpynbFormatter.__name__
 
 
 def save_cast_int(int_str: str) -> int:
-    """
-    Helper function so the version number of prereleases (i.e. 3.8.0rc1)
-    does not throw exceptions
+    """Cast version string to tuple, in a save manner.
+
+    This is needed so the version number of prereleases (i.e. 3.8.0rc1)
+    don't not throw exceptions.
 
     Parameters
     ----------

@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-
 import os
+from optparse import Values
 from typing import List
 
 import pytest
-
-from optparse import Values
 from flake8.style_guide import Violation
-
 from flake8_nb.flake8_integration.formatter import IpynbFormatter, map_notebook_error
 from flake8_nb.parsers.notebook_parsers import NotebookParser
 
@@ -64,7 +60,11 @@ def test_IpynbFormatter__map_notebook_error(
     "format_str,file_path_list,expected_result_str",
     [
         ("default_notebook", [], "{expected_filename}:2:2: AB123 This is just for the coverage",),
-        ("%(path)s:%(row)d: %(text)s", [], "{expected_filename}:2: This is just for the coverage",),
+        (
+            "%(path)s:%(row)d: %(text)s",
+            [],
+            "{expected_filename}:2: This is just for the coverage",
+        ),
         (
             "default_notebook",
             ["tests", "data", "notebooks", "falsy_python_file.py"],
@@ -72,7 +72,12 @@ def test_IpynbFormatter__map_notebook_error(
         ),
         (
             "default_notebook",
-            ["tests", "data", "intermediate_py_files", "notebook_with_flake8_tags.ipynb_parsed"],
+            [
+                "tests",
+                "data",
+                "intermediate_py_files",
+                "notebook_with_flake8_tags.ipynb_parsed",
+            ],  # dummy comment for formatting
             "{expected_filename}:8:2: AB123 This is just for the coverage",
         ),
     ],

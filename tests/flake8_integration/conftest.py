@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 from typing import List, Tuple
 
@@ -38,10 +36,7 @@ class TempIpynbArgs:
         elif self.kind == "dir":
             return (
                 [str(self.sub_level_dir), "random_arg"],
-                (
-                    [self.sub_level_dir, "random_arg"],
-                    [os.path.normcase(self.sub_level)],
-                ),
+                ([self.sub_level_dir, "random_arg"], [os.path.normcase(self.sub_level)],),
             )
         elif self.kind == "random":
             return (["random_arg"], (["random_arg"], []))

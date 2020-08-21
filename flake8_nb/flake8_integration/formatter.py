@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """Module containing the report formatter.
+
 This also includes the code to map parsed error back to the
-original notebook and the cell the code in."""
+original notebook and the cell the code in.
+"""
 
 import os
 from typing import Tuple, Union
@@ -14,10 +14,10 @@ from ..parsers.notebook_parsers import NotebookParser, map_intermediate_to_input
 
 
 def map_notebook_error(violation: Violation) -> Union[Tuple[str, int], None]:
-    """
-    Maps the violation caused by an intermediate file back
-    to a notebook, the input cell it caused and the
-    respective line number in that cell.
+    """Map the violation caused in an intermediate file back to its cause.
+
+    The cause is resolved as the notebook, the input cell and
+    the respective line number in that cell.
 
     Parameters
     ----------
@@ -46,9 +46,9 @@ def map_notebook_error(violation: Violation) -> Union[Tuple[str, int], None]:
 
 
 class IpynbFormatter(Default):
-    r"""
-    Default flake8_nb formatter for jupyter notebooks.
-    If the file to be formated is a ``*.py`` file,
+    r"""Default flake8_nb formatter for jupyter notebooks.
+
+    If the file to be formatted is a ``*.py`` file,
     it uses flake8's default formatter.
     """
 
@@ -58,9 +58,9 @@ class IpynbFormatter(Default):
             self.error_format = self.options.format
 
     def format(self, violation: Violation) -> str:
-        r"""
-        Formats the error detected by a flake8 checker,
-        depending on if the violation was caused by a ``*.py`` file
+        r"""Format the error detected by a flake8 checker.
+
+        Depending on if the violation was caused by a ``*.py`` file
         or by a parsed notebook.
 
         Parameters
