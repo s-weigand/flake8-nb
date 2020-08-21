@@ -1,0 +1,28 @@
+[tool.black]
+line-length = 99
+target-version = ['py36', 'py37', 'py38']
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "hug"
+src_paths = ["zenodo_cite", "test"]
+include_trailing_comma = true
+line_length = 99
+multi_line_output = 3
+
+[tool.interrogate]
+exclude = ["setup.py", "docs", "tests"]
+ignore-init-module = true

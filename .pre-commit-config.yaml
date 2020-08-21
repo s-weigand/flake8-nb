@@ -1,0 +1,80 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.1.0
+    hooks:
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: debug-statements
+      - id: fix-encoding-pragma
+        args: [--remove]
+  - repo: https://github.com/python/black
+    rev: 19.10b0
+    hooks:
+      - id: black
+        language_version: python3
+  - repo: https://github.com/prettier/prettier
+    rev: 2.0.5 # Use the sha or tag you want to point at
+    hooks:
+      - id: prettier
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.8.3
+    hooks:
+      - id: flake8
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.0.9
+    hooks:
+      - id: isort
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 5.0.2
+    hooks:
+      - id: pydocstyle
+        exclude: "docs|tests"
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.2.0
+    hooks:
+      - id: interrogate
+        args: [-v]
+        exclude: "docs|tests"
+  - repo: local
+    hooks:
+      - id: rstcheck
+        name: rstcheck
+        entry: rstcheck
+        files: ".rst"
+        language: python
+        additional_dependencies: [rstcheck, sphinx]
+
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.5.1
+    hooks:
+      - id: rst-backticks
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v1.17.1
+    hooks:
+      - id: codespell
+        files: ".py|.rst"
+        args: [-L nnumber]
+
+  - repo: https://github.com/asottile/yesqa
+    rev: v1.2.1
+    hooks:
+      - id: yesqa
+        additional_dependencies: [pydocstyle, nbconvert]
+  - repo: local
+    hooks:
+      - id: tests
+        name: run tests
+        entry: pytest -v tests
+        language: system
+        types: [python]
+        stages: [push]
+      # - id: interrogate-badge
+      #   name: Update interrogate badge
+      #   entry: interrogate -g docs/_static work_tracker
+      #   args: [-v, -g, docs/_static]
+      #   language: system
+      #   types: [python]
+      #   stages: [push]
