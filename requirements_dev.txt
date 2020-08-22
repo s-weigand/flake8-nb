@@ -3,8 +3,11 @@ bump2version>=0.5.11
 wheel>=0.33.6
 # install package in development mode
 -e .
-# code formating
-black>=18.9b0
+# quality asurence
+black>=19.10b0
+isort>=5.2.2
+pre-commit>=2.6.0
+pydocstyle>=5.0.2
 # test requirements
 tox>=3.5.2
 pytest>=5.1.3

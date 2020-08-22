@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
-
 r"""Module containing the notebook gatherer and hack of flake8.
+
 This is the main implementation of ``flake8_nb``, it relies on
 overwriting ``flake8`` 's CLI default options, searching and parsing
 ``*.ipynb`` files and injecting the parsed files, during the loading
@@ -12,8 +11,8 @@ import os
 import sys
 from typing import Callable, List, Optional, Tuple
 
-from flake8 import defaults, utils
 import flake8
+from flake8 import defaults, utils
 from flake8.main.application import Application
 from flake8.options import aggregator, config
 from flake8.utils import matches_filename
@@ -27,9 +26,10 @@ LOG = logging.getLogger(__name__)
 def get_notebooks_from_args(
     args: List[str], exclude: List[str] = ["*.tox/*", "*.ipynb_checkpoints*"]
 ) -> Tuple[List[str], List[str]]:
-    """
-    Extracts the absolute paths to notebooks from current director or
-    the to the CLI passes files/folder and return the as list.
+    """Extract the absolute paths to notebooks.
+
+    The paths are relative to the current directory or
+    to the CLI passes files/folder and returned as list.
 
     Parameters
     ----------
@@ -46,8 +46,7 @@ def get_notebooks_from_args(
     """
 
     def is_notebook(file_path: str, nb_list: List[str], root=".") -> bool:
-        """
-        Checks if a file is a notebook and appends it to nb_list if it is.
+        """Check if a file is a notebook and appends it to nb_list if it is.
 
         Parameters
         ----------
@@ -88,8 +87,7 @@ def get_notebooks_from_args(
 
 
 def hack_option_manager_generate_versions(generate_versions: Callable) -> Callable:
-    """
-    Decorator to prepend the flake8 version to option_manager.generate_versions
+    """Closure to prepend the flake8 version to option_manager.generate_versions .
 
     Parameters
     ----------
@@ -103,8 +101,7 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
     """
 
     def hacked_generate_versions(*args, **kwargs) -> str:
-        """
-        Wrapper around option_manager.generate_versions
+        """Inner wrapper around option_manager.generate_versions .
 
         Returns
         -------
@@ -114,22 +111,24 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
         original_output = generate_versions(*args, **kwargs)
         format_str = "%(name)s: %(version)s"
         join_on = ", "
-        additional_output = format_str % {"name": "flake8", "version": flake8.__version__}
+        additional_output = format_str % {
+            "name": "flake8",
+            "version": flake8.__version__,
+        }
         return f"{additional_output}{join_on}{original_output}"
 
     return hacked_generate_versions
 
 
 class Flake8NbApplication(Application):
-    r"""
-    Subclass of ```flake8.main.application.Application``, with
-    overwritten default options and an injection of intermediate parsed
+    r"""Subclass of ```flake8.main.application.Application``.
+
+    It overwrites the default options and an injection of intermediate parsed
     ``*.ipynb`` files to be checked.
     """
 
     def __init__(self, program="flake8_nb", version=__version__):
-        """
-        Hacked initialization of flake8.Application
+        """Hacked initialization of flake8.Application.
 
         Parameters
         ----------
@@ -157,9 +156,9 @@ class Flake8NbApplication(Application):
             )
 
     def hack_flake8_program_and_version(self, program: str, version: str) -> None:
-        """
-        Another hack to overwrite the program name and version of flake8,
-        which is hard coded at creation of `self.option_manager`.
+        """Hack to overwrite the program name and version of flake8.
+
+        This is needed because those values are hard coded at creation of `self.option_manager`.
 
         Parameters
         ----------
@@ -176,8 +175,9 @@ class Flake8NbApplication(Application):
         self.option_manager.version = version
 
     def set_flake8_option(self, long_option_name: str, *args, **kwargs) -> None:
-        """
-        First deletes and than readds an option to `flake8`'s cli options, if it was present.
+        """Overwrite flake8 options.
+
+        First deletes and than reads an option to `flake8`'s cli options, if it was present.
         If the option wasn't present, it just adds it.
 
 
@@ -205,9 +205,7 @@ class Flake8NbApplication(Application):
         self.option_manager.add_option(long_option_name, *args, **kwargs)
 
     def hack_options(self) -> None:
-        """
-        Overwrites ``flake8``'s default options, with ``flake8_nb`` defaults.
-        """
+        """Overwrite ``flake8``'s default options, with ``flake8_nb`` defaults."""
         self.set_flake8_option(
             "--format",
             metavar="format",
@@ -236,7 +234,8 @@ class Flake8NbApplication(Application):
 
     @staticmethod
     def hack_args(args: List[str], exclude: List[str]) -> List[str]:
-        r"""
+        r"""Update args with ``*.ipynb`` files.
+
         Checks the passed args if ``*.ipynb`` can be found and
         appends intermediate parsed files to the list of files,
         which should be checked.
@@ -253,14 +252,12 @@ class Flake8NbApplication(Application):
         List[str]
             The original args + intermediate parsed ``*.ipynb`` files.
         """
-
         args, nb_list = get_notebooks_from_args(args, exclude=exclude)
         notebook_parser = NotebookParser(nb_list)
         return args + notebook_parser.intermediate_py_file_paths
 
     def parse_configuration_and_cli(self, argv: Optional[List[str]] = None) -> None:
-        """
-        Compat version of self.parse_configuration_and_cli to work with flake8 >=3.7.0,<= 3.7.9
+        """Compat version of self.parse_configuration_and_cli to work with flake8 >=3.7.0,<= 3.7.9 .
 
         Parse configuration files and the CLI options.
 
@@ -290,9 +287,9 @@ class Flake8NbApplication(Application):
     def parse_configuration_and_cli_nightly(
         self, config_finder: config.ConfigFileFinder, argv: List[str]
     ) -> None:
-        """
-        Compat version of self.parse_configuration_and_cli to work with flake8 > 3.7.9 and master
-        https://gitlab.com/pycqa/flake8/blob/master/src/flake8/main/application.py#L194
+        """Compat version of self.parse_configuration_and_cli to work with flake8 > 3.7.9 and master.
+
+        See https://gitlab.com/pycqa/flake8/blob/master/src/flake8/main/application.py#L194
 
         Parse configuration files and the CLI options.
 

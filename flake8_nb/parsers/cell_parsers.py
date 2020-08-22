@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
-
 """Module containing parsers for notebook cells.
-This also inclues parsers for the cell and inline tags.
-It heavily utilizes the mutability of lists."""
+
+This also includes parsers for the cell and inline tags.
+It heavily utilizes the mutability of lists.
+"""
 
 import re
 import warnings
@@ -32,15 +32,15 @@ FLAKE8_NOQA_INLINE_REPLACE_PATTERN = re.compile(
 
 
 class InvalidFlake8TagWarning(UserWarning):
-    """
-    Warning which is thrown, when a cell tag starts with
-    'flake8-noqa-' but doesn't match the correct pattern
-    needed for cell tags. This is used to show users that
-    they have a typo in their tags.
+    """Warning thrown when a tag is badly formatted.
+
+    When a cell tag starts with 'flake8-noqa-' but doesn't
+    match the correct pattern needed for cell tags.
+    This is used to show users that they have a typo in their tags.
     """
 
     def __init__(self, flake8_tag: str, *args, **kwargs):
-        """
+        """Create InvalidFlake8TagWarning.
 
         Parameters
         ----------
@@ -56,8 +56,7 @@ class InvalidFlake8TagWarning(UserWarning):
 
 
 def extract_flake8_tags(notebook_cell: Dict) -> List[str]:
-    """
-    Exctracts all tag that start with 'flake8-noqa-' from a cell.
+    """Extract all tag that start with 'flake8-noqa-' from a cell.
 
     Parameters
     ----------
@@ -77,8 +76,7 @@ def extract_flake8_tags(notebook_cell: Dict) -> List[str]:
 
 
 def extract_flake8_inline_tags(notebook_cell: Dict) -> List[str]:
-    """
-    Extracts flake8-tags which were used as comment in a cell.
+    """Extract flake8-tags which were used as comment in a cell.
 
     Parameters
     ----------
@@ -103,9 +101,7 @@ def extract_flake8_inline_tags(notebook_cell: Dict) -> List[str]:
 
 
 def extract_inline_flake8_noqa(source_line: str) -> List[str]:
-    """
-    Extracts flake8 noqa rules from normal flake8 comments and
-    returns the as list.
+    """Extract flake8 noqa rules from normal flake8 comments .
 
     Parameters
     ----------
@@ -129,8 +125,8 @@ def extract_inline_flake8_noqa(source_line: str) -> List[str]:
 
 
 def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
-    """
-    Parses a flake8 tag to a ``rules_dict``.
+    """Parse a flake8 tag to a ``rules_dict``.
+
     ``rules_dict`` contains lists of rules, depending on if the
     tag is a cell or a line tag.
 
@@ -170,8 +166,8 @@ def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
 
 
 def update_rules_dict(total_rules_dict: Dict[str, List], new_rules_dict: Dict[str, List]) -> None:
-    """
-    Updates the rules dict ``total_rules_dict`` with ``new_rules_dict``.
+    """Update the rules dict ``total_rules_dict`` with ``new_rules_dict``.
+
     If any entry of a key is 'noqa' (ignore all), the rules will be
     set to be only 'noqa'.
 
@@ -200,8 +196,8 @@ def update_rules_dict(total_rules_dict: Dict[str, List], new_rules_dict: Dict[st
 
 
 def get_flake8_rules_dict(notebook_cell: Dict) -> Dict[str, List]:
-    """
-    Parses all flake8 tags of a cell to a ``rules_dict``.
+    """Parse all flake8 tags of a cell to a ``rules_dict``.
+
     ``rules_dict`` contains lists of rules, depending on if the
     tag is a cell or a line tag.
 
@@ -230,9 +226,9 @@ def get_flake8_rules_dict(notebook_cell: Dict) -> Dict[str, List]:
 
 
 def generate_rules_list(source_index: int, rules_dict: Dict[str, List]) -> List[str]:
-    """
-    Generates a List of rules from ``rules_dict``, which should be
-    applied to the line at ``source_index``.
+    """Generate a List of rules from ``rules_dict``.
+
+    This list should be applied to the line at ``source_index``.
 
     Parameters
     ----------
@@ -257,8 +253,8 @@ def generate_rules_list(source_index: int, rules_dict: Dict[str, List]) -> List[
 
 
 def update_inline_flake8_noqa(source_line: str, rules_list: List[str]) -> str:
-    """
-    Updates ``source_line`` with flake8 noqa comments.
+    """Update ``source_line`` with flake8 noqa comments.
+
     This is done extraction flake8-tags as well as inline flake8
     comments.
 
@@ -295,9 +291,9 @@ def update_inline_flake8_noqa(source_line: str, rules_list: List[str]) -> str:
 
 
 def notebook_cell_to_intermediate_dict(notebook_cell: Dict) -> Dict:
-    r"""
-    Parses ``notebook_cell`` to a dict which can later be written to a
-    intermediate_py_file.
+    r"""Parse ``notebook_cell`` to a dict.
+
+    That dict can later be written to a intermediate_py_file.
 
     Parameters
     ----------

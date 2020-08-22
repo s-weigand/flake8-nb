@@ -17,8 +17,8 @@
         {%- endfor %}
     {% endif %}
 
-    {% block functions %}
-    {% if functions %}
+{% block functions %}
+{% if functions %}
 
 Functions
 ---------
@@ -28,14 +28,16 @@ Functions
     .. autosummary::
         :toctree: {{ fullname | replace("flake8_nb.", "") | replace(".", "/") }}/functions
         :nosignatures:
-        {% for item in functions %}
-        {{ item }}
-        {%- endfor %}
-    {% endif %}
-    {% endblock %}
 
-    {% block classes %}
-    {% if classes %}
+        {% for item in functions %}
+          {{ item }}
+        {%- endfor %}
+
+{% endif %}
+{% endblock %}
+
+{% block classes %}
+{% if classes %}
 
 Classes
 -------
@@ -45,14 +47,17 @@ Classes
     .. autosummary::
         :toctree: {{ fullname | replace("flake8_nb.", "") | replace(".", "/") }}/classes
         :nosignatures:
-    {% for item in classes %}
-        {{ item }}
-    {%- endfor %}
-    {% endif %}
-    {% endblock %}
 
-    {% block exceptions %}
-    {% if exceptions %}
+        {% for item in classes %}
+          {{ item }}
+        {%- endfor %}
+
+{% endif %}
+{% endblock %}
+
+
+{% block exceptions %}
+{% if exceptions %}
 
 Exceptions
 ----------
@@ -62,11 +67,13 @@ Exceptions
     .. autosummary::
         :toctree: {{ fullname | replace("flake8_nb.", "") | replace(".", "/") }}/exceptions
         :nosignatures:
-    {% for item in exceptions %}
-        {{ item }}
-    {%- endfor %}
-    {% endif %}
-    {% endblock %}
+
+        {% for item in exceptions %}
+            {{ item }}
+        {%- endfor %}
+
+{% endif %}
+{% endblock %}
 
 
 {% endblock %}

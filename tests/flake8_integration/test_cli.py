@@ -1,12 +1,8 @@
-# -*- coding: utf-8 -*-
-
-import re
 import os
-
-import pytest
+import re
 
 import flake8
-
+import pytest
 from flake8_nb import __version__
 from flake8_nb.flake8_integration.cli import (
     Flake8NbApplication,

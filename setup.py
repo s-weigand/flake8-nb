@@ -1,15 +1,13 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """The setup script."""
 
 import os
 import sys
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "flake8_nb"))  # noqa
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "flake8_nb"))
 
 with open("README.md", encoding="utf-8") as readme_file:
     readme = readme_file.read()
