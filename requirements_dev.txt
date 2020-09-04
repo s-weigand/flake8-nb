@@ -1,8 +1,6 @@
 pip>=19.2.3
 bump2version>=0.5.11
 wheel>=0.33.6
-# install package in development mode
--e .
 # quality asurence
 black>=19.10b0
 isort>=5.2.2
