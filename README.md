@@ -7,7 +7,8 @@
 
 [![Actions Status](https://github.com/s-weigand/flake8-nb/workflows/Tests/badge.svg)](https://github.com/s-weigand/flake8-nb/actions)
 [![Documentation Status](https://readthedocs.org/projects/flake8-nb/badge/?version=latest)](https://flake8-nb.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/gh/s-weigand/flake8-nb/branch/master/graph/badge.svg)](https://codecov.io/gh/s-weigand/flake8-nb)
+[![Testing Coverage](https://codecov.io/gh/s-weigand/flake8-nb/branch/master/graph/badge.svg)](https://codecov.io/gh/s-weigand/flake8-nb)
+[![Documentation Coverage](https://flake8-nb.readthedocs.io/en/latest/_static/interrogate_badge.svg)](https://github.com/s-weigand/flake8-nb)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=s-weigand/flake8-nb)](https://dependabot.com)
 
 [![BCH compliance](https://bettercodehub.com/edge/badge/s-weigand/flake8-nb?branch=master)](https://bettercodehub.com/)
