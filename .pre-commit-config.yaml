@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.1.0
+    rev: v3.2.0
     hooks:
       - id: check-ast
       - id: check-builtin-literals
@@ -10,12 +10,12 @@ repos:
       - id: fix-encoding-pragma
         args: [--remove]
   - repo: https://github.com/python/black
-    rev: 19.10b0
+    rev: 20.8b1
     hooks:
       - id: black
         language_version: python3
   - repo: https://github.com/prettier/prettier
-    rev: 2.0.5 # Use the sha or tag you want to point at
+    rev: 2.1.1 # Use the sha or tag you want to point at
     hooks:
       - id: prettier
   - repo: https://gitlab.com/pycqa/flake8
@@ -23,31 +23,29 @@ repos:
     hooks:
       - id: flake8
   - repo: https://github.com/timothycrosley/isort
-    rev: 5.0.9
+    rev: 5.5.1
     hooks:
       - id: isort
   - repo: https://github.com/PyCQA/pydocstyle
-    rev: 5.0.2
+    rev: 5.1.1
     hooks:
       - id: pydocstyle
         exclude: "docs|tests"
   - repo: https://github.com/econchick/interrogate
-    rev: 1.2.0
+    rev: 1.3.1
     hooks:
       - id: interrogate
         args: [-v]
         exclude: "docs|tests"
-  - repo: local
+
+  - repo: https://github.com/myint/rstcheck
+    rev: "3f92957478422df87bd730abde66f089cc1ee19b"
     hooks:
       - id: rstcheck
-        name: rstcheck
-        entry: rstcheck
-        files: ".rst"
-        language: python
-        additional_dependencies: [rstcheck, sphinx]
+        additional_dependencies: [sphinx, rstcheck]
 
   - repo: https://github.com/pre-commit/pygrep-hooks
-    rev: v1.5.1
+    rev: v1.6.0
     hooks:
       - id: rst-backticks
 
@@ -58,10 +56,10 @@ repos:
         files: ".py|.rst"
 
   - repo: https://github.com/asottile/yesqa
-    rev: v1.2.1
+    rev: v1.2.2
     hooks:
       - id: yesqa
-        additional_dependencies: [pydocstyle, nbconvert]
+        additional_dependencies: [flake8-docstrings]
   - repo: local
     hooks:
       - id: tests

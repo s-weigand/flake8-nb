@@ -6,7 +6,10 @@ This utilizes ``flake8_nb.parser.cell_parsers``.
 import json
 import os
 import warnings
-from typing import Dict, Iterator, List, Tuple
+from typing import Dict
+from typing import Iterator
+from typing import List
+from typing import Tuple
 
 from nbconvert.filters import ipython2python
 
@@ -391,9 +394,10 @@ class NotebookParser:
             NotebookParser.temp_path = tempfile.mkdtemp(prefix="flake8_nb_")
             index_orig_list = list(enumerate(self.original_notebook_paths))[::-1]
             for index, original_notebook_path in index_orig_list:
-                (intermediate_py_file_path, input_line_mapping,) = create_intermediate_py_file(
-                    original_notebook_path, self.temp_path
-                )
+                (
+                    intermediate_py_file_path,
+                    input_line_mapping,
+                ) = create_intermediate_py_file(original_notebook_path, self.temp_path)
                 if intermediate_py_file_path:
                     NotebookParser.intermediate_py_file_paths.append(intermediate_py_file_path)
                     NotebookParser.input_line_mappings.append(input_line_mapping)

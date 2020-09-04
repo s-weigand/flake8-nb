@@ -9,15 +9,21 @@ of the CLI argv and config of ``flake8``.
 import logging
 import os
 import sys
-from typing import Callable, List, Optional, Tuple
+from typing import Callable
+from typing import List
+from typing import Optional
+from typing import Tuple
 
 import flake8
-from flake8 import defaults, utils
+from flake8 import defaults
+from flake8 import utils
 from flake8.main.application import Application
-from flake8.options import aggregator, config
+from flake8.options import aggregator
+from flake8.options import config
 from flake8.utils import matches_filename
 
-from .. import FLAKE8_VERSION_TUPLE, __version__
+from .. import FLAKE8_VERSION_TUPLE
+from .. import __version__
 from ..parsers.notebook_parsers import NotebookParser
 
 LOG = logging.getLogger(__name__)
@@ -299,7 +305,9 @@ class Flake8NbApplication(Application):
             Command-line arguments passed in directly.
         """
         self.options, self.args = aggregator.aggregate_options(
-            self.option_manager, config_finder, argv,
+            self.option_manager,
+            config_finder,
+            argv,
         )
 
         self.args = self.hack_args(self.args, self.options.exclude)
@@ -324,7 +332,8 @@ class Flake8NbApplication(Application):
         if self.options.keep_parsed_notebooks:
             temp_path = NotebookParser.temp_path
             print(
-                f"The parsed notebooks, are still present at:\n\t{temp_path}", file=sys.stderr,
+                f"The parsed notebooks, are still present at:\n\t{temp_path}",
+                file=sys.stderr,
             )
         else:
             NotebookParser.clean_up()

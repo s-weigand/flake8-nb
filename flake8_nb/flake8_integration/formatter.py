@@ -5,12 +5,14 @@ original notebook and the cell the code in.
 """
 
 import os
-from typing import Tuple, Union
+from typing import Tuple
+from typing import Union
 
 from flake8.formatting.default import Default
 from flake8.style_guide import Violation
 
-from ..parsers.notebook_parsers import NotebookParser, map_intermediate_to_input
+from ..parsers.notebook_parsers import NotebookParser
+from ..parsers.notebook_parsers import map_intermediate_to_input
 
 
 def map_notebook_error(violation: Violation) -> Union[Tuple[str, int], None]:

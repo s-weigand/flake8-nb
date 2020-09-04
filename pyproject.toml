@@ -18,10 +18,12 @@ exclude = '''
 
 [tool.isort]
 profile = "hug"
-src_paths = ["zenodo_cite", "test"]
+src_paths = ["flake8_nb", "test"]
 include_trailing_comma = true
 line_length = 99
 multi_line_output = 3
+known_first_party = ["flake8_nb"]
+force_single_line = true
 
 [tool.interrogate]
 exclude = ["setup.py", "docs", "tests"]

@@ -5,7 +5,8 @@
 import os
 import sys
 
-from setuptools import find_packages, setup
+from setuptools import find_packages
+from setuptools import setup
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "flake8_nb"))
 

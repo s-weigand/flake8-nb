@@ -6,7 +6,8 @@ It heavily utilizes the mutability of lists.
 
 import re
 import warnings
-from typing import Dict, List
+from typing import Dict
+from typing import List
 
 FLAKE8_TAG_PATTERN = re.compile(
     r"^flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)"
