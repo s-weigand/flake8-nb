@@ -36,6 +36,8 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
+    "sphinx-prompt",
+    "sphinx_substitution_extensions",
 ]
 
 autoclass_content = "both"
@@ -94,6 +96,10 @@ pygments_style = "sphinx"
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
+
+rst_prolog = f"""
+.. |version| replace:: {version}
+"""
 
 
 # This is processed by Jinja2 and inserted before each notebook

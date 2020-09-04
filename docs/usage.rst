@@ -115,11 +115,12 @@ As pre-commit hook
 Add the following to your :code:`.pre-commit-config.yaml` file:
 
 .. code-block:: yaml
+    :substitutions:
 
-  - repo: https://github.com/s-weigand/flake8-nb
-    rev: 0.2.0  # specify version here
-    hooks:
-    - id: flake8-nb
+    - repo: https://github.com/s-weigand/flake8-nb
+      rev: |version| # specify version here
+      hooks:
+      - id: flake8-nb
 
 See `pre-commit docs`_ for more on pre-commit.
 
