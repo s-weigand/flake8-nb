@@ -1,25 +1,29 @@
 import warnings
-from typing import Dict, List
+from typing import Dict
+from typing import List
 
 import pytest
-from flake8_nb.parsers.cell_parsers import (
-    InvalidFlake8TagWarning,
-    extract_flake8_inline_tags,
-    extract_flake8_tags,
-    extract_inline_flake8_noqa,
-    flake8_tag_to_rules_dict,
-    generate_rules_list,
-    get_flake8_rules_dict,
-    notebook_cell_to_intermediate_dict,
-    update_inline_flake8_noqa,
-    update_rules_dict,
-)
+
+from flake8_nb.parsers.cell_parsers import InvalidFlake8TagWarning
+from flake8_nb.parsers.cell_parsers import extract_flake8_inline_tags
+from flake8_nb.parsers.cell_parsers import extract_flake8_tags
+from flake8_nb.parsers.cell_parsers import extract_inline_flake8_noqa
+from flake8_nb.parsers.cell_parsers import flake8_tag_to_rules_dict
+from flake8_nb.parsers.cell_parsers import generate_rules_list
+from flake8_nb.parsers.cell_parsers import get_flake8_rules_dict
+from flake8_nb.parsers.cell_parsers import notebook_cell_to_intermediate_dict
+from flake8_nb.parsers.cell_parsers import update_inline_flake8_noqa
+from flake8_nb.parsers.cell_parsers import update_rules_dict
 
 
 @pytest.mark.parametrize(
     "source_index,rules_dict,expected_result",
     [
-        (0, {"cell": ["noqa"], "1": ["E402", "F401", "W391"]}, ["E402", "F401", "W391", "noqa"],),
+        (
+            0,
+            {"cell": ["noqa"], "1": ["E402", "F401", "W391"]},
+            ["E402", "F401", "W391", "noqa"],
+        ),
         (1, {"cell": ["noqa"], "1": ["E402", "F401", "W391"]}, ["noqa"]),
         (1, {"1": ["E402", "F401", "W391"]}, []),
     ],

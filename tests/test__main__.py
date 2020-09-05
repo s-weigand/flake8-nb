@@ -2,8 +2,10 @@ import os
 import subprocess
 
 import pytest
+
 from flake8_nb.__main__ import main
-from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning, NotebookParser
+from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
+from flake8_nb.parsers.notebook_parsers import NotebookParser
 
 from . import TEST_NOTEBOOK_BASE_PATH
 

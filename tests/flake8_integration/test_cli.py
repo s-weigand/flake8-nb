@@ -3,13 +3,13 @@ import re
 
 import flake8
 import pytest
+
 from flake8_nb import __version__
-from flake8_nb.flake8_integration.cli import (
-    Flake8NbApplication,
-    get_notebooks_from_args,
-    hack_option_manager_generate_versions,
-)
-from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning, NotebookParser
+from flake8_nb.flake8_integration.cli import Flake8NbApplication
+from flake8_nb.flake8_integration.cli import get_notebooks_from_args
+from flake8_nb.flake8_integration.cli import hack_option_manager_generate_versions
+from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
+from flake8_nb.parsers.notebook_parsers import NotebookParser
 
 from .conftest import TempIpynbArgs
 

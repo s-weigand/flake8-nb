@@ -36,6 +36,8 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
+    "sphinx-prompt",
+    "sphinx_substitution_extensions",
 ]
 
 autoclass_content = "both"
@@ -95,6 +97,10 @@ pygments_style = "sphinx"
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
+rst_prolog = f"""
+.. |version| replace:: {version}
+"""
+
 
 # This is processed by Jinja2 and inserted before each notebook
 nbsphinx_prolog = r"""
@@ -130,6 +136,9 @@ nbsphinx_epilog = r"""
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
+html_theme_options = {
+    "navigation_depth": -1,
+}
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.  For a list of options available for each theme, see the
@@ -170,7 +179,13 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass
 # [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "flake8_nb.tex", "flake8-nb Documentation", "Sebastian Weigand", "manual",)
+    (
+        master_doc,
+        "flake8_nb.tex",
+        "flake8-nb Documentation",
+        "Sebastian Weigand",
+        "manual",
+    )
 ]
 
 
@@ -202,7 +217,3 @@ texinfo_documents = [
         "Miscellaneous",
     )
 ]
-
-
-def setup(app):
-    app.add_stylesheet("css/copy-btn-overwrite.css")

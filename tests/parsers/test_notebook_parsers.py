@@ -1,20 +1,21 @@
 import os
 import warnings
-from typing import Dict, List, Tuple
+from typing import Dict
+from typing import List
+from typing import Tuple
 
 import pytest
-from flake8_nb.parsers.notebook_parsers import (
-    InvalidNotebookWarning,
-    NotebookParser,
-    create_intermediate_py_file,
-    create_temp_path,
-    get_notebook_code_cells,
-    get_rel_paths,
-    ignore_cell,
-    is_parent_dir,
-    map_intermediate_to_input,
-    read_notebook_to_cells,
-)
+
+from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
+from flake8_nb.parsers.notebook_parsers import NotebookParser
+from flake8_nb.parsers.notebook_parsers import create_intermediate_py_file
+from flake8_nb.parsers.notebook_parsers import create_temp_path
+from flake8_nb.parsers.notebook_parsers import get_notebook_code_cells
+from flake8_nb.parsers.notebook_parsers import get_rel_paths
+from flake8_nb.parsers.notebook_parsers import ignore_cell
+from flake8_nb.parsers.notebook_parsers import is_parent_dir
+from flake8_nb.parsers.notebook_parsers import map_intermediate_to_input
+from flake8_nb.parsers.notebook_parsers import read_notebook_to_cells
 
 from .. import TEST_NOTEBOOK_BASE_PATH
 
@@ -54,7 +55,10 @@ def get_expected_intermediate_file_results(result_name: str, base_path: str) -> 
                 "code_lines": [4, 11, 18, 25, 33, 41, 49, 56],
             },
         ),
-        ("notebook_with_out_ipython_magic", {"input_names": ["In[1]"], "code_lines": [1]},),
+        (
+            "notebook_with_out_ipython_magic",
+            {"input_names": ["In[1]"], "code_lines": [1]},
+        ),
         (
             "notebook_with_out_flake8_tags",
             {
@@ -139,8 +143,16 @@ def test_get_notebook_code_cells(
 @pytest.mark.parametrize(
     "file_paths,base_path,expected_result",
     [
-        ([os.curdir, os.path.join(os.curdir, "file.foo")], os.curdir, [".", "file.foo"],),
-        ([os.path.join(os.curdir, "..", "file.foo")], os.curdir, [f"..{os.sep}file.foo"],),
+        (
+            [os.curdir, os.path.join(os.curdir, "file.foo")],
+            os.curdir,
+            [".", "file.foo"],
+        ),
+        (
+            [os.path.join(os.curdir, "..", "file.foo")],
+            os.curdir,
+            [f"..{os.sep}file.foo"],
+        ),
     ],
 )
 def test_get_rel_paths(file_paths: List[str], base_path: str, expected_result: List[str]):
@@ -201,7 +213,8 @@ def test_InvalidNotebookWarning():
 
 
 @pytest.mark.parametrize(
-    "line_number,expected_result", [(15, ("In[2]", 2)), (30, ("In[4]", 3)), (52, ("In[7]", 1))],
+    "line_number,expected_result",
+    [(15, ("In[2]", 2)), (30, ("In[4]", 3)), (52, ("In[7]", 1))],
 )
 def test_map_intermediate_to_input_line(line_number: int, expected_result: Tuple[str, int]):
     input_line_mapping = {
@@ -216,7 +229,9 @@ def test_map_intermediate_to_input_line(line_number: int, expected_result: Tuple
 #################################
 
 
-def test_NotebookParser_create_intermediate_py_file_paths(notebook_parser: NotebookParser,):
+def test_NotebookParser_create_intermediate_py_file_paths(
+    notebook_parser: NotebookParser,
+):
     for original_notebook in notebook_parser.original_notebook_paths:
         assert os.path.isfile(original_notebook)
     for intermediate_py_file in notebook_parser.intermediate_py_file_paths:
@@ -231,7 +246,9 @@ def test_NotebookParser_create_intermediate_py_file_paths(notebook_parser: Noteb
     assert input_line_mapping_count == 3
 
 
-def test_NotebookParser_cross_instance_value_propagation(notebook_parser: NotebookParser,):
+def test_NotebookParser_cross_instance_value_propagation(
+    notebook_parser: NotebookParser,
+):
     notebook_parser.get_mappings()
     new_parser_instance = NotebookParser()
 

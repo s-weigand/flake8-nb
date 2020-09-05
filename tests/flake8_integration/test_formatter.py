@@ -4,7 +4,9 @@ from typing import List
 
 import pytest
 from flake8.style_guide import Violation
-from flake8_nb.flake8_integration.formatter import IpynbFormatter, map_notebook_error
+
+from flake8_nb.flake8_integration.formatter import IpynbFormatter
+from flake8_nb.flake8_integration.formatter import map_notebook_error
 from flake8_nb.parsers.notebook_parsers import NotebookParser
 
 TEST_NOTEBOOK_PATH = os.path.join(
@@ -59,7 +61,11 @@ def test_IpynbFormatter__map_notebook_error(
 @pytest.mark.parametrize(
     "format_str,file_path_list,expected_result_str",
     [
-        ("default_notebook", [], "{expected_filename}:2:2: AB123 This is just for the coverage",),
+        (
+            "default_notebook",
+            [],
+            "{expected_filename}:2:2: AB123 This is just for the coverage",
+        ),
         (
             "%(path)s:%(row)d: %(text)s",
             [],
