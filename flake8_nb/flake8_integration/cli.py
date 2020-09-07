@@ -127,7 +127,7 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
 
 
 class Flake8NbApplication(Application):
-    r"""Subclass of ```flake8.main.application.Application``.
+    r"""Subclass of ``flake8.main.application.Application``.
 
     It overwrites the default options and an injection of intermediate parsed
     ``*.ipynb`` files to be checked.
