@@ -14,7 +14,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-import flake8
+from flake8 import __version__ as flake_version
 from flake8 import defaults
 from flake8 import utils
 from flake8.main.application import Application
@@ -119,7 +119,7 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
         join_on = ", "
         additional_output = format_str % {
             "name": "flake8",
-            "version": flake8.__version__,
+            "version": flake_version,
         }
         return f"{additional_output}{join_on}{original_output}"
 
