@@ -18,6 +18,7 @@ jobs:
         run: |
           python -m pip install -U pip
           python -m pip install -U -r requirements_dev.txt
+          python -m pip install .
           python -m pip install -U -q git+https://gitlab.com/pycqa/flake8.git
       - name: Run tests
         run: |

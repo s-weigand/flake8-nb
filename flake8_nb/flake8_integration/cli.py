@@ -14,7 +14,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 
-import flake8
+from flake8 import __version__ as flake_version
 from flake8 import defaults
 from flake8 import utils
 from flake8.main.application import Application
@@ -119,7 +119,7 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
         join_on = ", "
         additional_output = format_str % {
             "name": "flake8",
-            "version": flake8.__version__,
+            "version": flake_version,
         }
         return f"{additional_output}{join_on}{original_output}"
 
@@ -127,7 +127,7 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
 
 
 class Flake8NbApplication(Application):
-    r"""Subclass of ```flake8.main.application.Application``.
+    r"""Subclass of ``flake8.main.application.Application``.
 
     It overwrites the default options and an injection of intermediate parsed
     ``*.ipynb`` files to be checked.
@@ -156,9 +156,9 @@ class Flake8NbApplication(Application):
         self.option_manager.generate_versions = hack_option_manager_generate_versions(
             self.option_manager.generate_versions
         )
-        if FLAKE8_VERSION_TUPLE > (3, 7, 9):
+        if FLAKE8_VERSION_TUPLE < (3, 8, 0):
             self.parse_configuration_and_cli = (  # type: ignore
-                self.parse_configuration_and_cli_nightly
+                self.parse_configuration_and_cli_legacy
             )
 
     def hack_flake8_program_and_version(self, program: str, version: str) -> None:
@@ -262,8 +262,13 @@ class Flake8NbApplication(Application):
         notebook_parser = NotebookParser(nb_list)
         return args + notebook_parser.intermediate_py_file_paths
 
-    def parse_configuration_and_cli(self, argv: Optional[List[str]] = None) -> None:
+    def parse_configuration_and_cli_legacy(
+        self,
+        argv: Optional[List[str]] = None,
+    ) -> None:
         """Compat version of self.parse_configuration_and_cli to work with flake8 >=3.7.0,<= 3.7.9 .
+
+        See https://gitlab.com/pycqa/flake8/blob/master/src/flake8/main/application.py#L194
 
         Parse configuration files and the CLI options.
 
@@ -290,14 +295,10 @@ class Flake8NbApplication(Application):
         self.check_plugins.provide_options(self.option_manager, self.options, self.args)
         self.formatting_plugins.provide_options(self.option_manager, self.options, self.args)
 
-    def parse_configuration_and_cli_nightly(
+    def parse_configuration_and_cli(
         self, config_finder: config.ConfigFileFinder, argv: List[str]
     ) -> None:
-        """Compat version of self.parse_configuration_and_cli to work with flake8 > 3.7.9 and master.
-
-        See https://gitlab.com/pycqa/flake8/blob/master/src/flake8/main/application.py#L194
-
-        Parse configuration files and the CLI options.
+        """Parse configuration files and the CLI options.
 
         :param config.ConfigFileFinder config_finder:
             The finder for finding and reading configuration files.
