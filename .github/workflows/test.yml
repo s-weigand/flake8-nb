@@ -132,14 +132,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies python == 3.6
-        if: ${{ matrix.python-version == 3.6 }}
-        run: |
-          python -m pip install -U pip
-          python -m pip install -U -c constraints-py36.txt -r requirements_dev.txt
-          pip install .
-      - name: Install dependencies python > 3.6
-        if: ${{ matrix.python-version != 3.6 }}
+      - name: Install dependencies
         run: |
           python -m pip install -U pip
           python -m pip install -U -r requirements_dev.txt
