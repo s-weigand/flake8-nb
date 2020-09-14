@@ -1,5 +1,9 @@
 # History
 
+## 0.2.2 (2020-09-14)
+
+- Fixed pre-commit hook file association so it support python and juypter notebooks
+
 ## 0.2.1 (2020-08-11)
 
 - Forced uft8 encoding when reading notebooks,
