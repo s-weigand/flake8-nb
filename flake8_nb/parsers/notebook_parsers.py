@@ -98,7 +98,7 @@ def convert_source_line(source_line: str) -> str:
         Valid python code, as string, even if it was a
         jupyter magic line.
     """
-    if source_line.startswith(("!", "?", "%")) or source_line.endswith(("?")):
+    if source_line.startswith(("!", "?", "%")) or source_line.endswith("?"):
         return ipython2python(source_line)
     else:
         return source_line
