@@ -11,6 +11,7 @@ on:
 
 jobs:
   update-pre-commit:
+    name: Autoupdate pre-commit config
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python
@@ -27,6 +28,6 @@ jobs:
             pip install pre-commit
             pre-commit autoupdate || (exit 0);
             pre-commit run -a || (exit 0);
-          COMMIT_MESSAGE: "MAINT Update pre-commit config"
+          COMMIT_MESSAGE: "⬆️ UPGRADE: Autoupdate pre-commit config"
           PR_BRANCH_NAME: "pre-commit-config-update-${PR_ID}"
-          PR_TITLE: "MAINT Update pre-commit config"
+          PR_TITLE: "⬆️ UPGRADE: Autoupdate pre-commit config"
