@@ -1,6 +1,6 @@
 # History
 
-## 0.2.2 (2020-09-14)
+## 0.2.3 (2020-10-02)
 
 - Fixed pre-commit hook file association so it support python and juypter notebooks
 
