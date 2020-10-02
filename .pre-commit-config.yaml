@@ -58,7 +58,7 @@ repos:
     rev: v1.17.1
     hooks:
       - id: codespell
-        files: ".py|.rst"
+        files: ".py|.rst|.md"
 
   - repo: https://github.com/asottile/yesqa
     rev: v1.2.2
