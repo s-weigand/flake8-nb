@@ -1,0 +1,27 @@
+name: "Test pre-commit Hook"
+
+on: [push, pull_request]
+
+jobs:
+  test-pre-commit-hook:
+    name: Test pre-commit hook
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+      - uses: actions/cache@v2
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-hook-test
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip
+          python -m pip install -U -r requirements_dev.txt
+          pip install .
+      - name: Run flake8-nb
+        run: flake8-nb tests/data/notebooks/ 2>&1 | tee flake8-nb_run_output.txt
+      - name: Run hook
+        run: pre-commit try-repo . -a 2>&1 | tee hook_run_output.txt
+      - name: Test hook output
+        run: pytest .github/hook_tester.py
