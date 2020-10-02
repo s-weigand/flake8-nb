@@ -109,3 +109,7 @@ venv.bak/
 
 # my local testing folder
 # testing
+
+# local hook testing files
+flake8-nb_run_output.txt
+hook_run_output.txt
