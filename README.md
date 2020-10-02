@@ -25,7 +25,7 @@ which adds parsing and a cell based formatter for `*.ipynb` files.
 
 - flake8 CLI tests for jupyter notebooks
 - Full base functionality of `flake8` and its plugins
-- Input cell based error formating
+- Input cell based error formatting
 - Report fine tuning with cell-tags (`flake8-noqa-tags` see [usage](https://flake8-nb.readthedocs.io/en/latest/usage.html#cell-tags))
 
 ## Example
