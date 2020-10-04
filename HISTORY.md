@@ -1,5 +1,9 @@
 # History
 
+## 0.2.4 (2020-10-04)
+
+- Set max supported version of `flake8` to be `<3.8.5`
+
 ## 0.2.3 (2020-10-02)
 
 - Fixed pre-commit hook file association so it support python and juypter notebooks
