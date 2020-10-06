@@ -29,5 +29,5 @@ def main(argv: Optional[List[str]] = None) -> None:
             argv = argv[1:]
 
     app = Flake8NbApplication()
-    app.run(argv)
+    app.run(argv)  # type: ignore
     app.exit()

@@ -1,5 +1,9 @@
 # History
 
+## 0.2.5 (2020-10-06)
+
+- Added official Python 3.9 support and tests
+
 ## 0.2.4 (2020-10-04)
 
 - Set max supported version of `flake8` to be `<3.8.5`

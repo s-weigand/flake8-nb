@@ -68,7 +68,7 @@ def test_Flake8NbApplication__option_defaults():
     option_dict = app.option_manager.config_options_dict
     assert option_dict["format"].default == "default_notebook"
     assert option_dict["filename"].default == "*.py,*.ipynb_parsed"
-    assert option_dict["exclude"].default.endswith(",*.ipynb_checkpoints/*")
+    assert option_dict["exclude"].default.endswith(",*.ipynb_checkpoints/*")  # type: ignore
     assert option_dict["keep_parsed_notebooks"].default is False
 
 

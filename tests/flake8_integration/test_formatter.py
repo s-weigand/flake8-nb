@@ -95,7 +95,7 @@ def test_IpynbFormatter__format(
     expected_result_str: str,
 ):
     mocked_option = get_mocked_option(format_str)
-    formatter = IpynbFormatter(mocked_option)
+    formatter = IpynbFormatter(mocked_option)  # type: ignore
     if file_path_list:
         filename = expected_filename = os.path.join(*file_path_list)
     else:
