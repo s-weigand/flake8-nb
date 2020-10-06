@@ -59,7 +59,7 @@ class IpynbFormatter(Default):
         if self.options.format.lower() != "default_notebook":
             self.error_format = self.options.format
 
-    def format(self, violation: Violation) -> str:
+    def format(self, violation: Violation) -> Union[str, None]:
         r"""Format the error detected by a flake8 checker.
 
         Depending on if the violation was caused by a ``*.py`` file
