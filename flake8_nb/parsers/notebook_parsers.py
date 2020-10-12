@@ -40,13 +40,14 @@ def ignore_cell(notebook_cell: Dict) -> bool:
 class InvalidNotebookWarning(UserWarning):
     """Warning that is given when a jupyter notebook can't be parsed as JSON."""
 
-    def __init__(self, notebook_path: str, *args, **kwargs):
+    def __init__(self, notebook_path: str):
         """Initialize InvalidNotebookWarning.
 
         Parameters
         ----------
         notebook_path : str
             Path to a notebook
+
         """
         super().__init__(
             f"Error parsing notebook at path '{notebook_path}'. "
@@ -72,6 +73,9 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
     -----
     InvalidNotebookWarning
         If the notebook couldn't be parsed.
+
+
+    .. # noqa: DAR402
     """
     try:
         with open(notebook_path, encoding="utf8") as notebook_file:
@@ -95,8 +99,7 @@ def convert_source_line(source_line: str) -> str:
     Returns
     -------
     str
-        Valid python code, as string, even if it was a
-        jupyter magic line.
+        Valid python code, as string, even if it was a jupyter magic line.
     """
     if source_line.startswith(("!", "?", "%")) or source_line.endswith("?"):
         return ipython2python(source_line)
@@ -131,6 +134,9 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[Dict]]:
     -----
     InvalidNotebookWarning
         If the notebook couldn't be parsed.
+
+
+    .. # noqa: DAR402
     """
     uses_get_ipython = False
     notebook_cells = read_notebook_to_cells(notebook_path)
@@ -248,6 +254,9 @@ def create_intermediate_py_file(
     -----
     InvalidNotebookWarning
         If the notebook couldn't be parsed.
+
+
+    .. # noqa: DAR402
     """
     intermediate_file_path = create_temp_path(notebook_path, intermediate_dir_base_path)
     uses_get_ipython, notebook_cells = get_notebook_code_cells(notebook_path)

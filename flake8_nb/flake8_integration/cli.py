@@ -56,7 +56,7 @@ def get_notebooks_from_args(
 
         Parameters
         ----------
-        filename : str
+        file_path : str
             File to check if it is a notebook
         nb_list : List[str]
             List of notebooks
@@ -107,7 +107,14 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
     """
 
     def hacked_generate_versions(*args, **kwargs) -> str:
-        """Inner wrapper around option_manager.generate_versions .
+        """Inner wrapper around option_manager.generate_versions.
+
+        Parameters
+        ----------
+        args: Tuple[Any]
+            Arbitrary args
+        kwargs: Dict[str, Any]
+            Arbitrary kwargs
 
         Returns
         -------
@@ -191,6 +198,11 @@ class Flake8NbApplication(Application):
         ----------
         long_option_name : str
             Long name of the flake8 cli option.
+        args: Tuple[Any]
+            Arbitrary args
+        kwargs: Dict[str, Any]
+            Arbitrary kwargs
+
         """
         is_option = False
         for option_index, option in enumerate(self.option_manager.options):
@@ -198,6 +210,7 @@ class Flake8NbApplication(Application):
                 self.option_manager.options.pop(option_index)
                 is_option = True
         if is_option:
+            # pylint: disable=no-member
             parser = self.option_manager.parser
             if FLAKE8_VERSION_TUPLE > (3, 7, 9):
                 for index, action in enumerate(parser._actions):  # pragma: no branch
@@ -277,7 +290,8 @@ class Flake8NbApplication(Application):
         argv: List[str]
             Command-line arguments passed in directly.
         """
-        if self.options is None and self.args is None:  # pragma: no branch
+        if self.options is None and self.args is None:  # type: ignore  # pragma: no branch
+            # pylint: disable=no-member
             self.options, self.args = aggregator.aggregate_options(
                 self.option_manager, self.config_finder, argv  # type: ignore
             )
@@ -300,9 +314,11 @@ class Flake8NbApplication(Application):
     ) -> None:
         """Parse configuration files and the CLI options.
 
-        :param config.ConfigFileFinder config_finder:
+        Parameters
+        ----------
+        config_finder: config.ConfigFileFinder
             The finder for finding and reading configuration files.
-        :param list argv:
+        argv: List[str]
             Command-line arguments passed in directly.
         """
         self.options, self.args = aggregator.aggregate_options(

@@ -3,6 +3,7 @@ import warnings
 from typing import Dict
 from typing import List
 from typing import Tuple
+from typing import Union
 
 import pytest
 
@@ -69,7 +70,7 @@ def get_expected_intermediate_file_results(result_name: str, base_path: str) -> 
     ],
 )
 def test_create_intermediate_py_file(
-    tmpdir, notebook_name: str, expected_input_line_mapping: Dict
+    tmpdir, notebook_name: str, expected_input_line_mapping: Dict[str, List[Union[str, int]]]
 ):
     notebook_path = os.path.join(TEST_NOTEBOOK_BASE_PATH, f"{notebook_name}.ipynb")
 
@@ -217,7 +218,7 @@ def test_InvalidNotebookWarning():
     [(15, ("In[2]", 2)), (30, ("In[4]", 3)), (52, ("In[7]", 1))],
 )
 def test_map_intermediate_to_input_line(line_number: int, expected_result: Tuple[str, int]):
-    input_line_mapping = {
+    input_line_mapping: Dict[str, List[Union[str, int]]] = {
         "input_names": ["In[1]", "In[2]", "In[3]", "In[4]", "In[5]", "In[6]", "In[7]"],
         "code_lines": [4, 11, 18, 25, 33, 41, 49],
     }
