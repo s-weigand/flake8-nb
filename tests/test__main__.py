@@ -60,7 +60,7 @@ def test_syscall(cli_entrypoint: str, keep_intermediate: bool):
     argv += ["--exclude", "*.tox/*,*.ipynb_checkpoints*,*/docs/*"]
     proc = subprocess.Popen(argv, stdout=subprocess.PIPE, universal_newlines=True)
     result_list = []
-    for line in proc.stdout:
+    for line in proc.stdout:  # type:ignore
         result_list.append(str(line))
     expected_result_path = os.path.join(os.path.dirname(__file__), "data", "expected_output.txt")
     with open(expected_result_path) as result_file:

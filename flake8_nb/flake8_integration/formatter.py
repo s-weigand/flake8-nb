@@ -45,6 +45,7 @@ def map_notebook_error(violation: Violation) -> Union[Tuple[str, int], None]:
             )
             filename = f"{original_notebook}#{input_cell_name}"
             return filename, input_cell_line_number
+    return None
 
 
 class IpynbFormatter(Default):

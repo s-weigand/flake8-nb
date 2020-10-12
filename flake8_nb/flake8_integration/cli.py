@@ -278,7 +278,7 @@ class Flake8NbApplication(Application):
         argv: List[str]
             Command-line arguments passed in directly.
         """
-        if self.options is None and self.args is None:  # pragma: no branch
+        if self.options is None and self.args is None:  # type: ignore  # pragma: no branch
             # pylint: disable=no-member
             self.options, self.args = aggregator.aggregate_options(
                 self.option_manager, self.config_finder, argv  # type: ignore
