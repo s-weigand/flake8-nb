@@ -73,6 +73,9 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
     -----
     InvalidNotebookWarning
         If the notebook couldn't be parsed.
+
+
+    .. # noqa: DAR402
     """
     try:
         with open(notebook_path, encoding="utf8") as notebook_file:
@@ -131,6 +134,9 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[Dict]]:
     -----
     InvalidNotebookWarning
         If the notebook couldn't be parsed.
+
+
+    .. # noqa: DAR402
     """
     uses_get_ipython = False
     notebook_cells = read_notebook_to_cells(notebook_path)
@@ -248,6 +254,9 @@ def create_intermediate_py_file(
     -----
     InvalidNotebookWarning
         If the notebook couldn't be parsed.
+
+
+    .. # noqa: DAR402
     """
     intermediate_file_path = create_temp_path(notebook_path, intermediate_dir_base_path)
     uses_get_ipython, notebook_cells = get_notebook_code_cells(notebook_path)
