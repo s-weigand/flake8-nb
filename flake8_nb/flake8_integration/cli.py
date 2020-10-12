@@ -198,6 +198,7 @@ class Flake8NbApplication(Application):
                 self.option_manager.options.pop(option_index)
                 is_option = True
         if is_option:
+            # pylint: disable=no-member
             parser = self.option_manager.parser
             if FLAKE8_VERSION_TUPLE > (3, 7, 9):
                 for index, action in enumerate(parser._actions):  # pragma: no branch
@@ -278,6 +279,7 @@ class Flake8NbApplication(Application):
             Command-line arguments passed in directly.
         """
         if self.options is None and self.args is None:  # pragma: no branch
+            # pylint: disable=no-member
             self.options, self.args = aggregator.aggregate_options(
                 self.option_manager, self.config_finder, argv  # type: ignore
             )
