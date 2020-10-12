@@ -40,13 +40,14 @@ def ignore_cell(notebook_cell: Dict) -> bool:
 class InvalidNotebookWarning(UserWarning):
     """Warning that is given when a jupyter notebook can't be parsed as JSON."""
 
-    def __init__(self, notebook_path: str, *args, **kwargs):
+    def __init__(self, notebook_path: str):
         """Initialize InvalidNotebookWarning.
 
         Parameters
         ----------
         notebook_path : str
             Path to a notebook
+
         """
         super().__init__(
             f"Error parsing notebook at path '{notebook_path}'. "
@@ -95,8 +96,7 @@ def convert_source_line(source_line: str) -> str:
     Returns
     -------
     str
-        Valid python code, as string, even if it was a
-        jupyter magic line.
+        Valid python code, as string, even if it was a jupyter magic line.
     """
     if source_line.startswith(("!", "?", "%")) or source_line.endswith("?"):
         return ipython2python(source_line)

@@ -40,7 +40,7 @@ class InvalidFlake8TagWarning(UserWarning):
     This is used to show users that they have a typo in their tags.
     """
 
-    def __init__(self, flake8_tag: str, *args, **kwargs):
+    def __init__(self, flake8_tag: str):
         """Create InvalidFlake8TagWarning.
 
         Parameters
@@ -178,11 +178,6 @@ def update_rules_dict(total_rules_dict: Dict[str, List], new_rules_dict: Dict[st
         ``rules_dict`` which should be updated.
     new_rules_dict : Dict[str, List]
         ``rules_dict`` which should be used to update ``total_rules_dict``.
-
-    Returns
-    -------
-    Dict[str, List]
-        Updated ``total_rules_dict``.
 
     See Also
     --------

@@ -56,7 +56,7 @@ def get_notebooks_from_args(
 
         Parameters
         ----------
-        filename : str
+        file_path : str
             File to check if it is a notebook
         nb_list : List[str]
             List of notebooks
@@ -107,7 +107,14 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
     """
 
     def hacked_generate_versions(*args, **kwargs) -> str:
-        """Inner wrapper around option_manager.generate_versions .
+        """Inner wrapper around option_manager.generate_versions.
+
+        Parameters
+        ----------
+        args: Tuple[Any]
+            Arbitrary args
+        kwargs: Dict[str, Any]
+            Arbitrary kwargs
 
         Returns
         -------
@@ -191,6 +198,11 @@ class Flake8NbApplication(Application):
         ----------
         long_option_name : str
             Long name of the flake8 cli option.
+        args: Tuple[Any]
+            Arbitrary args
+        kwargs: Dict[str, Any]
+            Arbitrary kwargs
+
         """
         is_option = False
         for option_index, option in enumerate(self.option_manager.options):
@@ -302,9 +314,11 @@ class Flake8NbApplication(Application):
     ) -> None:
         """Parse configuration files and the CLI options.
 
-        :param config.ConfigFileFinder config_finder:
+        Parameters
+        ----------
+        config_finder: config.ConfigFileFinder
             The finder for finding and reading configuration files.
-        :param list argv:
+        argv: List[str]
             Command-line arguments passed in directly.
         """
         self.options, self.args = aggregator.aggregate_options(
