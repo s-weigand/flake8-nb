@@ -69,11 +69,9 @@ def extract_flake8_tags(notebook_cell: Dict) -> List[str]:
     List[str]
         List of all tags in the given cell, which started with 'flake8-noqa-'.
     """
-    flake8_tags = []
-    for tag in notebook_cell["metadata"].get("tags", []):
-        if tag.startswith("flake8-noqa-"):
-            flake8_tags.append(tag)
-    return flake8_tags
+    return [
+        tag for tag in notebook_cell["metadata"].get("tags", []) if tag.startswith("flake8-noqa-")
+    ]
 
 
 def extract_flake8_inline_tags(notebook_cell: Dict) -> List[str]:
@@ -276,10 +274,7 @@ def update_inline_flake8_noqa(source_line: str, rules_list: List[str]) -> str:
         rules_list = list(set(inline_flake8_noqa + rules_list))
         source_line = re.sub(FLAKE8_NOQA_INLINE_REPLACE_PATTERN, r"\g<source_code>", source_line)
     rules_list = sorted(rules_list)
-    if "noqa" in rules_list:
-        noqa_str = ""
-    else:
-        noqa_str = ", ".join(rules_list)
+    noqa_str = "" if "noqa" in rules_list else ", ".join(rules_list)
     if rules_list:
         return f"{source_line}  # noqa: {noqa_str}\n"
     else:

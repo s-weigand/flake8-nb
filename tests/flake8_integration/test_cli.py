@@ -34,9 +34,11 @@ def test_hack_option_manager_generate_versions():
 
 
 def test_Flake8NbApplication__generate_versions():
-    generate_versions_pattern = re.compile(rf"flake8: {flake8.__version__}(, \w+: \d+\.\d+\.\d+)+")
+    generate_versions_pattern = re.compile(
+        rf"flake8: {flake8.__version__}(, [\w\-_]+: \d+\.\d+\.\d+)+"
+    )
     generate_epilog_pattern = re.compile(
-        rf"Installed plugins: flake8: {flake8.__version__}(, \w+: \d+\.\d+\.\d+)+"
+        rf"Installed plugins: flake8: {flake8.__version__}(, [\w\-_]+: \d+\.\d+\.\d+)+"
     )
     orig_args = [os.path.join("tests", "data", "notebooks")]
     app = Flake8NbApplication()

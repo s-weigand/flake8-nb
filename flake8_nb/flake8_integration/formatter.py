@@ -90,6 +90,4 @@ class IpynbFormatter(Default):
                     "col": violation.column_number,
                 }
 
-            return super().format(violation)
-        else:
-            return super().format(violation)
+        return super().format(violation)

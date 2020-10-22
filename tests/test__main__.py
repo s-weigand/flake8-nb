@@ -28,7 +28,7 @@ def test_run_main(capsys, keep_intermediate: bool):
         expected_result_list = result_file.readlines()
     assert len(expected_result_list) == len(result_list)
     for expected_result in expected_result_list:
-        assert any([result.endswith(expected_result.rstrip("\n")) for result in result_list])
+        assert any(result.endswith(expected_result.rstrip("\n")) for result in result_list)
 
     if keep_intermediate:
         assert os.path.exists(NotebookParser.temp_path)

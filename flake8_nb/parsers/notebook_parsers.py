@@ -6,6 +6,7 @@ This utilizes ``flake8_nb.parser.cell_parsers``.
 import json
 import os
 import warnings
+from fnmatch import fnmatch
 from typing import Dict
 from typing import Iterator
 from typing import List
@@ -29,12 +30,7 @@ def ignore_cell(notebook_cell: Dict) -> bool:
     bool
         Whether cell should be ignored or not.
     """
-    if not notebook_cell["source"]:
-        return True
-    elif notebook_cell["cell_type"] != "code":
-        return True
-    else:
-        return False
+    return not notebook_cell["source"] or notebook_cell["cell_type"] != "code"
 
 
 class InvalidNotebookWarning(UserWarning):
@@ -79,8 +75,7 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
     """
     try:
         with open(notebook_path, encoding="utf8") as notebook_file:
-            notebook_cells = json.load(notebook_file)["cells"]
-            return notebook_cells
+            return json.load(notebook_file)["cells"]
     except (json.JSONDecodeError, KeyError):
         warnings.warn(InvalidNotebookWarning(notebook_path))
         return []
@@ -170,18 +165,10 @@ def is_parent_dir(parent_dir: str, path: str) -> bool:
     -------
     bool
         Weather or not 'path' is inside of 'parent_dir'.
-
-    Notes
-    -----
-        This function uses `os.path.normcase` to prevent conflicts
-        in Windows path names.
     """
-    path = os.path.normcase(os.path.abspath(path))
-    parent_dir = os.path.normcase(os.path.abspath(parent_dir))
-    if path.startswith(parent_dir):
-        return True
-    else:
-        return False
+    path = os.path.abspath(path)
+    parent_dir = os.path.abspath(parent_dir)
+    return fnmatch(path, f"{parent_dir}*")
 
 
 def create_temp_path(notebook_path: str, temp_base_path: str) -> str:

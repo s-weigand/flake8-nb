@@ -15,12 +15,11 @@ TEST_NOTEBOOK_PATH = os.path.join(
 
 
 def get_test_intermediate_path(intermediate_names):
-    filename = [
+    return [
         filename
         for filename in intermediate_names
         if filename.endswith("notebook_with_flake8_tags.ipynb_parsed")
     ][0]
-    return filename
 
 
 def get_mocked_option(formatter="default_notebook") -> Values:
