@@ -70,9 +70,7 @@ def extract_flake8_tags(notebook_cell: Dict) -> List[str]:
         List of all tags in the given cell, which started with 'flake8-noqa-'.
     """
     return [
-        tag
-        for tag in notebook_cell["metadata"].get("tags", [])
-        if tag.startswith("flake8-noqa-")
+        tag for tag in notebook_cell["metadata"].get("tags", []) if tag.startswith("flake8-noqa-")
     ]
 
 
