@@ -72,8 +72,8 @@ def test_generate_rules_list(
 )
 def test_get_flake8_rules_dict(notebook_cell: Dict, expected_result: Dict[str, List]):
     flake8_rules_dict = get_flake8_rules_dict(notebook_cell)
-    for key in expected_result:
-        assert sorted(flake8_rules_dict[key]) == sorted(expected_result[key])
+    for key, value in expected_result.items():
+        assert sorted(flake8_rules_dict[key]) == sorted(value)
 
 
 def test_extract_flake8_tags():
