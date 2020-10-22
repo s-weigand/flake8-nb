@@ -6,6 +6,7 @@ This utilizes ``flake8_nb.parser.cell_parsers``.
 import json
 import os
 import warnings
+from fnmatch import fnmatch
 from typing import Dict
 from typing import Iterator
 from typing import List
@@ -164,15 +165,10 @@ def is_parent_dir(parent_dir: str, path: str) -> bool:
     -------
     bool
         Weather or not 'path' is inside of 'parent_dir'.
-
-    Notes
-    -----
-        This function uses `os.path.normcase` to prevent conflicts
-        in Windows path names.
     """
-    path = os.path.normcase(os.path.abspath(path))
-    parent_dir = os.path.normcase(os.path.abspath(parent_dir))
-    return bool(path.startswith(parent_dir))
+    path = os.path.abspath(path)
+    parent_dir = os.path.abspath(parent_dir)
+    return fnmatch(path, f"{parent_dir}*")
 
 
 def create_temp_path(notebook_path: str, temp_base_path: str) -> str:
