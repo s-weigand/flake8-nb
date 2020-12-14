@@ -18,7 +18,7 @@ with open("HISTORY.md", encoding="utf-8") as history_file:
 
 requirements = ["flake8>=3.7.0,<3.8.5", "nbconvert>=5.6.0", "ipython>=7.8.0"]
 
-# This is a hack to test against the flake8 master branch
+# This is a hack to test against the flake8 default branch
 tox_env_name = os.environ.get("TOX_ENV_NAME", None)
 if tox_env_name and tox_env_name == "flake8-nightly":
     requirements[0] = "flake8>=3.0.0"

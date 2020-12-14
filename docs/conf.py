@@ -62,8 +62,8 @@ nbsphinx_execute_arguments = [
 source_suffix = [".rst", ".md"]
 # source_suffix = ".rst"
 
-# The master toctree document.
-master_doc = "index"
+# The main toctree document.
+main_doc = "index"
 
 # General information about the project.
 project = "flake8-nb"
@@ -115,9 +115,9 @@ nbsphinx_prolog = r"""
 
         This page was generated from `{{ docname }}`__.
         Interactive online version:
-        :raw-html:`<a href="https://mybinder.org/v2/gh/s-weigand/flake8-nb/master?urlpath={{ binder_urls | replace('/','%2F') }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`  # noqa: E501
+        :raw-html:`<a href="https://mybinder.org/v2/gh/s-weigand/flake8-nb/main?urlpath={{ binder_urls | replace('/','%2F') }}"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>`  # noqa: E501
 
-    __ https://github.com/s-weigand/flake8-nb/blob/master/{{ docname | urlencode }}
+    __ https://github.com/s-weigand/flake8-nb/blob/main/{{ docname | urlencode }}
 
 
 """
@@ -180,7 +180,7 @@ latex_elements = {
 # [howto, manual, or own class]).
 latex_documents = [
     (
-        master_doc,
+        main_doc,
         "flake8_nb.tex",
         "flake8-nb Documentation",
         "Sebastian Weigand",
@@ -193,7 +193,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "flake8_nb", "flake8-nb Documentation", [author], 1)]
+man_pages = [(main_doc, "flake8_nb", "flake8-nb Documentation", [author], 1)]
 
 linkcheck_ignore = [
     r"https://github\.com/s-weigand/flake8-nb/actions",
@@ -208,7 +208,7 @@ linkcheck_ignore = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (
-        master_doc,
+        main_doc,
         "flake8_nb",
         "flake8-nb Documentation",
         author,

@@ -8,14 +8,14 @@
 
 [![Actions Status](https://github.com/s-weigand/flake8-nb/workflows/Tests/badge.svg)](https://github.com/s-weigand/flake8-nb/actions)
 [![Documentation Status](https://readthedocs.org/projects/flake8-nb/badge/?version=latest)](https://flake8-nb.readthedocs.io/en/latest/?badge=latest)
-[![Testing Coverage](https://codecov.io/gh/s-weigand/flake8-nb/branch/master/graph/badge.svg)](https://codecov.io/gh/s-weigand/flake8-nb)
+[![Testing Coverage](https://codecov.io/gh/s-weigand/flake8-nb/branch/main/graph/badge.svg)](https://codecov.io/gh/s-weigand/flake8-nb)
 [![Documentation Coverage](https://flake8-nb.readthedocs.io/en/latest/_static/interrogate_badge.svg)](https://github.com/s-weigand/flake8-nb)
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=s-weigand/flake8-nb)](https://dependabot.com)
 
 [![Code quality](https://api.codacy.com/project/badge/Grade/d02b436a637243a1b626b74d018c3bbe)](https://www.codacy.com/manual/s.weigand.phy/flake8-nb?utm_source=github.com&utm_medium=referral&utm_content=s-weigand/flake8-nb&utm_campaign=Badge_Grade)
 [![All Contributors](https://img.shields.io/github/all-contributors/s-weigand/flake8-nb)](#contributors)
 [![Code style Python: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Binder](https://static.mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/s-weigand/flake8-nb.git/master?urlpath=lab%2Ftree%2Ftests%2Fdata%2Fnotebooks)
+[![Binder](https://static.mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/s-weigand/flake8-nb.git/main?urlpath=lab%2Ftree%2Ftests%2Fdata%2Fnotebooks)
 
 [`flake8`](https://gitlab.com/pycqa/flake8) checking for jupyter notebooks.
 Basically this is a hack on the `flake8`'s `Application` class,
