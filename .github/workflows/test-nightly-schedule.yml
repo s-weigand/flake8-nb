@@ -2,6 +2,7 @@ name: "Scheduled Tests"
 on:
   schedule:
     - cron: "0 7 * * 1" # At 07:00 on each Monday.
+  workflow_dispatch:
 
 jobs:
   flake8-nightly:
