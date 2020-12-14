@@ -85,7 +85,7 @@ repos:
     hooks:
       - id: interrogate
         name: Update interrogate badge
-        args: [-g, docs/_static]
+        args: [-vv, --config=pyproject.toml, -g, docs/_static]
+        pass_filenames: false
         always_run: true
-        types: [python]
         stages: [push]
