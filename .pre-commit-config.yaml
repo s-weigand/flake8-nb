@@ -10,7 +10,7 @@ repos:
       - id: fix-encoding-pragma
         args: [--remove]
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v2.11.0
+    rev: v2.11.1
     hooks:
       - id: validate_manifest
 
@@ -35,7 +35,7 @@ repos:
     hooks:
       - id: prettier
   - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.8.4
+    rev: 3.9.0
     hooks:
       - id: flake8
   - repo: https://github.com/PyCQA/isort
