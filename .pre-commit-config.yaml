@@ -21,7 +21,7 @@ repos:
         exclude: "docs"
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.10.0
+    rev: v2.11.0
     hooks:
       - id: pyupgrade
         args: [--py36-plus]
@@ -39,11 +39,11 @@ repos:
     hooks:
       - id: flake8
   - repo: https://github.com/PyCQA/isort
-    rev: 5.7.0
+    rev: 5.8.0
     hooks:
       - id: isort
   - repo: https://github.com/PyCQA/pydocstyle
-    rev: 5.1.1
+    rev: 6.0.0
     hooks:
       - id: pydocstyle
         exclude: "docs|tests"
