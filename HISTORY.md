@@ -1,5 +1,9 @@
 # History
 
+## 0.2.7 (2020-04-16)
+
+- Set max supported version of `flake8` to be `<3.9.2`
+
 ## 0.2.6 (2020-03-21)
 
 - Set max supported version of `flake8` to be `<3.9.1`
