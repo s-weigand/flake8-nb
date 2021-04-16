@@ -34,7 +34,7 @@ If you had a notebook with name `example_notebook.ipynb`, where the code cell
 which was executed as 34th cell (`In[34]`) had the following code:
 
 ```python
-bad_formated_dict = {"missing":"space"}
+bad_formatted_dict = {"missing":"space"}
 ```
 
 running `flake8_nb` would result in the following output.
