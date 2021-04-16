@@ -21,6 +21,8 @@
 Basically this is a hack on the `flake8`'s `Application` class,
 which adds parsing and a cell based formatter for `*.ipynb` files.
 
+This is **NOT A PLUGIN** but a stand alone CLI tool/[pre-commit](https://pre-commit.com/) hook to be used instead of the `flake8` command/hook.
+
 ## Features
 
 - flake8 CLI tests for jupyter notebooks
