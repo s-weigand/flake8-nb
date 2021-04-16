@@ -83,7 +83,10 @@ jobs:
           python -m pip install -U pip
           python -m pip install -U -r requirements_dev.txt
           pip install .
-          python -m pip install -U -q git+https://gitlab.com/pycqa/flake8.git
+          python -m pip install --force-reinstall -U -q git+https://gitlab.com/pycqa/flake8.git
+      - name: Show flake8 version
+        run: |
+          pip freeze | grep flake8
       - name: Run tests
         run: |
           py.test -vv --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
@@ -109,6 +112,9 @@ jobs:
           pip install .
           python -m pip install -U -r requirements_dev.txt
           python -m pip install -U -q 'flake8==3.7.0'
+      - name: Show flake8 version
+        run: |
+          pip freeze | grep flake8
       - name: Run tests
         run: |
           py.test -vv --cov=./ --cov-report term --cov-report xml --cov-config .coveragerc tests
