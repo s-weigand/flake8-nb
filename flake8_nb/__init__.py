@@ -6,7 +6,7 @@ __version__ = "0.2.6"
 
 import flake8
 
-from .flake8_integration.formatter import IpynbFormatter
+from flake8_nb.flake8_integration.formatter import IpynbFormatter
 
 __all__ = [
     IpynbFormatter.__name__,

@@ -4,7 +4,7 @@ from typing import Tuple
 
 import pytest
 
-from ..parsers.test_notebook_parsers import TEST_NOTEBOOK_BASE_PATH
+from tests.parsers.test_notebook_parsers import TEST_NOTEBOOK_BASE_PATH
 
 TEST_NOTEBOOK_PATHS = [
     os.path.normcase(os.path.join(TEST_NOTEBOOK_BASE_PATH, filename))

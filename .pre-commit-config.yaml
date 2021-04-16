@@ -20,6 +20,13 @@ repos:
       - id: mypy
         exclude: "docs"
 
+  - repo: https://github.com/MarcoGorelli/absolufy-imports
+    rev: v0.3.0
+    hooks:
+      - id: absolufy-imports
+        types: [file]
+        types_or: [python, pyi]
+
   - repo: https://github.com/asottile/pyupgrade
     rev: v2.12.0
     hooks:

@@ -14,7 +14,7 @@ from typing import Tuple
 
 from nbconvert.filters import ipython2python
 
-from .cell_parsers import notebook_cell_to_intermediate_dict
+from flake8_nb.parsers.cell_parsers import notebook_cell_to_intermediate_dict
 
 
 def ignore_cell(notebook_cell: Dict) -> bool:
