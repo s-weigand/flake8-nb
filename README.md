@@ -21,6 +21,8 @@
 Basically this is a hack on the `flake8`'s `Application` class,
 which adds parsing and a cell based formatter for `*.ipynb` files.
 
+This is **NOT A PLUGIN** but a stand alone CLI tool/[pre-commit](https://pre-commit.com/) hook to be used instead of the `flake8` command/hook.
+
 ## Features
 
 - flake8 CLI tests for jupyter notebooks
@@ -34,7 +36,7 @@ If you had a notebook with name `example_notebook.ipynb`, where the code cell
 which was executed as 34th cell (`In[34]`) had the following code:
 
 ```python
-bad_formated_dict = {"missing":"space"}
+bad_formatted_dict = {"missing":"space"}
 ```
 
 running `flake8_nb` would result in the following output.

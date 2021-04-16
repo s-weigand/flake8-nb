@@ -10,8 +10,7 @@ from flake8_nb.flake8_integration.cli import get_notebooks_from_args
 from flake8_nb.flake8_integration.cli import hack_option_manager_generate_versions
 from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
 from flake8_nb.parsers.notebook_parsers import NotebookParser
-
-from .conftest import TempIpynbArgs
+from tests.flake8_integration.conftest import TempIpynbArgs
 
 
 def test_get_notebooks_from_args(temp_ipynb_args: TempIpynbArgs):

@@ -22,9 +22,9 @@ from flake8.options import aggregator
 from flake8.options import config
 from flake8.utils import matches_filename
 
-from .. import FLAKE8_VERSION_TUPLE
-from .. import __version__
-from ..parsers.notebook_parsers import NotebookParser
+from flake8_nb import FLAKE8_VERSION_TUPLE
+from flake8_nb import __version__
+from flake8_nb.parsers.notebook_parsers import NotebookParser
 
 LOG = logging.getLogger(__name__)
 

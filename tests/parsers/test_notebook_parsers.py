@@ -17,8 +17,7 @@ from flake8_nb.parsers.notebook_parsers import ignore_cell
 from flake8_nb.parsers.notebook_parsers import is_parent_dir
 from flake8_nb.parsers.notebook_parsers import map_intermediate_to_input
 from flake8_nb.parsers.notebook_parsers import read_notebook_to_cells
-
-from .. import TEST_NOTEBOOK_BASE_PATH
+from tests import TEST_NOTEBOOK_BASE_PATH
 
 INTERMEDIATE_PY_FILE_BASE_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "data", "intermediate_py_files")

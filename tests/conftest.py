@@ -5,8 +5,7 @@ import pytest
 
 from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
 from flake8_nb.parsers.notebook_parsers import NotebookParser
-
-from .parsers.test_notebook_parsers import TEST_NOTEBOOK_BASE_PATH
+from tests.parsers.test_notebook_parsers import TEST_NOTEBOOK_BASE_PATH
 
 
 @pytest.fixture(scope="function")
