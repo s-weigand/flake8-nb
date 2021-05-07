@@ -25,4 +25,4 @@ ipykernel>=5.1.2
 # package runtime requirements
 flake8==3.9.1
 nbconvert==6.0.7
-ipython==7.23.0; python_version > '3.7'
+ipython==7.23.1; python_version > '3.7'
