@@ -10,19 +10,22 @@ from fnmatch import fnmatch
 from typing import Dict
 from typing import Iterator
 from typing import List
+from typing import Optional
 from typing import Tuple
+from typing import Union
 
 from nbconvert.filters import ipython2python
 
+from flake8_nb.parsers import NotebookCell
 from flake8_nb.parsers.cell_parsers import notebook_cell_to_intermediate_dict
 
 
-def ignore_cell(notebook_cell: Dict) -> bool:
+def ignore_cell(notebook_cell: NotebookCell) -> bool:
     """Return True if the cell isn't a code cell or is empty.
 
     Parameters
     ----------
-    notebook_cell : Dict
+    notebook_cell : NotebookCell
         Dict representation of a notebook cell as parsed from JSON.
 
     Returns
@@ -51,7 +54,7 @@ class InvalidNotebookWarning(UserWarning):
         )
 
 
-def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
+def read_notebook_to_cells(notebook_path: str) -> List[NotebookCell]:
     r"""Parse the notebook at ``notebook_path`` as Json and returns a list of notebook cells.
 
     Parameters
@@ -61,7 +64,7 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
 
     Returns
     -------
-    List[Dict]
+    List[NotebookCell]
         List of notebook cells if the notebook was parsed successfully or
         an empty list if the \*.ipynb file couldn't be parsed.
 
@@ -75,7 +78,8 @@ def read_notebook_to_cells(notebook_path: str) -> List[Dict]:
     """
     try:
         with open(notebook_path, encoding="utf8") as notebook_file:
-            return json.load(notebook_file)["cells"]
+            cells: List[NotebookCell] = json.load(notebook_file)["cells"]
+            return cells
     except (json.JSONDecodeError, KeyError):
         warnings.warn(InvalidNotebookWarning(notebook_path))
         return []
@@ -96,13 +100,14 @@ def convert_source_line(source_line: str) -> str:
     str
         Valid python code, as string, even if it was a jupyter magic line.
     """
-    if source_line.startswith(("!", "?", "%")) or source_line.endswith("?"):
-        return ipython2python(source_line)
-    else:
+    if not source_line.startswith(("!", "?", "%")) and not source_line.endswith("?"):
         return source_line
 
+    transformed_source_line: str = ipython2python(source_line)
+    return transformed_source_line
 
-def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[Dict]]:
+
+def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[NotebookCell]]:
     """Parse a notebook and returns a Tuple.
 
     The first entry  being a bool which indicates if juypter magic was
@@ -116,7 +121,7 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[Dict]]:
 
     Returns
     -------
-    Tuple[bool, List[Dict]]
+    Tuple[bool, List[NotebookCell]]
         (``uses_get_ipython``, ``notebook_cells``), where ``uses_get_ipython``
         is a bool, which is ``True`` if any cell contained jupyter magic and
         ``notebook_cells`` is a List of all code cells dict representation.
@@ -208,7 +213,7 @@ def create_temp_path(notebook_path: str, temp_base_path: str) -> str:
 
 def create_intermediate_py_file(
     notebook_path: str, intermediate_dir_base_path: str
-) -> Tuple[str, Dict]:
+) -> Tuple[str, Dict[str, List[Union[str, int]]]]:
     r"""Parse a notebook at ``notebook_path`` and saves a parsed version.
 
     The corresponding position is relative to ``intermediate_dir_base_path``.
@@ -247,20 +252,20 @@ def create_intermediate_py_file(
     """
     intermediate_file_path = create_temp_path(notebook_path, intermediate_dir_base_path)
     uses_get_ipython, notebook_cells = get_notebook_code_cells(notebook_path)
-    input_line_mapping: Dict[str, List] = {"input_names": [], "code_lines": []}
+    input_line_mapping: Dict[str, List[Union[str, int]]] = {"input_names": [], "code_lines": []}
     if uses_get_ipython:
         lines_of_code = 3
         intermediate_code = "from IPython import get_ipython\n\n\n"
     else:
         lines_of_code = 0
         intermediate_code = ""
-    intermediate_py_str_list = []
+    intermediate_py_str_list: List[str] = []
     for notebook_cell in notebook_cells:
         intermediate_dict = notebook_cell_to_intermediate_dict(notebook_cell)
-        intermediate_py_str_list.append(intermediate_dict["code"])
+        intermediate_py_str_list.append(intermediate_dict["code"])  # type: ignore[arg-type]
         input_line_mapping["input_names"].append(intermediate_dict["input_name"])
         input_line_mapping["code_lines"].append(lines_of_code + 1)
-        lines_of_code += intermediate_dict["lines_of_code"]
+        lines_of_code += intermediate_dict["lines_of_code"]  # type: ignore[operator]
 
     intermediate_code += "".join(intermediate_py_str_list).rstrip("\n")
     if intermediate_code:
@@ -294,7 +299,7 @@ def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
 
 
 def map_intermediate_to_input(
-    input_line_mapping: Dict[str, List], line_number: int
+    input_line_mapping: Dict[str, List[Union[str, int]]], line_number: int
 ) -> Tuple[str, int]:
     """Map intermediate file lines to notebooke cell and line.
 
@@ -320,12 +325,13 @@ def map_intermediate_to_input(
     --------
     create_intermediate_py_file
     """
-    line_filter = filter(
-        lambda code_line: code_line < line_number, input_line_mapping["code_lines"]
-    )
+    code_lines: List[int] = input_line_mapping["code_lines"]  # type: ignore[assignment]
+    line_filter = filter(lambda code_line: code_line < line_number, code_lines)
     entry_index = len(list(line_filter)) - 1
-    input_cell_name = input_line_mapping["input_names"][entry_index]
-    code_starting_line_number = input_line_mapping["code_lines"][entry_index] + 2
+    input_cell_name: str = input_line_mapping["input_names"][  # type: ignore[assignment]
+        entry_index
+    ]
+    code_starting_line_number: int = code_lines[entry_index] + 2
     input_cell_line_number = code_starting_line_number - line_number
     return input_cell_name, abs(input_cell_line_number)
 
@@ -344,12 +350,12 @@ class NotebookParser:
     """List of paths to the original Notebooks"""
     intermediate_py_file_paths: List[str] = []
     """List of paths to the parsed Notebooks"""
-    input_line_mappings: List[Dict[str, List]] = []
+    input_line_mappings: List[Dict[str, List[Union[str, int]]]] = []
     """List of input_line_mapping"""
     temp_path = ""
     """Path of the temp folder the parsed notebooks were saved in"""
 
-    def __init__(self, original_notebook_paths: List[str] = None):
+    def __init__(self, original_notebook_paths: Optional[List[str]] = None):
         """Initialize NotebookParser.
 
         Initializing an instance of the class will save ``original_notebook_paths``,
@@ -365,7 +371,7 @@ class NotebookParser:
         """
         self.new_notebooks = False
 
-        if original_notebook_paths:
+        if original_notebook_paths is not None:
             self.new_notebooks = True
             NotebookParser.original_notebook_paths = original_notebook_paths
         self.create_intermediate_py_file_paths()
@@ -373,7 +379,7 @@ class NotebookParser:
         NotebookParser.intermediate_py_file_paths.reverse()
         NotebookParser.input_line_mappings.reverse()
 
-    def create_intermediate_py_file_paths(self):
+    def create_intermediate_py_file_paths(self) -> None:
         """Create intermediate files needed for analysis.
 
         Parses all notebooks provided by ``self.original_notebook_paths``
@@ -401,7 +407,7 @@ class NotebookParser:
                     NotebookParser.original_notebook_paths.pop(index)
 
     @staticmethod
-    def get_mappings() -> Iterator[Tuple[str, str, Dict]]:
+    def get_mappings() -> Iterator[Tuple[str, str, Dict[str, List[Union[str, int]]]]]:
         """Return the mapping information needed to generate error messages.
 
         The message corresponds to the original notebook and not the actually checked
@@ -432,7 +438,7 @@ class NotebookParser:
         )
 
     @staticmethod
-    def clean_up():
+    def clean_up() -> None:
         """Delete the created temporary directory if it exists and resets all class attributes."""
         import shutil
 

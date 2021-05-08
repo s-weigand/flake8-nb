@@ -18,7 +18,7 @@ repos:
     rev: v0.812
     hooks:
       - id: mypy
-        exclude: "docs"
+        exclude: "^(docs|tests|.github)"
 
   - repo: https://github.com/MarcoGorelli/absolufy-imports
     rev: v0.3.0

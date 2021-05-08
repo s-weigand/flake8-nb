@@ -48,7 +48,7 @@ def map_notebook_error(violation: Violation) -> Union[Tuple[str, int], None]:
     return None
 
 
-class IpynbFormatter(Default):
+class IpynbFormatter(Default):  # type: ignore[misc]
     r"""Default flake8_nb formatter for jupyter notebooks.
 
     If the file to be formatted is a ``*.py`` file,
@@ -82,12 +82,13 @@ class IpynbFormatter(Default):
             map_result = map_notebook_error(violation)
             if map_result:
                 filename, line_number = map_result
-                return self.error_format % {
+                notebook_error: str = self.error_format % {
                     "code": violation.code,
                     "text": violation.text,
                     "path": filename,
                     "row": line_number,
                     "col": violation.column_number,
                 }
-
-        return super().format(violation)
+                return notebook_error
+        default_error: Union[str, None] = super().format(violation)
+        return default_error
