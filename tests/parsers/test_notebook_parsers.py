@@ -188,9 +188,9 @@ def test_is_parent_dir(parent_dir: str, path: str, expected_result):
     "notebook_name,number_of_cells",
     [
         ("not_a_notebook.ipynb", 0),
-        ("notebook_with_flake8_tags.ipynb", 21),
+        ("notebook_with_flake8_tags.ipynb", 20),
         ("notebook_with_out_flake8_tags.ipynb", 13),
-        ("notebook_with_out_ipython_magic.ipynb", 4),
+        ("notebook_with_out_ipython_magic.ipynb", 3),
     ],
 )
 def test_read_notebook_to_cells(notebook_name: str, number_of_cells: int):
