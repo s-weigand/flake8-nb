@@ -56,6 +56,15 @@
         "tool",
         "doc"
       ]
+    },
+    {
+      "login": "psychemedia",
+      "name": "Tony Hirst",
+      "avatar_url": "https://avatars.githubusercontent.com/u/82988?v=4",
+      "profile": "http://blog.ouseful.info",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
