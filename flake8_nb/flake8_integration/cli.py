@@ -29,6 +29,8 @@ from flake8_nb.parsers.notebook_parsers import NotebookParser
 
 LOG = logging.getLogger(__name__)
 
+defaults.EXCLUDE = (*defaults.EXCLUDE, ".ipynb_checkpoints")
+
 
 def get_notebooks_from_args(
     args: List[str], exclude: List[str] = ["*.tox/*", "*.ipynb_checkpoints*"]
@@ -243,15 +245,6 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
             comma_separated_list=True,
             help="Only check for filenames matching the patterns in this comma-"
             "separated list. (Default: %default)",
-        )
-        self.set_flake8_option(
-            "--exclude",
-            metavar="patterns",
-            default=f'{",".join(defaults.EXCLUDE)},*.ipynb_checkpoints/*',
-            comma_separated_list=True,
-            parse_from_config=True,
-            normalize_paths=True,
-            help="Comma-separated list of files or directories to exclude." " (Default: %default)",
         )
 
     @staticmethod

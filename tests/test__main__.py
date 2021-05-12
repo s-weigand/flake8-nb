@@ -3,6 +3,7 @@ import subprocess
 
 import pytest
 
+from flake8_nb import FLAKE8_VERSION_TUPLE
 from flake8_nb.__main__ import main
 from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
 from flake8_nb.parsers.notebook_parsers import NotebookParser
@@ -12,6 +13,8 @@ from tests import TEST_NOTEBOOK_BASE_PATH
 @pytest.mark.parametrize("keep_intermediate", [True, False])
 def test_run_main(capsys, keep_intermediate: bool):
     argv = ["flake8_nb", TEST_NOTEBOOK_BASE_PATH]
+    if FLAKE8_VERSION_TUPLE < (3, 8, 0):
+        argv = argv[1:]
     if keep_intermediate:
         argv.append("--keep-parsed-notebooks")
     argv += ["--exclude", "*.tox/*,*.ipynb_checkpoints*,*/docs/*"]
@@ -36,6 +39,8 @@ def test_run_main(capsys, keep_intermediate: bool):
 
 def test_run_main_all_excluded(capsys):
     argv = ["flake8_nb", TEST_NOTEBOOK_BASE_PATH]
+    if FLAKE8_VERSION_TUPLE < (3, 8, 0):
+        argv = argv[1:]
     argv += [
         "--exclude",
         f"*.tox/*,*.ipynb_checkpoints*,*/docs/*,{TEST_NOTEBOOK_BASE_PATH}",
@@ -58,9 +63,7 @@ def test_syscall(cli_entrypoint: str, keep_intermediate: bool):
         argv.append("--keep-parsed-notebooks")
     argv += ["--exclude", "*.tox/*,*.ipynb_checkpoints*,*/docs/*"]
     proc = subprocess.Popen(argv, stdout=subprocess.PIPE, universal_newlines=True)
-    result_list = []
-    for line in proc.stdout:  # type:ignore
-        result_list.append(str(line))
+    result_list = [str(line) for line in proc.stdout]
     expected_result_path = os.path.join(os.path.dirname(__file__), "data", "expected_output.txt")
     with open(expected_result_path) as result_file:
         expected_result_list = result_file.readlines()
@@ -68,4 +71,4 @@ def test_syscall(cli_entrypoint: str, keep_intermediate: bool):
     assert len(expected_result_list) == len(result_list)
 
     for expected_result in expected_result_list:
-        assert any([result.endswith(expected_result) for result in result_list])
+        assert any(result.endswith(expected_result) for result in result_list)

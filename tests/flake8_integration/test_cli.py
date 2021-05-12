@@ -16,7 +16,7 @@ from tests.flake8_integration.conftest import TempIpynbArgs
 def test_get_notebooks_from_args(temp_ipynb_args: TempIpynbArgs):
     orig_args, (expected_args, expected_nb_list) = temp_ipynb_args.get_args_and_result()
     args, nb_list = get_notebooks_from_args(
-        orig_args, exclude=["*.tox/*", "*.ipynb_checkpoints*", "*/docs/*"]
+        orig_args, exclude=["*.tox/*", ".ipynb_checkpoints", "*/docs/*"]
     )
     assert sorted(args) == sorted(expected_args)
     assert sorted(nb_list) == sorted(expected_nb_list)
@@ -69,7 +69,7 @@ def test_Flake8NbApplication__option_defaults():
     option_dict = app.option_manager.config_options_dict
     assert option_dict["format"].default == "default_notebook"
     assert option_dict["filename"].default == "*.py,*.ipynb_parsed"
-    assert option_dict["exclude"].default.endswith(",*.ipynb_checkpoints/*")  # type: ignore
+    assert option_dict["exclude"].default.endswith(",.ipynb_checkpoints")  # type: ignore
     assert option_dict["keep_parsed_notebooks"].default is False
 
 
