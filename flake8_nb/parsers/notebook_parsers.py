@@ -140,16 +140,22 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[NotebookCell
     """
     uses_get_ipython = False
     notebook_cells = read_notebook_to_cells(notebook_path)
+    code_cell_nr = len(list(filter(lambda cell: cell["cell_type"] == "code", notebook_cells)))
     for index, cell in list(enumerate(notebook_cells))[::-1]:
         if ignore_cell(cell):
             notebook_cells.pop(index)
         else:
+            cell["total_cell_nr"] = index + 1
+            cell["code_cell_nr"] = code_cell_nr
             cell_source = list(enumerate(cell["source"]))[::-1]
             for source_index, source_line in cell_source:
                 new_source_line = convert_source_line(source_line)
                 if new_source_line.startswith("get_ipython"):
                     uses_get_ipython = True
                 cell["source"][source_index] = new_source_line
+
+        if cell["cell_type"] == "code":
+            code_cell_nr -= 1
 
     return uses_get_ipython, notebook_cells
 
@@ -263,7 +269,7 @@ def create_intermediate_py_file(
     for notebook_cell in notebook_cells:
         intermediate_dict = notebook_cell_to_intermediate_dict(notebook_cell)
         intermediate_py_str_list.append(intermediate_dict["code"])  # type: ignore[arg-type]
-        input_line_mapping["input_names"].append(intermediate_dict["input_name"])
+        input_line_mapping["input_names"].append(f'In[{intermediate_dict["input_nr"]}]')
         input_line_mapping["code_lines"].append(lines_of_code + 1)
         lines_of_code += intermediate_dict["lines_of_code"]  # type: ignore[operator]
 

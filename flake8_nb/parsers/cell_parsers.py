@@ -309,6 +309,8 @@ def notebook_cell_to_intermediate_dict(notebook_cell: NotebookCell) -> Dict[str,
     """
     updated_source_lines = []
     input_nr = notebook_cell["execution_count"]
+    total_cell_nr = notebook_cell["total_cell_nr"]
+    code_cell_nr = notebook_cell["code_cell_nr"]
     rules_dict = get_flake8_rules_dict(notebook_cell)
     for line_index, source_line in enumerate(notebook_cell["source"]):
         rules_list = generate_rules_list(line_index, rules_dict)
@@ -316,9 +318,13 @@ def notebook_cell_to_intermediate_dict(notebook_cell: NotebookCell) -> Dict[str,
         updated_source_lines.append(updated_source_line)
     if input_nr is None:
         input_nr = " "
-    input_name = f"In[{input_nr}]"
     return {
-        "code": f"# {input_name}\n\n\n{''.join(updated_source_lines)}\n\n",
-        "input_name": input_name,
+        "code": (
+            f"# INTERMEDIATE_CELL_SEPARATOR ({input_nr},{code_cell_nr},{total_cell_nr})\n\n\n"
+            f"{''.join(updated_source_lines)}\n\n"
+        ),
+        "input_nr": input_nr,
+        "total_cell_nr": total_cell_nr,
+        "code_cell_nr": code_cell_nr,
         "lines_of_code": len(updated_source_lines) + 5,
     }

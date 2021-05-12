@@ -1,28 +1,28 @@
 from IPython import get_ipython
 
 
-# In[1]
+# INTERMEDIATE_CELL_SEPARATOR (1,1,4)
 
 
 import not_a_package  # noqa: F401
 {"1":1}  # noqa: F401
 
 
-# In[2]
+# INTERMEDIATE_CELL_SEPARATOR (2,2,6)
 
 
 {"2":1}  # noqa: E231
 {"2":2}
 
 
-# In[3]
+# INTERMEDIATE_CELL_SEPARATOR (3,3,8)
 
 
 {"3":1}  # noqa: E231
 {"3":2}  # noqa: E231
 
 
-# In[4]
+# INTERMEDIATE_CELL_SEPARATOR (4,4,11)
 
 
 # flake8-noqa-cell-E402-F401-F811  # noqa: E402, F401, F811
@@ -30,7 +30,7 @@ import not_a_package  # noqa: E402, F401, F811
 {"4":1}  # noqa: E402, F401, F811
 
 
-# In[5]
+# INTERMEDIATE_CELL_SEPARATOR (5,5,13)
 
 
 # flake8-noqa-line-2-E231
@@ -38,7 +38,7 @@ import not_a_package  # noqa: E402, F401, F811
 {"5":2}
 
 
-# In[6]
+# INTERMEDIATE_CELL_SEPARATOR (6,6,15)
 
 
 # flake8-noqa-cell-E231  # noqa: E231
@@ -46,14 +46,14 @@ import not_a_package  # noqa: E402, F401, F811
 {"6":2}  # noqa: E231
 
 
-# In[7]
+# INTERMEDIATE_CELL_SEPARATOR (7,7,18)
 
 
 {"5":1}  # noqa: E231
 {"5":2}
 
 
-# In[8]
+# INTERMEDIATE_CELL_SEPARATOR (8,8,20)
 
 
 get_ipython().system('flake8_nb notebook_with_flake8_tags.ipynb')

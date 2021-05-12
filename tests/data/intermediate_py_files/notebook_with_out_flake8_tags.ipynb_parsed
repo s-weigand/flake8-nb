@@ -1,26 +1,26 @@
 from IPython import get_ipython
 
 
-# In[1]
+# INTERMEDIATE_CELL_SEPARATOR (1,1,3)
 
 
 import not_a_package
 
 
-# In[2]
+# INTERMEDIATE_CELL_SEPARATOR (2,2,5)
 
 
 {"1":1}
 
 
-# In[3]
+# INTERMEDIATE_CELL_SEPARATOR (3,3,7)
 
 
 def func():
     return "foo"
 
 
-# In[4]
+# INTERMEDIATE_CELL_SEPARATOR (4,4,9)
 
 
 class Bar:
@@ -28,7 +28,7 @@ class Bar:
         return "foo"
 
 
-# In[5]
+# INTERMEDIATE_CELL_SEPARATOR (5,5,11)
 
 
 get_ipython().system('flake8_nb notebook_with_out_flake8_tags.ipynb')
