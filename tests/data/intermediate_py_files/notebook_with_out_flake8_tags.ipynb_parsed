@@ -28,7 +28,25 @@ class Bar:
         return "foo"
 
 
-# INTERMEDIATE_CELL_SEPARATOR (5,5,11)
+# INTERMEDIATE_CELL_SEPARATOR (5,6,13)
+
+
+{"1":1}
+
+
+# INTERMEDIATE_CELL_SEPARATOR (6,7,15)
 
 
 get_ipython().system('flake8_nb notebook_with_out_flake8_tags.ipynb')
+
+
+# INTERMEDIATE_CELL_SEPARATOR (7,8,17)
+
+
+get_ipython().system("flake8_nb --notebook-cell-format '{nb_path}:code_cell#{code_cell_count}' notebook_with_out_flake8_tags.ipynb")  # noqa: E501
+
+
+# INTERMEDIATE_CELL_SEPARATOR (8,9,19)
+
+
+get_ipython().system("flake8_nb --notebook-cell-format '{nb_path}:cell#{total_cell_count}' notebook_with_out_flake8_tags.ipynb")  # noqa: E501

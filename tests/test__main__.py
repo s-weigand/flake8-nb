@@ -94,6 +94,9 @@ def test_syscall(
     with open(expected_result_path) as result_file:
         expected_result_list = result_file.readlines()
 
+    print("\n".join(expected_result_list))
+    print("#" * 80)
+    print("\n".join(result_list))
     assert len(expected_result_list) == len(result_list)
 
     for expected_result in expected_result_list:

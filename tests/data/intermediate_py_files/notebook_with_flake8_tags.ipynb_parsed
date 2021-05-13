@@ -57,3 +57,15 @@ import not_a_package  # noqa: E402, F401, F811
 
 
 get_ipython().system('flake8_nb notebook_with_flake8_tags.ipynb')
+
+
+# INTERMEDIATE_CELL_SEPARATOR (9,9,22)
+
+
+get_ipython().system("flake8_nb --notebook-cell-format '{nb_path}:code_cell#{code_cell_count}' notebook_with_flake8_tags.ipynb")  # noqa: E501
+
+
+# INTERMEDIATE_CELL_SEPARATOR (10,10,24)
+
+
+get_ipython().system("flake8_nb --notebook-cell-format '{nb_path}:cell#{total_cell_count}' notebook_with_flake8_tags.ipynb")  # noqa: E501

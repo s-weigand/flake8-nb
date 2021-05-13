@@ -27,10 +27,13 @@ This is **NOT A PLUGIN** but a stand alone CLI tool/[pre-commit](https://pre-com
 
 - flake8 CLI tests for jupyter notebooks
 - Full base functionality of `flake8` and its plugins
-- Input cell based error formatting
+- Input cell based error formatting (Execution count/code cell count/total cellcount)
 - Report fine tuning with cell-tags (`flake8-noqa-tags` see [usage](https://flake8-nb.readthedocs.io/en/latest/usage.html#cell-tags))
+- [pre-commit](https://pre-commit.com/) hook
 
-## Example
+## Examples
+
+## Default reporting
 
 If you had a notebook with name `example_notebook.ipynb`, where the code cell
 which was executed as 34th cell (`In[34]`) had the following code:
@@ -41,9 +44,32 @@ bad_formatted_dict = {"missing":"space"}
 
 running `flake8_nb` would result in the following output.
 
+### Execution count
+
 ```bash
 $ flake8_nb example_notebook.ipynb
 example_notebook.ipynb#In[34]:1:31: E231 missing whitespace after ':'
+```
+
+## Custom reporting
+
+If you prefer the reports to show the cell number rather then the execution count you
+can use the `--notebook-cell-format` option, given that the cell is the 5th `code` cell
+and 10th total cell (taking `raw` and `markdown` cells into account),
+you will get the following output.
+
+### Code cell count
+
+```bash
+$ flake8_nb --notebook-cell-format '{nb_path}:code_cell#{code_cell_count}' example_notebook.ipynb
+example_notebook.ipynb:code_cell#5:1:31: E231 missing whitespace after ':'
+```
+
+### Total cell count
+
+```bash
+$ flake8_nb --notebook-cell-format '{nb_path}:cell#{total_cell_count}' example_notebook.ipynb
+example_notebook.ipynb:cell#10:1:31: E231 missing whitespace after ':'
 ```
 
 ## Contributors ✨

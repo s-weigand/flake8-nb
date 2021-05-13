@@ -26,11 +26,17 @@ by ``flake8``'s CLI. To see all the provided option just call:
 
     $ flake8_nb --help
 
-The only additional flag that is provided by ``flake8_nb`` and
-isn't part of the original ``flake8`` is ``--keep-parsed-notebooks``.
-If this flag is activated the the parsed notebooks will be kept
-and the path they were saved in will be displayed, for further
-debugging or trouble shooting.
+Additional flags/options provided by ``flake8_nb``:
+
+* ``--keep-parsed-notebooks``
+    If this flag is activated the the parsed notebooks will be kept
+    and the path they were saved in will be displayed, for further
+    debugging or trouble shooting.
+
+* ``--notebook-cell-format``
+    Template string used to format the filename and cell part of error report.
+    Possible variables which will be replaced are ``nb_path``, ``exec_count``,
+    ``code_cell_count`` and ``total_cell_count``.
 
 Project wide configuration
 --------------------------
@@ -42,6 +48,9 @@ Configuration of a project can be saved in one of the following files
 .. code-block:: ini
 
     [flake8_nb]
+    ; Default values
+    keep_parsed_notebooks = False
+    notebook_cell_format = {nb_path}#In[{exec_count}]
 
 For a detailed explanation on how to use and configure it,
 you can consult the official `flake8 documentation`_

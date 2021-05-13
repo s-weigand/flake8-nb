@@ -7,6 +7,7 @@ from typing import Union
 
 import pytest
 
+from flake8_nb.parsers import CellId
 from flake8_nb.parsers.notebook_parsers import InputLineMapping
 from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
 from flake8_nb.parsers.notebook_parsers import NotebookParser
@@ -44,21 +45,23 @@ def get_expected_intermediate_file_results(result_name: str, base_path: str) -> 
             "notebook_with_flake8_tags",
             {
                 "input_ids": [
-                    ("1", 1, 4),
-                    ("2", 2, 6),
-                    ("3", 3, 8),
-                    ("4", 4, 11),
-                    ("5", 5, 13),
-                    ("6", 6, 15),
-                    ("7", 7, 18),
-                    ("8", 8, 20),
+                    CellId("1", 1, 4),
+                    CellId("2", 2, 6),
+                    CellId("3", 3, 8),
+                    CellId("4", 4, 11),
+                    CellId("5", 5, 13),
+                    CellId("6", 6, 15),
+                    CellId("7", 7, 18),
+                    CellId("8", 8, 20),
+                    CellId("9", 9, 22),
+                    CellId("10", 10, 24),
                 ],
-                "code_lines": [4, 11, 18, 25, 33, 41, 49, 56],
+                "code_lines": [4, 11, 18, 25, 33, 41, 49, 56, 62, 68],
             },
         ),
         (
             "notebook_with_out_ipython_magic",
-            {"input_ids": [("1", 1, 3)], "code_lines": [1]},
+            {"input_ids": [CellId("1", 1, 3)], "code_lines": [1]},
         ),
         (
             "cell_with_source_string",
@@ -68,13 +71,16 @@ def get_expected_intermediate_file_results(result_name: str, base_path: str) -> 
             "notebook_with_out_flake8_tags",
             {
                 "input_ids": [
-                    ("1", 1, 3),
-                    ("2", 2, 5),
-                    ("3", 3, 7),
-                    ("4", 4, 9),
-                    ("5", 5, 11),
+                    CellId("1", 1, 3),
+                    CellId("2", 2, 5),
+                    CellId("3", 3, 7),
+                    CellId("4", 4, 9),
+                    CellId("5", 6, 13),
+                    CellId("6", 7, 15),
+                    CellId("7", 8, 17),
+                    CellId("8", 9, 19),
                 ],
-                "code_lines": [4, 10, 16, 23, 31],
+                "code_lines": [4, 10, 16, 23, 31, 37, 43, 49],
             },
         ),
     ],
@@ -132,8 +138,8 @@ def test_create_temp_path(tmpdir, notebook_path: str, rel_result_path: List[str]
     [
         ("not_a_notebook.ipynb", 0, False),
         ("cell_with_source_string.ipynb", 1, False),
-        ("notebook_with_flake8_tags.ipynb", 8, True),
-        ("notebook_with_out_flake8_tags.ipynb", 5, True),
+        ("notebook_with_flake8_tags.ipynb", 10, True),
+        ("notebook_with_out_flake8_tags.ipynb", 8, True),
         ("notebook_with_out_ipython_magic.ipynb", 1, False),
     ],
 )
@@ -200,8 +206,8 @@ def test_is_parent_dir(parent_dir: str, path: str, expected_result):
     "notebook_name,number_of_cells",
     [
         ("not_a_notebook.ipynb", 0),
-        ("notebook_with_flake8_tags.ipynb", 20),
-        ("notebook_with_out_flake8_tags.ipynb", 13),
+        ("notebook_with_flake8_tags.ipynb", 24),
+        ("notebook_with_out_flake8_tags.ipynb", 19),
         ("notebook_with_out_ipython_magic.ipynb", 3),
     ],
 )
@@ -231,13 +237,13 @@ def test_InvalidNotebookWarning():
 def test_map_intermediate_to_input_line(line_number: int, expected_result: Tuple[str, int]):
     input_line_mapping: InputLineMapping = {
         "input_ids": [
-            ("1", 1, 1),
-            ("2", 2, 2),
-            ("3", 3, 3),
-            ("4", 4, 5),
-            ("5", 6, 8),
-            ("6", 7, 10),
-            ("7", 9, 15),
+            CellId("1", 1, 1),
+            CellId("2", 2, 2),
+            CellId("3", 3, 3),
+            CellId("4", 4, 5),
+            CellId("5", 6, 8),
+            CellId("6", 7, 10),
+            CellId("7", 9, 15),
         ],
         "code_lines": [4, 11, 18, 25, 33, 41, 49],
     }
