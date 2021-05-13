@@ -1,0 +1,10 @@
+# INTERMEDIATE_CELL_SEPARATOR (1,1,1)
+
+
+from ipywidgets import interact
+
+def f(x):
+    return x
+
+
+interact(f, x=10)

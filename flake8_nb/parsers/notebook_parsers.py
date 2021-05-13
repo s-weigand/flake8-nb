@@ -150,6 +150,8 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[NotebookCell
         else:
             cell["total_cell_nr"] = index + 1
             cell["code_cell_nr"] = code_cell_nr
+            if isinstance(cell["source"], str):
+                cell["source"] = cell["source"].split("\n")
             cell_source = list(enumerate(cell["source"]))[::-1]
             for source_index, source_line in cell_source:
                 new_source_line = convert_source_line(source_line)
@@ -159,7 +161,6 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[NotebookCell
 
         if cell["cell_type"] == "code":
             code_cell_nr -= 1
-
     return uses_get_ipython, notebook_cells
 
 

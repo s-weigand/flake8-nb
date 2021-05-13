@@ -61,6 +61,10 @@ def get_expected_intermediate_file_results(result_name: str, base_path: str) -> 
             {"input_ids": [("1", 1, 3)], "code_lines": [1]},
         ),
         (
+            "cell_with_source_string",
+            {"input_ids": [("1", 1, 1)], "code_lines": [1]},
+        ),
+        (
             "notebook_with_out_flake8_tags",
             {
                 "input_ids": [
@@ -127,6 +131,7 @@ def test_create_temp_path(tmpdir, notebook_path: str, rel_result_path: List[str]
     "notebook_name,number_of_cells,uses_get_ipython_result",
     [
         ("not_a_notebook.ipynb", 0, False),
+        ("cell_with_source_string.ipynb", 1, False),
         ("notebook_with_flake8_tags.ipynb", 8, True),
         ("notebook_with_out_flake8_tags.ipynb", 5, True),
         ("notebook_with_out_ipython_magic.ipynb", 1, False),
