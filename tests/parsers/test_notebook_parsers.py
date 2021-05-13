@@ -7,6 +7,7 @@ from typing import Union
 
 import pytest
 
+from flake8_nb.parsers.notebook_parsers import InputLineMapping
 from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
 from flake8_nb.parsers.notebook_parsers import NotebookParser
 from flake8_nb.parsers.notebook_parsers import create_intermediate_py_file
@@ -38,31 +39,37 @@ def get_expected_intermediate_file_results(result_name: str, base_path: str) -> 
 @pytest.mark.parametrize(
     "notebook_name,expected_input_line_mapping",
     [
-        ("not_a_notebook", {"input_names": [], "code_lines": []}),
+        ("not_a_notebook", {"input_ids": [], "code_lines": []}),
         (
             "notebook_with_flake8_tags",
             {
-                "input_names": [
-                    "In[1]",
-                    "In[2]",
-                    "In[3]",
-                    "In[4]",
-                    "In[5]",
-                    "In[6]",
-                    "In[7]",
-                    "In[8]",
+                "input_ids": [
+                    ("1", 1, 4),
+                    ("2", 2, 6),
+                    ("3", 3, 8),
+                    ("4", 4, 11),
+                    ("5", 5, 13),
+                    ("6", 6, 15),
+                    ("7", 7, 18),
+                    ("8", 8, 20),
                 ],
                 "code_lines": [4, 11, 18, 25, 33, 41, 49, 56],
             },
         ),
         (
             "notebook_with_out_ipython_magic",
-            {"input_names": ["In[1]"], "code_lines": [1]},
+            {"input_ids": [("1", 1, 3)], "code_lines": [1]},
         ),
         (
             "notebook_with_out_flake8_tags",
             {
-                "input_names": ["In[1]", "In[2]", "In[3]", "In[4]", "In[5]"],
+                "input_ids": [
+                    ("1", 1, 3),
+                    ("2", 2, 5),
+                    ("3", 3, 7),
+                    ("4", 4, 9),
+                    ("5", 5, 11),
+                ],
                 "code_lines": [4, 10, 16, 23, 31],
             },
         ),
@@ -214,11 +221,19 @@ def test_InvalidNotebookWarning():
 
 @pytest.mark.parametrize(
     "line_number,expected_result",
-    [(15, ("In[2]", 2)), (30, ("In[4]", 3)), (52, ("In[7]", 1))],
+    [(15, (("2", 2, 2), 2)), (30, (("4", 4, 5), 3)), (52, (("7", 9, 15), 1))],
 )
 def test_map_intermediate_to_input_line(line_number: int, expected_result: Tuple[str, int]):
-    input_line_mapping: Dict[str, List[Union[str, int]]] = {
-        "input_names": ["In[1]", "In[2]", "In[3]", "In[4]", "In[5]", "In[6]", "In[7]"],
+    input_line_mapping: InputLineMapping = {
+        "input_ids": [
+            ("1", 1, 1),
+            ("2", 2, 2),
+            ("3", 3, 3),
+            ("4", 4, 5),
+            ("5", 6, 8),
+            ("6", 7, 10),
+            ("7", 9, 15),
+        ],
         "code_lines": [4, 11, 18, 25, 33, 41, 49],
     }
     assert map_intermediate_to_input(input_line_mapping, line_number) == expected_result

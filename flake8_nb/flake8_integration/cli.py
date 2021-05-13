@@ -165,6 +165,15 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
             parse_from_config=True,
             help="Keep the temporary parsed notebooks, i.e. for debugging.",
         )
+        self.set_flake8_option(
+            "--notebook-cell-format",
+            metavar="notebook_cell_format",
+            default="{nb_path}#In[{exec_count}]",
+            parse_from_config=True,
+            help="Template string used to format the filename and cell part of error report.\n"
+            "Possible variables which will be replaces 'nb_path', 'exec_count',"
+            "'code_cell_count' and 'total_cell_count'. (Default: %default)",
+        )
         self.option_manager.generate_versions = hack_option_manager_generate_versions(
             self.option_manager.generate_versions
         )

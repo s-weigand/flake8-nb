@@ -4,6 +4,7 @@ from typing import List
 
 import pytest
 
+from flake8_nb.parsers import CellId
 from flake8_nb.parsers.cell_parsers import InvalidFlake8TagWarning
 from flake8_nb.parsers.cell_parsers import extract_flake8_inline_tags
 from flake8_nb.parsers.cell_parsers import extract_flake8_tags
@@ -176,9 +177,7 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
                     "for i in range(1):  # noqa: E402, F401\n    "
                     "print(i)  # noqa: E402, F401\n\n\n"
                 ),
-                "input_nr": 8,
-                "code_cell_nr": 8,
-                "total_cell_nr": 8,
+                "input_id": CellId("8", 8, 8),
                 "lines_of_code": 7,
             },
         ),
@@ -196,9 +195,7 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
                     "for i in range(1):  # noqa: E402, F401, W391\n"
                     "    print(i)\n\n\n"
                 ),
-                "input_nr": 9,
-                "code_cell_nr": 9,
-                "total_cell_nr": 12,
+                "input_id": CellId("9", 9, 12),
                 "lines_of_code": 7,
             },
         ),
@@ -221,9 +218,7 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
                     "    print(i)  # noqa: E402, F401, W391\n"
                     "print('foo')  # noqa: E402\n\n\n"
                 ),
-                "input_nr": 2,
-                "code_cell_nr": 2,
-                "total_cell_nr": 4,
+                "input_id": CellId("2", 2, 4),
                 "lines_of_code": 8,
             },
         ),
@@ -241,9 +236,7 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
                     "\n\n\nfor i in range(1):  # noqa: \n"
                     "    print(i)  # noqa: \n\n\n"
                 ),
-                "input_nr": 1,
-                "code_cell_nr": 1,
-                "total_cell_nr": 1,
+                "input_id": CellId("1", 1, 1),
                 "lines_of_code": 7,
             },
         ),
@@ -261,9 +254,7 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
                     "for i in range(1):  # noqa: \n"
                     "    print(i)  # noqa: \n\n\n"
                 ),
-                "input_nr": " ",
-                "code_cell_nr": 1,
-                "total_cell_nr": 1,
+                "input_id": CellId(" ", 1, 1),
                 "lines_of_code": 7,
             },
         ),

@@ -9,9 +9,7 @@ from flake8_nb.flake8_integration.formatter import IpynbFormatter
 from flake8_nb.flake8_integration.formatter import map_notebook_error
 from flake8_nb.parsers.notebook_parsers import NotebookParser
 
-TEST_NOTEBOOK_PATH = os.path.join(
-    "tests", "data", "notebooks", "notebook_with_flake8_tags.ipynb#In[{}]"
-)
+TEST_NOTEBOOK_PATH = os.path.join("tests", "data", "notebooks", "notebook_with_flake8_tags.ipynb")
 
 
 def get_test_intermediate_path(intermediate_names):
@@ -22,8 +20,10 @@ def get_test_intermediate_path(intermediate_names):
     ][0]
 
 
-def get_mocked_option(formatter="default_notebook") -> Values:
-    return Values({"output_file": "", "format": formatter})
+def get_mocked_option(notebook_cell_format: str, formatter="default_notebook") -> Values:
+    return Values(
+        {"output_file": "", "format": formatter, "notebook_cell_format": notebook_cell_format}
+    )
 
 
 def get_mocked_violation(filename: str, line_number: int) -> Violation:
@@ -38,19 +38,34 @@ def get_mocked_violation(filename: str, line_number: int) -> Violation:
 
 
 @pytest.mark.parametrize(
-    "line_number,expected_input_number,expected_line_number",
-    [(8, 1, 2), (15, 2, 2), (29, 4, 2), (30, 4, 3), (38, 5, 3)],
+    "line_number,cell_nr,expected_line_number",
+    [
+        (8, 1, 2),
+        (15, 2, 2),
+        (29, 4, 2),
+        (30, 4, 3),
+        (38, 5, 3),
+    ],
+)
+@pytest.mark.parametrize(
+    "notebook_cell_format,cell_format_str",
+    (
+        ("{nb_path}#In[{exec_count}]", "#In[{}]"),
+        ("{nb_path}:code_cell#{exec_count}", ":code_cell#{}"),
+    ),
 )
 def test_IpynbFormatter__map_notebook_error(
     notebook_parser: NotebookParser,
+    notebook_cell_format: str,
+    cell_format_str: str,
     line_number: int,
-    expected_input_number: int,
+    cell_nr: int,
     expected_line_number: int,
 ):
-    expected_filename = TEST_NOTEBOOK_PATH.format(expected_input_number)
+    expected_filename = f"{TEST_NOTEBOOK_PATH}{cell_format_str.format(cell_nr)}"
     filename = get_test_intermediate_path(notebook_parser.intermediate_py_file_paths)
     mock_error = get_mocked_violation(filename, line_number)
-    map_result = map_notebook_error(mock_error)
+    map_result = map_notebook_error(mock_error, notebook_cell_format)
     assert map_result is not None
     filename, input_cell_line_number = map_result
     assert input_cell_line_number == expected_line_number
@@ -82,23 +97,32 @@ def test_IpynbFormatter__map_notebook_error(
                 "data",
                 "intermediate_py_files",
                 "notebook_with_flake8_tags.ipynb_parsed",
-            ],  # dummy comment for formatting
+            ],
             "{expected_filename}:8:2: AB123 This is just for the coverage",
         ),
     ],
 )
+@pytest.mark.parametrize(
+    "notebook_cell_format,cell_format_str",
+    (
+        ("{nb_path}#In[{exec_count}]", "#In[1]"),
+        ("{nb_path}:code_cell#{exec_count}", ":code_cell#1"),
+    ),
+)
 def test_IpynbFormatter__format(
+    notebook_cell_format: str,
+    cell_format_str: str,
     notebook_parser: NotebookParser,
     file_path_list: List[str],
     format_str: str,
     expected_result_str: str,
 ):
-    mocked_option = get_mocked_option(format_str)
+    mocked_option = get_mocked_option(notebook_cell_format, format_str)
     formatter = IpynbFormatter(mocked_option)  # type: ignore
     if file_path_list:
         filename = expected_filename = os.path.join(*file_path_list)
     else:
-        expected_filename = TEST_NOTEBOOK_PATH.format(1)
+        expected_filename = f"{TEST_NOTEBOOK_PATH}{cell_format_str}"
         filename = get_test_intermediate_path(notebook_parser.intermediate_py_file_paths)
     mock_error = get_mocked_violation(filename, 8)
     result = formatter.format(mock_error)

@@ -16,8 +16,11 @@ from typing import Union
 
 from nbconvert.filters import ipython2python
 
+from flake8_nb.parsers import CellId
 from flake8_nb.parsers import NotebookCell
 from flake8_nb.parsers.cell_parsers import notebook_cell_to_intermediate_dict
+
+InputLineMapping = Dict[str, List[Union[CellId, int]]]
 
 
 def ignore_cell(notebook_cell: NotebookCell) -> bool:
@@ -33,7 +36,7 @@ def ignore_cell(notebook_cell: NotebookCell) -> bool:
     bool
         Whether cell should be ignored or not.
     """
-    return not notebook_cell["source"] or notebook_cell["cell_type"] != "code"
+    return not notebook_cell.get("source", []) or notebook_cell["cell_type"] != "code"
 
 
 class InvalidNotebookWarning(UserWarning):
@@ -219,7 +222,7 @@ def create_temp_path(notebook_path: str, temp_base_path: str) -> str:
 
 def create_intermediate_py_file(
     notebook_path: str, intermediate_dir_base_path: str
-) -> Tuple[str, Dict[str, List[Union[str, int]]]]:
+) -> Tuple[str, InputLineMapping]:
     r"""Parse a notebook at ``notebook_path`` and saves a parsed version.
 
     The corresponding position is relative to ``intermediate_dir_base_path``.
@@ -258,7 +261,10 @@ def create_intermediate_py_file(
     """
     intermediate_file_path = create_temp_path(notebook_path, intermediate_dir_base_path)
     uses_get_ipython, notebook_cells = get_notebook_code_cells(notebook_path)
-    input_line_mapping: Dict[str, List[Union[str, int]]] = {"input_names": [], "code_lines": []}
+    input_line_mapping: InputLineMapping = {
+        "input_ids": [],
+        "code_lines": [],
+    }
     if uses_get_ipython:
         lines_of_code = 3
         intermediate_code = "from IPython import get_ipython\n\n\n"
@@ -269,7 +275,10 @@ def create_intermediate_py_file(
     for notebook_cell in notebook_cells:
         intermediate_dict = notebook_cell_to_intermediate_dict(notebook_cell)
         intermediate_py_str_list.append(intermediate_dict["code"])  # type: ignore[arg-type]
-        input_line_mapping["input_names"].append(f'In[{intermediate_dict["input_nr"]}]')
+        input_line_mapping["input_ids"].append(
+            intermediate_dict["input_id"]  # type: ignore[arg-type]
+        )
+
         input_line_mapping["code_lines"].append(lines_of_code + 1)
         lines_of_code += intermediate_dict["lines_of_code"]  # type: ignore[operator]
 
@@ -305,9 +314,9 @@ def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
 
 
 def map_intermediate_to_input(
-    input_line_mapping: Dict[str, List[Union[str, int]]], line_number: int
-) -> Tuple[str, int]:
-    """Map intermediate file lines to notebooke cell and line.
+    input_line_mapping: InputLineMapping, line_number: int
+) -> Tuple[CellId, int]:
+    """Map intermediate file lines to notebook cell and line.
 
     Maps the line at `line_number` to the corresponding code cell
     (`input_cell_name`) and line number in the code cell
@@ -315,7 +324,7 @@ def map_intermediate_to_input(
 
     Parameters
     ----------
-    input_line_mapping : Dict[str, List]
+    input_line_mapping : InputLineMapping
         Dict containing lists of input cell names and their line in the
         intermediate file.
     line_number : int
@@ -323,9 +332,9 @@ def map_intermediate_to_input(
 
     Returns
     -------
-    Tuple[str, int]
-        Input cell name and corresponding line in that cell
-        (input_cell_name, input_cell_line_number)
+    Tuple[CellId, int]
+        Input cell ID and corresponding line in that cell
+        (input_id, input_cell_line_number)
 
     See Also
     --------
@@ -334,12 +343,11 @@ def map_intermediate_to_input(
     code_lines: List[int] = input_line_mapping["code_lines"]  # type: ignore[assignment]
     line_filter = filter(lambda code_line: code_line < line_number, code_lines)
     entry_index = len(list(line_filter)) - 1
-    input_cell_name: str = input_line_mapping["input_names"][  # type: ignore[assignment]
-        entry_index
-    ]
+    input_ids = input_line_mapping["input_ids"]
+    input_id: CellId = input_ids[entry_index]  # type: ignore[assignment]
     code_starting_line_number: int = code_lines[entry_index] + 2
     input_cell_line_number = code_starting_line_number - line_number
-    return input_cell_name, abs(input_cell_line_number)
+    return input_id, abs(input_cell_line_number)
 
 
 class NotebookParser:
@@ -356,7 +364,7 @@ class NotebookParser:
     """List of paths to the original Notebooks"""
     intermediate_py_file_paths: List[str] = []
     """List of paths to the parsed Notebooks"""
-    input_line_mappings: List[Dict[str, List[Union[str, int]]]] = []
+    input_line_mappings: List[InputLineMapping] = []
     """List of input_line_mapping"""
     temp_path = ""
     """Path of the temp folder the parsed notebooks were saved in"""
@@ -413,7 +421,7 @@ class NotebookParser:
                     NotebookParser.original_notebook_paths.pop(index)
 
     @staticmethod
-    def get_mappings() -> Iterator[Tuple[str, str, Dict[str, List[Union[str, int]]]]]:
+    def get_mappings() -> Iterator[Tuple[str, str, InputLineMapping]]:
         """Return the mapping information needed to generate error messages.
 
         The message corresponds to the original notebook and not the actually checked

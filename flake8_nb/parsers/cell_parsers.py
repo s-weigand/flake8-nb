@@ -10,6 +10,7 @@ from typing import Dict
 from typing import List
 from typing import Union
 
+from flake8_nb.parsers import CellId
 from flake8_nb.parsers import NotebookCell
 
 FLAKE8_TAG_PATTERN = re.compile(
@@ -286,7 +287,9 @@ def update_inline_flake8_noqa(source_line: str, rules_list: List[str]) -> str:
         return f"{source_line}\n"
 
 
-def notebook_cell_to_intermediate_dict(notebook_cell: NotebookCell) -> Dict[str, Union[str, int]]:
+def notebook_cell_to_intermediate_dict(
+    notebook_cell: NotebookCell,
+) -> Dict[str, Union[CellId, str, int]]:
     r"""Parse ``notebook_cell`` to a dict.
 
     That dict can later be written to a intermediate_py_file.
@@ -323,8 +326,6 @@ def notebook_cell_to_intermediate_dict(notebook_cell: NotebookCell) -> Dict[str,
             f"# INTERMEDIATE_CELL_SEPARATOR ({input_nr},{code_cell_nr},{total_cell_nr})\n\n\n"
             f"{''.join(updated_source_lines)}\n\n"
         ),
-        "input_nr": input_nr,
-        "total_cell_nr": total_cell_nr,
-        "code_cell_nr": code_cell_nr,
+        "input_id": CellId(str(input_nr), code_cell_nr, total_cell_nr),
         "lines_of_code": len(updated_source_lines) + 5,
     }
