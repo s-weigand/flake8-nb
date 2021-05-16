@@ -1,5 +1,11 @@
 # History
 
+## 0.3.0 (2020-05-16)
+
+- Set max supported version of `flake8` to be `<3.9.3`
+- Report formatting is configurable via `--notebook-cell-format` option
+  with formatting options `nb_path`, `exec_count`, `code_cell_count` and `total_cell_count`.
+
 ## 0.2.7 (2020-04-16)
 
 - Set max supported version of `flake8` to be `<3.9.2`
