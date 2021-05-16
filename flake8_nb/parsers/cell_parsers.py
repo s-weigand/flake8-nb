@@ -8,6 +8,10 @@ import re
 import warnings
 from typing import Dict
 from typing import List
+from typing import Union
+
+from flake8_nb.parsers import CellId
+from flake8_nb.parsers import NotebookCell
 
 FLAKE8_TAG_PATTERN = re.compile(
     r"^flake8-noqa-(cell-(?P<cell_rules>(\w+\d+-?)+)"
@@ -30,6 +34,8 @@ FLAKE8_NOQA_INLINE_PATTERN = re.compile(
 FLAKE8_NOQA_INLINE_REPLACE_PATTERN = re.compile(
     r"^(?P<source_code>.+?)\s*(?P<flake8_noqa>[#]\s*noqa\s*[:]?.*)$"
 )
+
+RulesDict = Dict[str, List[str]]
 
 
 class InvalidFlake8TagWarning(UserWarning):
@@ -56,12 +62,12 @@ class InvalidFlake8TagWarning(UserWarning):
         )
 
 
-def extract_flake8_tags(notebook_cell: Dict) -> List[str]:
+def extract_flake8_tags(notebook_cell: NotebookCell) -> List[str]:
     """Extract all tag that start with 'flake8-noqa-' from a cell.
 
     Parameters
     ----------
-    notebook_cell : Dict
+    notebook_cell : NotebookCell
         Dict representation of a notebook cell as parsed from JSON.
 
     Returns
@@ -74,12 +80,12 @@ def extract_flake8_tags(notebook_cell: Dict) -> List[str]:
     ]
 
 
-def extract_flake8_inline_tags(notebook_cell: Dict) -> List[str]:
+def extract_flake8_inline_tags(notebook_cell: NotebookCell) -> List[str]:
     """Extract flake8-tags which were used as comment in a cell.
 
     Parameters
     ----------
-    notebook_cell : Dict
+    notebook_cell : NotebookCell
         Dict representation of a notebook cell as parsed from JSON.
 
     Returns
@@ -123,7 +129,7 @@ def extract_inline_flake8_noqa(source_line: str) -> List[str]:
     return []
 
 
-def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
+def flake8_tag_to_rules_dict(flake8_tag: str) -> RulesDict:
     """Parse a flake8 tag to a ``rules_dict``.
 
     ``rules_dict`` contains lists of rules, depending on if the
@@ -136,7 +142,7 @@ def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
 
     Returns
     -------
-    Dict[str, List[str]]
+    RulesDict
         Dict with cell and line rules. Line rules have the line number
         as key  and cell rules have 'cell as key'.
 
@@ -164,7 +170,7 @@ def flake8_tag_to_rules_dict(flake8_tag: str) -> Dict[str, List[str]]:
     return {}
 
 
-def update_rules_dict(total_rules_dict: Dict[str, List], new_rules_dict: Dict[str, List]) -> None:
+def update_rules_dict(total_rules_dict: RulesDict, new_rules_dict: RulesDict) -> None:
     """Update the rules dict ``total_rules_dict`` with ``new_rules_dict``.
 
     If any entry of a key is 'noqa' (ignore all), the rules will be
@@ -172,9 +178,9 @@ def update_rules_dict(total_rules_dict: Dict[str, List], new_rules_dict: Dict[st
 
     Parameters
     ----------
-    total_rules_dict : Dict[str, List]
+    total_rules_dict : RulesDict
         ``rules_dict`` which should be updated.
-    new_rules_dict : Dict[str, List]
+    new_rules_dict : RulesDict
         ``rules_dict`` which should be used to update ``total_rules_dict``.
 
     See Also
@@ -189,7 +195,7 @@ def update_rules_dict(total_rules_dict: Dict[str, List], new_rules_dict: Dict[st
             total_rules_dict[key] = list(set(old_rules + new_rules))
 
 
-def get_flake8_rules_dict(notebook_cell: Dict) -> Dict[str, List]:
+def get_flake8_rules_dict(notebook_cell: NotebookCell) -> RulesDict:
     """Parse all flake8 tags of a cell to a ``rules_dict``.
 
     ``rules_dict`` contains lists of rules, depending on if the
@@ -197,12 +203,12 @@ def get_flake8_rules_dict(notebook_cell: Dict) -> Dict[str, List]:
 
     Parameters
     ----------
-    notebook_cell : Dict
+    notebook_cell : NotebookCell
         Dict representation of a notebook cell as parsed from JSON.
 
     Returns
     -------
-    Dict[str, List]
+    RulesDict
         Dict with all cell and line rules. Line rules have the line number
         as key  and cell rules have 'cell as key'.
 
@@ -212,14 +218,14 @@ def get_flake8_rules_dict(notebook_cell: Dict) -> Dict[str, List]:
     """
     flake8_tags = extract_flake8_tags(notebook_cell)
     flake8_inline_tags = extract_flake8_inline_tags(notebook_cell)
-    total_rules_dict: Dict[str, List] = {}
+    total_rules_dict: RulesDict = {}
     for flake8_tag in set(flake8_tags + flake8_inline_tags):
         new_rules_dict = flake8_tag_to_rules_dict(flake8_tag)
         update_rules_dict(total_rules_dict, new_rules_dict)
     return total_rules_dict
 
 
-def generate_rules_list(source_index: int, rules_dict: Dict[str, List]) -> List[str]:
+def generate_rules_list(source_index: int, rules_dict: RulesDict) -> List[str]:
     """Generate a List of rules from ``rules_dict``.
 
     This list should be applied to the line at ``source_index``.
@@ -228,7 +234,7 @@ def generate_rules_list(source_index: int, rules_dict: Dict[str, List]) -> List[
     ----------
     source_index : int
         Index of the source code line.
-    rules_dict : Dict[str, List]
+    rules_dict : RulesDict
         Dict containing lists of rules, depending on if the tag is a
         cell or a line tag.
 
@@ -281,19 +287,21 @@ def update_inline_flake8_noqa(source_line: str, rules_list: List[str]) -> str:
         return f"{source_line}\n"
 
 
-def notebook_cell_to_intermediate_dict(notebook_cell: Dict) -> Dict:
+def notebook_cell_to_intermediate_dict(
+    notebook_cell: NotebookCell,
+) -> Dict[str, Union[CellId, str, int]]:
     r"""Parse ``notebook_cell`` to a dict.
 
     That dict can later be written to a intermediate_py_file.
 
     Parameters
     ----------
-    notebook_cell : Dict
+    notebook_cell : NotebookCell
         Dict representation of a notebook cell as parsed from JSON.
 
     Returns
     -------
-    Dict
+    Dict[str, Union[str, int]]
         Dict which has the keys 'code', 'input_name' and 'code'.
         ``code``,``input_name`` is a str of the code cells ``In[\d\*]`` name and ``lines_of_code``
         is the number of lines of corresponding parsed parsed notebook cell.
@@ -304,6 +312,8 @@ def notebook_cell_to_intermediate_dict(notebook_cell: Dict) -> Dict:
     """
     updated_source_lines = []
     input_nr = notebook_cell["execution_count"]
+    total_cell_nr = notebook_cell["total_cell_nr"]
+    code_cell_nr = notebook_cell["code_cell_nr"]
     rules_dict = get_flake8_rules_dict(notebook_cell)
     for line_index, source_line in enumerate(notebook_cell["source"]):
         rules_list = generate_rules_list(line_index, rules_dict)
@@ -311,9 +321,11 @@ def notebook_cell_to_intermediate_dict(notebook_cell: Dict) -> Dict:
         updated_source_lines.append(updated_source_line)
     if input_nr is None:
         input_nr = " "
-    input_name = f"In[{input_nr}]"
     return {
-        "code": f"# {input_name}\n\n\n{''.join(updated_source_lines)}\n\n",
-        "input_name": input_name,
+        "code": (
+            f"# INTERMEDIATE_CELL_SEPARATOR ({input_nr},{code_cell_nr},{total_cell_nr})\n\n\n"
+            f"{''.join(updated_source_lines)}\n\n"
+        ),
+        "input_id": CellId(str(input_nr), code_cell_nr, total_cell_nr),
         "lines_of_code": len(updated_source_lines) + 5,
     }

@@ -9,6 +9,7 @@ of the CLI argv and config of ``flake8``.
 import logging
 import os
 import sys
+from typing import Any
 from typing import Callable
 from typing import List
 from typing import Optional
@@ -27,6 +28,8 @@ from flake8_nb import __version__
 from flake8_nb.parsers.notebook_parsers import NotebookParser
 
 LOG = logging.getLogger(__name__)
+
+defaults.EXCLUDE = (*defaults.EXCLUDE, ".ipynb_checkpoints")
 
 
 def get_notebooks_from_args(
@@ -51,7 +54,7 @@ def get_notebooks_from_args(
         List of found notebooks absolute paths.
     """
 
-    def is_notebook(file_path: str, nb_list: List[str], root=".") -> bool:
+    def is_notebook(file_path: str, nb_list: List[str], root: str = ".") -> bool:
         """Check if a file is a notebook and appends it to nb_list if it is.
 
         Parameters
@@ -60,7 +63,7 @@ def get_notebooks_from_args(
             File to check if it is a notebook
         nb_list : List[str]
             List of notebooks
-        root : str, optional
+        root : str
             Root directory, by default "."
 
         Returns
@@ -92,7 +95,9 @@ def get_notebooks_from_args(
     return args, nb_list
 
 
-def hack_option_manager_generate_versions(generate_versions: Callable) -> Callable:
+def hack_option_manager_generate_versions(
+    generate_versions: Callable[..., str]
+) -> Callable[..., str]:
     """Closure to prepend the flake8 version to option_manager.generate_versions .
 
     Parameters
@@ -106,7 +111,7 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
         hacked_generate_versions
     """
 
-    def hacked_generate_versions(*args, **kwargs) -> str:
+    def hacked_generate_versions(*args: Any, **kwargs: Any) -> str:
         """Inner wrapper around option_manager.generate_versions.
 
         Parameters
@@ -133,21 +138,21 @@ def hack_option_manager_generate_versions(generate_versions: Callable) -> Callab
     return hacked_generate_versions
 
 
-class Flake8NbApplication(Application):
+class Flake8NbApplication(Application):  # type: ignore[misc]
     r"""Subclass of ``flake8.main.application.Application``.
 
     It overwrites the default options and an injection of intermediate parsed
     ``*.ipynb`` files to be checked.
     """
 
-    def __init__(self, program="flake8_nb", version=__version__):
+    def __init__(self, program: str = "flake8_nb", version: str = __version__):
         """Hacked initialization of flake8.Application.
 
         Parameters
         ----------
-        program : str, optional
+        program : str
             Application name, by default "flake8_nb"
-        version : [type], optional
+        version : str
             Application version, by default __version__
         """
         super().__init__(program, version)
@@ -160,12 +165,21 @@ class Flake8NbApplication(Application):
             parse_from_config=True,
             help="Keep the temporary parsed notebooks, i.e. for debugging.",
         )
+        self.set_flake8_option(
+            "--notebook-cell-format",
+            metavar="notebook_cell_format",
+            default="{nb_path}#In[{exec_count}]",
+            parse_from_config=True,
+            help="Template string used to format the filename and cell part of error report.\n"
+            "Possible variables which will be replaces 'nb_path', 'exec_count',"
+            "'code_cell_count' and 'total_cell_count'. (Default: %default)",
+        )
         self.option_manager.generate_versions = hack_option_manager_generate_versions(
             self.option_manager.generate_versions
         )
         if FLAKE8_VERSION_TUPLE < (3, 8, 0):
-            self.parse_configuration_and_cli = (  # type: ignore
-                self.parse_configuration_and_cli_legacy
+            self.parse_configuration_and_cli = (  # type: ignore[assignment]
+                self.parse_configuration_and_cli_legacy  # type: ignore[assignment]
             )
 
     def hack_flake8_program_and_version(self, program: str, version: str) -> None:
@@ -183,11 +197,11 @@ class Flake8NbApplication(Application):
         self.program = program
         self.version = version
         self.option_manager.parser.prog = program
-        self.option_manager.parser.version = version  # type: ignore
+        self.option_manager.parser.version = version
         self.option_manager.program_name = program
         self.option_manager.version = version
 
-    def set_flake8_option(self, long_option_name: str, *args, **kwargs) -> None:
+    def set_flake8_option(self, long_option_name: str, *args: Any, **kwargs: Any) -> None:
         """Overwrite flake8 options.
 
         First deletes and than reads an option to `flake8`'s cli options, if it was present.
@@ -216,11 +230,11 @@ class Flake8NbApplication(Application):
                 for index, action in enumerate(parser._actions):  # pragma: no branch
                     if long_option_name in action.option_strings:
                         parser._handle_conflict_resolve(
-                            None, [(long_option_name, parser._actions[index])]  # type: ignore
+                            None, [(long_option_name, parser._actions[index])]
                         )
                         break
             else:
-                parser.remove_option(long_option_name)  # type: ignore
+                parser.remove_option(long_option_name)
         self.option_manager.add_option(long_option_name, *args, **kwargs)
 
     def hack_options(self) -> None:
@@ -240,15 +254,6 @@ class Flake8NbApplication(Application):
             comma_separated_list=True,
             help="Only check for filenames matching the patterns in this comma-"
             "separated list. (Default: %default)",
-        )
-        self.set_flake8_option(
-            "--exclude",
-            metavar="patterns",
-            default=f'{",".join(defaults.EXCLUDE)},*.ipynb_checkpoints/*',
-            comma_separated_list=True,
-            parse_from_config=True,
-            normalize_paths=True,
-            help="Comma-separated list of files or directories to exclude." " (Default: %default)",
         )
 
     @staticmethod
@@ -293,7 +298,7 @@ class Flake8NbApplication(Application):
         if self.options is None and self.args is None:  # type: ignore  # pragma: no branch
             # pylint: disable=no-member
             self.options, self.args = aggregator.aggregate_options(
-                self.option_manager, self.config_finder, argv  # type: ignore
+                self.option_manager, self.config_finder, argv
             )
 
         self.args = self.hack_args(self.args, self.options.exclude)

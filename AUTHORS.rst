@@ -2,19 +2,6 @@
 Credits
 =======
 
-Development Lead
-----------------
-
-* Sebastian Weigand <s.weigand.phy@gmail.com>
-
-Contributors
-------------
-
-None yet. Why not be the first?
-
-Extra Credits
--------------
-
 Many thanks go to the creators and contributors of flake8_.
 Which inspired me to write this hack on top of it and supplies nearly all
 of the functionality.

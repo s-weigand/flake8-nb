@@ -15,7 +15,7 @@ from flake8_nb.parsers.notebook_parsers import NotebookParser
 from flake8_nb.parsers.notebook_parsers import map_intermediate_to_input
 
 
-def map_notebook_error(violation: Violation) -> Union[Tuple[str, int], None]:
+def map_notebook_error(violation: Violation, format_str: str) -> Union[Tuple[str, int], None]:
     """Map the violation caused in an intermediate file back to its cause.
 
     The cause is resolved as the notebook, the input cell and
@@ -25,6 +25,8 @@ def map_notebook_error(violation: Violation) -> Union[Tuple[str, int], None]:
     ----------
     violation : Violation
         Reported violation from checking the parsed notebook
+    format_str: str
+        Format string used to format the notebook path and cell reporting.
 
     Returns
     -------
@@ -40,15 +42,22 @@ def map_notebook_error(violation: Violation) -> Union[Tuple[str, int], None]:
     mappings = NotebookParser.get_mappings()
     for original_notebook, intermediate_py, input_line_mapping in mappings:
         if os.path.samefile(intermediate_py, intermediate_filename):
-            input_cell_name, input_cell_line_number = map_intermediate_to_input(
+            input_id, input_cell_line_number = map_intermediate_to_input(
                 input_line_mapping, intermediate_line_number
             )
-            filename = f"{original_notebook}#{input_cell_name}"
+            exec_count, code_cell_count, total_cell_count = input_id
+            filename = format_str.format(
+                nb_path=original_notebook,
+                exec_count=exec_count,
+                code_cell_count=code_cell_count,
+                total_cell_count=total_cell_count,
+            )
+
             return filename, input_cell_line_number
     return None
 
 
-class IpynbFormatter(Default):
+class IpynbFormatter(Default):  # type: ignore[misc]
     r"""Default flake8_nb formatter for jupyter notebooks.
 
     If the file to be formatted is a ``*.py`` file,
@@ -79,15 +88,16 @@ class IpynbFormatter(Default):
         """
         filename = violation.filename
         if filename.lower().endswith(".ipynb_parsed"):
-            map_result = map_notebook_error(violation)
+            map_result = map_notebook_error(violation, self.options.notebook_cell_format)
             if map_result:
                 filename, line_number = map_result
-                return self.error_format % {
+                notebook_error: str = self.error_format % {
                     "code": violation.code,
                     "text": violation.text,
                     "path": filename,
                     "row": line_number,
                     "col": violation.column_number,
                 }
-
-        return super().format(violation)
+                return notebook_error
+        default_error: Union[str, None] = super().format(violation)
+        return default_error

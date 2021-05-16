@@ -10,6 +10,7 @@ TEST_NOTEBOOK_PATHS = [
     os.path.normcase(os.path.join(TEST_NOTEBOOK_BASE_PATH, filename))
     for filename in [
         "not_a_notebook.ipynb",
+        "cell_with_source_string.ipynb",
         "notebook_with_flake8_tags.ipynb",
         "notebook_with_out_flake8_tags.ipynb",
         "notebook_with_out_ipython_magic.ipynb",

@@ -4,6 +4,7 @@ from typing import List
 
 import pytest
 
+from flake8_nb.parsers import CellId
 from flake8_nb.parsers.cell_parsers import InvalidFlake8TagWarning
 from flake8_nb.parsers.cell_parsers import extract_flake8_inline_tags
 from flake8_nb.parsers.cell_parsers import extract_flake8_tags
@@ -165,32 +166,44 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
         (
             {
                 "execution_count": 8,
+                "code_cell_nr": 8,
+                "total_cell_nr": 8,
                 "metadata": {"tags": ["raises-exception", "flake8-noqa-cell-E402-F401"]},
                 "source": ["for i in range(1):\n", "    print(i)"],
             },
             {
-                "code": "# In[8]\n\n\nfor i in range(1):  # noqa: E402, F401\n    "
-                "print(i)  # noqa: E402, F401\n\n\n",
-                "input_name": "In[8]",
+                "code": (
+                    "# INTERMEDIATE_CELL_SEPARATOR (8,8,8)\n\n\n"
+                    "for i in range(1):  # noqa: E402, F401\n    "
+                    "print(i)  # noqa: E402, F401\n\n\n"
+                ),
+                "input_id": CellId("8", 8, 8),
                 "lines_of_code": 7,
             },
         ),
         (
             {
                 "execution_count": 9,
+                "code_cell_nr": 9,
+                "total_cell_nr": 12,
                 "metadata": {"tags": ["flake8-noqa-line-1-E402-F401", "flake8-noqa-line-1-W391"]},
                 "source": ["for i in range(1):\n", "    print(i)"],
             },
             {
-                "code": "# In[9]\n\n\nfor i in range(1):  # noqa: E402, F401, W391\n"
-                "    print(i)\n\n\n",
-                "input_name": "In[9]",
+                "code": (
+                    "# INTERMEDIATE_CELL_SEPARATOR (9,9,12)\n\n\n"
+                    "for i in range(1):  # noqa: E402, F401, W391\n"
+                    "    print(i)\n\n\n"
+                ),
+                "input_id": CellId("9", 9, 12),
                 "lines_of_code": 7,
             },
         ),
         (
             {
                 "execution_count": 2,
+                "code_cell_nr": 2,
+                "total_cell_nr": 4,
                 "metadata": {"tags": ["flake8-noqa-cell-E402", "flake8-noqa-line-1"]},
                 "source": [
                     "for i in range(1):\n",
@@ -199,34 +212,49 @@ def test_extract_inline_flake8_noqa(source_index: str, expected_result: List):
                 ],
             },
             {
-                "code": "# In[2]\n\n\nfor i in range(1):  # noqa: \n"
-                "    print(i)  # noqa: E402, F401, W391\n"
-                "print('foo')  # noqa: E402\n\n\n",
-                "input_name": "In[2]",
+                "code": (
+                    "# INTERMEDIATE_CELL_SEPARATOR (2,2,4)\n\n\n"
+                    "for i in range(1):  # noqa: \n"
+                    "    print(i)  # noqa: E402, F401, W391\n"
+                    "print('foo')  # noqa: E402\n\n\n"
+                ),
+                "input_id": CellId("2", 2, 4),
                 "lines_of_code": 8,
             },
         ),
         (
             {
                 "execution_count": 1,
+                "code_cell_nr": 1,
+                "total_cell_nr": 1,
                 "metadata": {"tags": ["flake8-noqa-cell", "flake8-noqa-line-1"]},
                 "source": ["for i in range(1):\n", "    print(i)  # noqa:F401, W391"],
             },
             {
-                "code": "# In[1]\n\n\nfor i in range(1):  # noqa: \n    print(i)  # noqa: \n\n\n",
-                "input_name": "In[1]",
+                "code": (
+                    "# INTERMEDIATE_CELL_SEPARATOR (1,1,1)"
+                    "\n\n\nfor i in range(1):  # noqa: \n"
+                    "    print(i)  # noqa: \n\n\n"
+                ),
+                "input_id": CellId("1", 1, 1),
                 "lines_of_code": 7,
             },
         ),
         (
             {
                 "execution_count": None,
+                "code_cell_nr": 1,
+                "total_cell_nr": 1,
                 "metadata": {"tags": ["flake8-noqa-cell", "flake8-noqa-line-1"]},
                 "source": ["for i in range(1):\n", "    print(i)  # noqa:F401, W391"],
             },
             {
-                "code": "# In[ ]\n\n\nfor i in range(1):  # noqa: \n    print(i)  # noqa: \n\n\n",
-                "input_name": "In[ ]",
+                "code": (
+                    "# INTERMEDIATE_CELL_SEPARATOR ( ,1,1)\n\n\n"
+                    "for i in range(1):  # noqa: \n"
+                    "    print(i)  # noqa: \n\n\n"
+                ),
+                "input_id": CellId(" ", 1, 1),
                 "lines_of_code": 7,
             },
         ),
