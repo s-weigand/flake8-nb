@@ -77,7 +77,7 @@ repos:
       - id: pydocstyle
         exclude: "^(docs|tests|setup.py)"
   - repo: https://github.com/terrencepreilly/darglint
-    rev: v1.8.0
+    rev: v1.8.1
     hooks:
       - id: darglint
         exclude: "^(docs|tests|setup.py)"
@@ -107,7 +107,7 @@ repos:
         files: ".py|.rst|.md"
 
   - repo: https://github.com/asottile/yesqa
-    rev: v1.2.3
+    rev: v1.3.0
     hooks:
       - id: yesqa
         additional_dependencies: [flake8-docstrings]
