@@ -87,6 +87,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://shmokmt.github.io/"><img src="https://avatars1.githubusercontent.com/u/32533860?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Shoma Okamoto</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/commits?author=shmokmt" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://marcogorelli.github.io/"><img src="https://avatars2.githubusercontent.com/u/33491632?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Marco Gorelli</b></sub></a><br /><a href="#tool-MarcoGorelli" title="Tools">🔧</a> <a href="https://github.com/s-weigand/flake8-nb/commits?author=MarcoGorelli" title="Documentation">📖</a></td>
     <td align="center"><a href="http://blog.ouseful.info"><img src="https://avatars.githubusercontent.com/u/82988?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tony Hirst</b></sub></a><br /><a href="#ideas-psychemedia" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/Dobatymo"><img src="https://avatars.githubusercontent.com/u/7647594?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dobatymo</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/issues?q=author%3ADobatymo" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
