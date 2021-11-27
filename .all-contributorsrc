@@ -65,6 +65,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "Dobatymo",
+      "name": "Dobatymo",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7647594?v=4",
+      "profile": "https://github.com/Dobatymo",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
