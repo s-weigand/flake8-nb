@@ -19,6 +19,7 @@ repos:
     hooks:
       - id: mypy
         exclude: "^(docs|tests|.github)"
+        additional_dependencies: [types-all]
 
   - repo: https://github.com/MarcoGorelli/absolufy-imports
     rev: v0.3.1
@@ -31,7 +32,7 @@ repos:
     rev: v2.31.0
     hooks:
       - id: pyupgrade
-        args: [--py36-plus]
+        args: [--py37-plus]
   - repo: https://github.com/python/black
     rev: 22.1.0
     hooks:

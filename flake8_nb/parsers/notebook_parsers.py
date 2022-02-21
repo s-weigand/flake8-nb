@@ -13,6 +13,7 @@ from typing import List
 from typing import Optional
 from typing import Tuple
 from typing import Union
+from typing import cast
 
 from nbconvert.filters import ipython2python
 
@@ -81,7 +82,7 @@ def read_notebook_to_cells(notebook_path: str) -> List[NotebookCell]:
     """
     try:
         with open(notebook_path, encoding="utf8") as notebook_file:
-            return json.load(notebook_file)["cells"]
+            return cast(List[NotebookCell], json.load(notebook_file)["cells"])
     except (json.JSONDecodeError, KeyError):
         warnings.warn(InvalidNotebookWarning(notebook_path))
         return []
@@ -105,7 +106,7 @@ def convert_source_line(source_line: str) -> str:
     if not source_line.startswith(("!", "?", "%")) and not source_line.endswith("?"):
         return source_line
 
-    return ipython2python(source_line)
+    return cast(str, ipython2python(source_line))
 
 
 def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[NotebookCell]]:

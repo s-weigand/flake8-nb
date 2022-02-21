@@ -7,6 +7,7 @@ original notebook and the cell the code in.
 import os
 from typing import Tuple
 from typing import Union
+from typing import cast
 
 from flake8.formatting.default import Default
 from flake8.style_guide import Violation
@@ -91,11 +92,15 @@ class IpynbFormatter(Default):  # type: ignore[misc]
             map_result = map_notebook_error(violation, self.options.notebook_cell_format)
             if map_result:
                 filename, line_number = map_result
-                return self.error_format % {
-                    "code": violation.code,
-                    "text": violation.text,
-                    "path": filename,
-                    "row": line_number,
-                    "col": violation.column_number,
-                }
-        return super().format(violation)
+                return cast(
+                    str,
+                    self.error_format
+                    % {
+                        "code": violation.code,
+                        "text": violation.text,
+                        "path": filename,
+                        "row": line_number,
+                        "col": violation.column_number,
+                    },
+                )
+        return cast(str, super().format(violation))
