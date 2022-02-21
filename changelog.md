@@ -1,4 +1,4 @@
-# History
+# Changelog
 
 ## 0.4.0 (2022-02-21)
 

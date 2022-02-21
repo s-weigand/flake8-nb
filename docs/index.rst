@@ -12,7 +12,7 @@ Welcome to flake8-nb's documentation!
    api_docs
    contributing
    authors
-   history
+   changelog
 
 Indices and tables
 ==================
