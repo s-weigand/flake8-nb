@@ -36,7 +36,6 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.viewcode",
     "sphinx.ext.napoleon",
-    "sphinx-prompt",
     "sphinx_substitution_extensions",
 ]
 
