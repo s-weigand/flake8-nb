@@ -1,5 +1,13 @@
-name: "Tests"
-on: [push, pull_request]
+name: Tests
+
+on:
+  push:
+    tags:
+      - v**
+    branches-ignore:
+      - "dependabot/**"
+      - "sourcery/**"
+  pull_request:
 
 jobs:
   misspell:
