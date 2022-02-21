@@ -8,4 +8,8 @@ recursive-include tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
 
-recursive-include docs *.md *.rst conf.py Makefile make.bat *.jpg *.png *.gif
+recursive-exclude docs *
+recursive-exclude binder *
+recursive-exclude **/.ipynb_checkpoints/** *
+
+exclude . .* Makefile readthedocs.yml requirements_dev.txt CODE_OF_CONDUCT.md tox.ini
