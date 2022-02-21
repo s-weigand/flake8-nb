@@ -1,13 +1,13 @@
 """Command-line implementation of flake8_nb."""
+from __future__ import annotations
+
 import sys
-from typing import List
-from typing import Optional
 
 from flake8_nb import FLAKE8_VERSION_TUPLE
 from flake8_nb.flake8_integration.cli import Flake8NbApplication
 
 
-def main(argv: Optional[List[str]] = None) -> None:
+def main(argv: list[str] | None = None) -> None:
     """Execute the main bit of the application.
 
     This handles the creation of an instance of :class:`Application`, runs it,
@@ -16,7 +16,7 @@ def main(argv: Optional[List[str]] = None) -> None:
 
     Parameters
     ----------
-    argv: List[str], optional
+    argv: list[str] | None
         The arguments to be passed to the application for parsing.
     """
     if FLAKE8_VERSION_TUPLE > (3, 7, 9):

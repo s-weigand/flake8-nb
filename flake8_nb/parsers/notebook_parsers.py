@@ -3,6 +3,8 @@
 This utilizes ``flake8_nb.parser.cell_parsers``.
 """
 
+from __future__ import annotations
+
 import json
 import os
 import warnings
@@ -10,8 +12,6 @@ from fnmatch import fnmatch
 from typing import Dict
 from typing import Iterator
 from typing import List
-from typing import Optional
-from typing import Tuple
 from typing import Union
 from typing import cast
 
@@ -58,7 +58,7 @@ class InvalidNotebookWarning(UserWarning):
         )
 
 
-def read_notebook_to_cells(notebook_path: str) -> List[NotebookCell]:
+def read_notebook_to_cells(notebook_path: str) -> list[NotebookCell]:
     r"""Parse the notebook at ``notebook_path`` as Json and returns a list of notebook cells.
 
     Parameters
@@ -68,7 +68,7 @@ def read_notebook_to_cells(notebook_path: str) -> List[NotebookCell]:
 
     Returns
     -------
-    List[NotebookCell]
+    list[NotebookCell]
         List of notebook cells if the notebook was parsed successfully or
         an empty list if the \*.ipynb file couldn't be parsed.
 
@@ -109,7 +109,7 @@ def convert_source_line(source_line: str) -> str:
     return cast(str, ipython2python(source_line))
 
 
-def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[NotebookCell]]:
+def get_notebook_code_cells(notebook_path: str) -> tuple[bool, list[NotebookCell]]:
     """Parse a notebook and returns a Tuple.
 
     The first entry  being a bool which indicates if juypter magic was
@@ -123,7 +123,7 @@ def get_notebook_code_cells(notebook_path: str) -> Tuple[bool, List[NotebookCell
 
     Returns
     -------
-    Tuple[bool, List[NotebookCell]]
+    tuple[bool, list[NotebookCell]]
         (``uses_get_ipython``, ``notebook_cells``), where ``uses_get_ipython``
         is a bool, which is ``True`` if any cell contained jupyter magic and
         ``notebook_cells`` is a List of all code cells dict representation.
@@ -222,7 +222,7 @@ def create_temp_path(notebook_path: str, temp_base_path: str) -> str:
 
 def create_intermediate_py_file(
     notebook_path: str, intermediate_dir_base_path: str
-) -> Tuple[str, InputLineMapping]:
+) -> tuple[str, InputLineMapping]:
     r"""Parse a notebook at ``notebook_path`` and saves a parsed version.
 
     The corresponding position is relative to ``intermediate_dir_base_path``.
@@ -237,7 +237,7 @@ def create_intermediate_py_file(
 
     Returns
     -------
-    Tuple[str, Dict]
+    tuple[str, InputLineMapping]
         (``intermediate_file_path``, ``input_line_mapping``) Where
         ``intermediate_file_path`` is the path the parsed notebook
         was written to. If there was an error parsing the file
@@ -271,7 +271,7 @@ def create_intermediate_py_file(
     else:
         lines_of_code = 0
         intermediate_code = ""
-    intermediate_py_str_list: List[str] = []
+    intermediate_py_str_list: list[str] = []
     for notebook_cell in notebook_cells:
         intermediate_dict = notebook_cell_to_intermediate_dict(notebook_cell)
         intermediate_py_str_list.append(intermediate_dict["code"])  # type: ignore[arg-type]
@@ -291,19 +291,19 @@ def create_intermediate_py_file(
         return "", input_line_mapping
 
 
-def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
+def get_rel_paths(file_paths: list[str], base_path: str) -> list[str]:
     """Transform `file_paths` in a list of paths relative to `base_path`.
 
     Parameters
     ----------
-    file_paths : List[str]
+    file_paths : list[str]
         List of file paths.
     base_path : str
         Path `file_paths` should be relative to.
 
     Returns
     -------
-    List[str]
+    list[str]
         List of `file_paths` relative to `base_path`
     """
     rel_paths = []
@@ -315,7 +315,7 @@ def get_rel_paths(file_paths: List[str], base_path: str) -> List[str]:
 
 def map_intermediate_to_input(
     input_line_mapping: InputLineMapping, line_number: int
-) -> Tuple[CellId, int]:
+) -> tuple[CellId, int]:
     """Map intermediate file lines to notebook cell and line.
 
     Maps the line at `line_number` to the corresponding code cell
@@ -332,7 +332,7 @@ def map_intermediate_to_input(
 
     Returns
     -------
-    Tuple[CellId, int]
+    tuple[CellId, int]
         Input cell ID and corresponding line in that cell
         (input_id, input_cell_line_number)
 
@@ -340,7 +340,7 @@ def map_intermediate_to_input(
     --------
     create_intermediate_py_file
     """
-    code_lines: List[int] = input_line_mapping["code_lines"]  # type: ignore[assignment]
+    code_lines: list[int] = input_line_mapping["code_lines"]  # type: ignore[assignment]
     line_filter = filter(lambda code_line: code_line < line_number, code_lines)
     entry_index = len(list(line_filter)) - 1
     input_ids = input_line_mapping["input_ids"]
@@ -360,16 +360,16 @@ class NotebookParser:
 
     """
 
-    original_notebook_paths: List[str] = []
+    original_notebook_paths: list[str] = []
     """List of paths to the original Notebooks"""
-    intermediate_py_file_paths: List[str] = []
+    intermediate_py_file_paths: list[str] = []
     """List of paths to the parsed Notebooks"""
-    input_line_mappings: List[InputLineMapping] = []
+    input_line_mappings: list[InputLineMapping] = []
     """List of input_line_mapping"""
     temp_path = ""
     """Path of the temp folder the parsed notebooks were saved in"""
 
-    def __init__(self, original_notebook_paths: Optional[List[str]] = None):
+    def __init__(self, original_notebook_paths: list[str] | None = None):
         """Initialize NotebookParser.
 
         Initializing an instance of the class will save ``original_notebook_paths``,
@@ -421,7 +421,7 @@ class NotebookParser:
                     NotebookParser.original_notebook_paths.pop(index)
 
     @staticmethod
-    def get_mappings() -> Iterator[Tuple[str, str, InputLineMapping]]:
+    def get_mappings() -> Iterator[tuple[str, str, InputLineMapping]]:
         """Return the mapping information needed to generate error messages.
 
         The message corresponds to the original notebook and not the actually checked
@@ -429,7 +429,7 @@ class NotebookParser:
 
         Returns
         -------
-        Iterator[Tuple[str, str, Dict]]
+        Iterator[tuple[str, str, InputLineMapping]]
             (``original_notebook_paths``,
             ``intermediate_py_file_paths``,
             ``input_line_mappings``)

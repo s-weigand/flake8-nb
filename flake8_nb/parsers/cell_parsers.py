@@ -4,11 +4,12 @@ This also includes parsers for the cell and inline tags.
 It heavily utilizes the mutability of lists.
 """
 
+from __future__ import annotations
+
 import re
 import warnings
 from typing import Dict
 from typing import List
-from typing import Union
 
 from flake8_nb.parsers import CellId
 from flake8_nb.parsers import NotebookCell
@@ -62,7 +63,7 @@ class InvalidFlake8TagWarning(UserWarning):
         )
 
 
-def extract_flake8_tags(notebook_cell: NotebookCell) -> List[str]:
+def extract_flake8_tags(notebook_cell: NotebookCell) -> list[str]:
     """Extract all tag that start with 'flake8-noqa-' from a cell.
 
     Parameters
@@ -72,7 +73,7 @@ def extract_flake8_tags(notebook_cell: NotebookCell) -> List[str]:
 
     Returns
     -------
-    List[str]
+    list[str]
         List of all tags in the given cell, which started with 'flake8-noqa-'.
     """
     return [
@@ -80,7 +81,7 @@ def extract_flake8_tags(notebook_cell: NotebookCell) -> List[str]:
     ]
 
 
-def extract_flake8_inline_tags(notebook_cell: NotebookCell) -> List[str]:
+def extract_flake8_inline_tags(notebook_cell: NotebookCell) -> list[str]:
     """Extract flake8-tags which were used as comment in a cell.
 
     Parameters
@@ -90,7 +91,7 @@ def extract_flake8_inline_tags(notebook_cell: NotebookCell) -> List[str]:
 
     Returns
     -------
-    List[str]
+    list[str]
         List of all inline tags in the given cell,
         which matched ``FLAKE8_INLINE_TAG_PATTERN``.
     """
@@ -105,7 +106,7 @@ def extract_flake8_inline_tags(notebook_cell: NotebookCell) -> List[str]:
     return flake8_inline_tags
 
 
-def extract_inline_flake8_noqa(source_line: str) -> List[str]:
+def extract_inline_flake8_noqa(source_line: str) -> list[str]:
     """Extract flake8 noqa rules from normal flake8 comments .
 
     Parameters
@@ -115,7 +116,7 @@ def extract_inline_flake8_noqa(source_line: str) -> List[str]:
 
     Returns
     -------
-    List[str]
+    list[str]
         List of flake8 rules.
     """
     match = re.match(FLAKE8_NOQA_INLINE_PATTERN, source_line)
@@ -225,7 +226,7 @@ def get_flake8_rules_dict(notebook_cell: NotebookCell) -> RulesDict:
     return total_rules_dict
 
 
-def generate_rules_list(source_index: int, rules_dict: RulesDict) -> List[str]:
+def generate_rules_list(source_index: int, rules_dict: RulesDict) -> list[str]:
     """Generate a List of rules from ``rules_dict``.
 
     This list should be applied to the line at ``source_index``.
@@ -240,7 +241,7 @@ def generate_rules_list(source_index: int, rules_dict: RulesDict) -> List[str]:
 
     Returns
     -------
-    List[str]
+    list[str]
         List of rules which should be applied to the line at ``source_index``.
 
     See Also
@@ -252,7 +253,7 @@ def generate_rules_list(source_index: int, rules_dict: RulesDict) -> List[str]:
     return line_rules + cell_rules
 
 
-def update_inline_flake8_noqa(source_line: str, rules_list: List[str]) -> str:
+def update_inline_flake8_noqa(source_line: str, rules_list: list[str]) -> str:
     """Update ``source_line`` with flake8 noqa comments.
 
     This is done extraction flake8-tags as well as inline flake8
@@ -262,7 +263,7 @@ def update_inline_flake8_noqa(source_line: str, rules_list: List[str]) -> str:
     ----------
     source_line : str
         Single line of sourcecode from a cell.
-    rules_list : List[str]
+    rules_list : list[str]
         List of rules which should be applied to ``source_line``.
 
     Returns
@@ -289,7 +290,7 @@ def update_inline_flake8_noqa(source_line: str, rules_list: List[str]) -> str:
 
 def notebook_cell_to_intermediate_dict(
     notebook_cell: NotebookCell,
-) -> Dict[str, Union[CellId, str, int]]:
+) -> dict[str, CellId | str | int]:
     r"""Parse ``notebook_cell`` to a dict.
 
     That dict can later be written to a intermediate_py_file.
@@ -301,7 +302,7 @@ def notebook_cell_to_intermediate_dict(
 
     Returns
     -------
-    Dict[str, Union[str, int]]
+    dict[str, CellId | str | int]
         Dict which has the keys 'code', 'input_name' and 'code'.
         ``code``,``input_name`` is a str of the code cells ``In[\d\*]`` name and ``lines_of_code``
         is the number of lines of corresponding parsed parsed notebook cell.

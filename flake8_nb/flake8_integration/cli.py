@@ -5,15 +5,13 @@ overwriting ``flake8`` 's CLI default options, searching and parsing
 ``*.ipynb`` files and injecting the parsed files, during the loading
 of the CLI argv and config of ``flake8``.
 """
+from __future__ import annotations
 
 import logging
 import os
 import sys
 from typing import Any
 from typing import Callable
-from typing import List
-from typing import Optional
-from typing import Tuple
 
 from flake8 import __version__ as flake_version
 from flake8 import defaults
@@ -33,8 +31,8 @@ defaults.EXCLUDE = (*defaults.EXCLUDE, ".ipynb_checkpoints")
 
 
 def get_notebooks_from_args(
-    args: List[str], exclude: List[str] = ["*.tox/*", "*.ipynb_checkpoints*"]
-) -> Tuple[List[str], List[str]]:
+    args: list[str], exclude: list[str] = ["*.tox/*", "*.ipynb_checkpoints*"]
+) -> tuple[list[str], list[str]]:
     """Extract the absolute paths to notebooks.
 
     The paths are relative to the current directory or
@@ -42,26 +40,26 @@ def get_notebooks_from_args(
 
     Parameters
     ----------
-    args : List[str]
+    args : list[str]
         The left over arguments that were not parsed by :attr:`option_manager`
-    exclude : List[str], optional
+    exclude : list[str]
         File-/Folderpatterns that should be excluded,
         by default ["*.tox/*", "*.ipynb_checkpoints*"]
 
     Returns
     -------
-    Tuple[List[str],List[str]]
+    tuple[list[str], list[str]]
         List of found notebooks absolute paths.
     """
 
-    def is_notebook(file_path: str, nb_list: List[str], root: str = ".") -> bool:
+    def is_notebook(file_path: str, nb_list: list[str], root: str = ".") -> bool:
         """Check if a file is a notebook and appends it to nb_list if it is.
 
         Parameters
         ----------
         file_path : str
             File to check if it is a notebook
-        nb_list : List[str]
+        nb_list : list[str]
             List of notebooks
         root : str
             Root directory, by default "."
@@ -77,7 +75,7 @@ def get_notebooks_from_args(
             return True
         return False
 
-    nb_list: List[str] = []
+    nb_list: list[str] = []
     if not args:
         args = [os.curdir]
     for index, arg in list(enumerate(args))[::-1]:
@@ -102,12 +100,12 @@ def hack_option_manager_generate_versions(
 
     Parameters
     ----------
-    generate_versions : Callable
+    generate_versions : Callable[..., str]
         option_manager.generate_versions of flake8.options.manager.OptionManager
 
     Returns
     -------
-    Callable
+    Callable[..., str]
         hacked_generate_versions
     """
 
@@ -256,7 +254,7 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
         )
 
     @staticmethod
-    def hack_args(args: List[str], exclude: List[str]) -> List[str]:
+    def hack_args(args: list[str], exclude: list[str]) -> list[str]:
         r"""Update args with ``*.ipynb`` files.
 
         Checks the passed args if ``*.ipynb`` can be found and
@@ -265,14 +263,14 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
 
         Parameters
         ----------
-        args : List[str]
+        args : list[str]
             List of commandline arguments provided to ``flake8_nb``
-        exclude : List[str]
+        exclude : list[str]
             File-/Folderpatterns that should be excluded
 
         Returns
         -------
-        List[str]
+        list[str]
             The original args + intermediate parsed ``*.ipynb`` files.
         """
         args, nb_list = get_notebooks_from_args(args, exclude=exclude)
@@ -281,7 +279,7 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
 
     def parse_configuration_and_cli_legacy(
         self,
-        argv: Optional[List[str]] = None,
+        argv: list[str] | None = None,
     ) -> None:
         """Compat version of self.parse_configuration_and_cli to work with flake8 >=3.7.0,<= 3.7.9 .
 
@@ -291,7 +289,7 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
 
         Parameters
         ----------
-        argv: List[str]
+        argv: list[str] | None
             Command-line arguments passed in directly.
         """
         if self.options is None and self.args is None:  # type: ignore  # pragma: no branch
@@ -314,7 +312,7 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
         self.formatting_plugins.provide_options(self.option_manager, self.options, self.args)
 
     def parse_configuration_and_cli(
-        self, config_finder: config.ConfigFileFinder, argv: List[str]
+        self, config_finder: config.ConfigFileFinder, argv: list[str]
     ) -> None:
         """Parse configuration files and the CLI options.
 
@@ -322,7 +320,7 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
         ----------
         config_finder: config.ConfigFileFinder
             The finder for finding and reading configuration files.
-        argv: List[str]
+        argv: list[str]
             Command-line arguments passed in directly.
         """
         self.options, self.args = aggregator.aggregate_options(

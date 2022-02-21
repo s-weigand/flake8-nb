@@ -4,9 +4,9 @@ This also includes the code to map parsed error back to the
 original notebook and the cell the code in.
 """
 
+from __future__ import annotations
+
 import os
-from typing import Tuple
-from typing import Union
 from typing import cast
 
 from flake8.formatting.default import Default
@@ -16,7 +16,7 @@ from flake8_nb.parsers.notebook_parsers import NotebookParser
 from flake8_nb.parsers.notebook_parsers import map_intermediate_to_input
 
 
-def map_notebook_error(violation: Violation, format_str: str) -> Union[Tuple[str, int], None]:
+def map_notebook_error(violation: Violation, format_str: str) -> tuple[str, int] | None:
     """Map the violation caused in an intermediate file back to its cause.
 
     The cause is resolved as the notebook, the input cell and
@@ -31,7 +31,7 @@ def map_notebook_error(violation: Violation, format_str: str) -> Union[Tuple[str
 
     Returns
     -------
-    Tuple[str, int]
+    tuple[str, int] | None
         (filename, input_cell_line_number)
         ``filename`` being the name of the original notebook and
         the input cell were the violation was reported.
@@ -70,7 +70,7 @@ class IpynbFormatter(Default):  # type: ignore[misc]
         if self.options.format.lower() != "default_notebook":
             self.error_format = self.options.format
 
-    def format(self, violation: Violation) -> Union[str, None]:
+    def format(self, violation: Violation) -> str | None:
         r"""Format the error detected by a flake8 checker.
 
         Depending on if the violation was caused by a ``*.py`` file
@@ -83,7 +83,7 @@ class IpynbFormatter(Default):  # type: ignore[misc]
 
         Returns
         -------
-        str
+        str | None
             Formatted error message, which will be displayed
             in the terminal.
         """
