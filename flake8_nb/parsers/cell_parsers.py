@@ -98,10 +98,12 @@ def extract_flake8_inline_tags(notebook_cell: NotebookCell) -> List[str]:
     for source_line in notebook_cell["source"]:
         match = re.match(FLAKE8_INLINE_TAG_PATTERN, source_line)
         if match and match.group("flake8_inline_tags"):
-            for tag in match.group("flake8_inline_tags").split(" "):
-                tag = tag.strip()
-                if tag:
-                    flake8_inline_tags.append(tag)
+            flake8_inline_tags.extend(
+                tag
+                for tag in match.group("flake8_inline_tags").split(" ")
+                if (tag := tag.strip())
+            )
+
     return flake8_inline_tags
 
 
@@ -118,10 +120,8 @@ def extract_inline_flake8_noqa(source_line: str) -> List[str]:
     List[str]
         List of flake8 rules.
     """
-    match = re.match(FLAKE8_NOQA_INLINE_PATTERN, source_line)
-    if match:
-        flake8_noqa_rules_str = match.group("flake8_noqa_rules")
-        if flake8_noqa_rules_str:
+    if match := re.match(FLAKE8_NOQA_INLINE_PATTERN, source_line):
+        if flake8_noqa_rules_str := match.group("flake8_noqa_rules"):
             flake8_noqa_rules = flake8_noqa_rules_str.split(",")
             return [line.strip() for line in flake8_noqa_rules]
         elif match.group("has_flake8_noqa_all"):  # pragma: no branch
@@ -150,8 +150,7 @@ def flake8_tag_to_rules_dict(flake8_tag: str) -> RulesDict:
     --------
     get_flake8_rules_dict
     """
-    match = re.match(FLAKE8_TAG_PATTERN, flake8_tag)
-    if match:
+    if match := re.match(FLAKE8_TAG_PATTERN, flake8_tag):
         if match.group("cell_rules"):
             cell_rules_str = match.group("cell_rules")
             cell_rules = cell_rules_str.split("-")

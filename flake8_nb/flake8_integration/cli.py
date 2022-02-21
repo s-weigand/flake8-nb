@@ -128,12 +128,11 @@ def hack_option_manager_generate_versions(
         """
         original_output = generate_versions(*args, **kwargs)
         format_str = "%(name)s: %(version)s"
-        join_on = ", "
         additional_output = format_str % {
             "name": "flake8",
             "version": flake_version,
         }
-        return f"{additional_output}{join_on}{original_output}"
+        return f'{additional_output}, {original_output}'
 
     return hacked_generate_versions
 

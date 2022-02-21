@@ -88,16 +88,15 @@ class IpynbFormatter(Default):  # type: ignore[misc]
         """
         filename = violation.filename
         if filename.lower().endswith(".ipynb_parsed"):
-            map_result = map_notebook_error(violation, self.options.notebook_cell_format)
-            if map_result:
+            if map_result := map_notebook_error(
+                violation, self.options.notebook_cell_format
+            ):
                 filename, line_number = map_result
-                notebook_error: str = self.error_format % {
+                return self.error_format % {
                     "code": violation.code,
                     "text": violation.text,
                     "path": filename,
                     "row": line_number,
                     "col": violation.column_number,
                 }
-                return notebook_error
-        default_error: Union[str, None] = super().format(violation)
-        return default_error
+        return super().format(violation)
