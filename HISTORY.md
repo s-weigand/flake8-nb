@@ -1,5 +1,9 @@
 # History
 
+## 0.4.0 (2022-02-21)
+
+- Drop official python 3.6 support
+
 ## 0.3.1 (2021-10-19)
 
 - Set max supported version of `flake8` to be `<4.0.2`
