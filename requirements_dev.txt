@@ -16,4 +16,4 @@ coverage[toml]>=4.5.4
 # package runtime requirements
 flake8==4.0.1
 nbconvert==6.4.2; python_version > '3.7'
-ipython==8.0.1; python_version > '3.7'
+ipython==8.1.0; python_version > '3.7'
