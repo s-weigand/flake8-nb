@@ -88,6 +88,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://blog.ouseful.info"><img src="https://avatars.githubusercontent.com/u/82988?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Tony Hirst</b></sub></a><br /><a href="#ideas-psychemedia" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/Dobatymo"><img src="https://avatars.githubusercontent.com/u/7647594?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dobatymo</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/issues?q=author%3ADobatymo" title="Bug reports">🐛</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/AlpAribal"><img src="https://avatars.githubusercontent.com/u/6286038?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Alp Arıbal</b></sub></a><br /><a href="https://github.com/s-weigand/flake8-nb/issues?q=author%3AAlpAribal" title="Bug reports">🐛</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
