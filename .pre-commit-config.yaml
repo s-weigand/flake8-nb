@@ -10,12 +10,12 @@ repos:
       - id: fix-encoding-pragma
         args: [--remove]
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v2.18.1
+    rev: v2.19.0
     hooks:
       - id: validate_manifest
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.942
+    rev: v0.960
     hooks:
       - id: mypy
         exclude: "^(docs|tests|.github)"
@@ -29,7 +29,7 @@ repos:
         types_or: [python, pyi]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.32.0
+    rev: v2.32.1
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
