@@ -29,7 +29,7 @@ repos:
         types_or: [python, pyi]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.0
+    rev: v2.37.1
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
