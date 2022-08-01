@@ -9,6 +9,8 @@ from __future__ import annotations
 import os
 from typing import cast
 
+from flake8.formatting.default import COLORS
+from flake8.formatting.default import COLORS_OFF
 from flake8.formatting.default import Default
 from flake8.style_guide import Violation
 
@@ -101,6 +103,7 @@ class IpynbFormatter(Default):  # type: ignore[misc]
                         "path": filename,
                         "row": line_number,
                         "col": violation.column_number,
+                        **(COLORS if self.color else COLORS_OFF),
                     },
                 )
         return cast(str, super().format(violation))
