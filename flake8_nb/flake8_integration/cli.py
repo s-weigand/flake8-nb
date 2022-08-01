@@ -152,8 +152,8 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
         version : str
             Application version, by default __version__
         """
-        super().__init__(program, version)
-        self.hack_flake8_program_and_version(program, version)
+        super().__init__()
+        self.hack_flake8_program_and_version("flake8_nb", __version__)
         self.hack_options()
         self.set_flake8_option(
             "--keep-parsed-notebooks",
