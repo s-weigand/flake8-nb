@@ -83,6 +83,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "1kastner",
+      "name": "1kastner",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5236165?v=4",
+      "profile": "https://www.tuhh.de/mls/en/institute/associates/marvin-kastner-msc.html",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
