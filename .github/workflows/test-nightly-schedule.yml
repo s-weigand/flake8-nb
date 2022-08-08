@@ -20,7 +20,7 @@ jobs:
           python -m pip install -U pip
           python -m pip install -U -r requirements_dev.txt
           python -m pip install .
-          python -m pip install --force-reinstall -U -q git+https://gitlab.com/pycqa/flake8.git
+          python -m pip install --force-reinstall -U -q git+https://github.com/pycqa/flake8
       - name: Show flake8 version
         run: |
           pip freeze | grep flake8
