@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 import pytest
 
@@ -96,3 +97,12 @@ def test_syscall(
 
     for expected_result in expected_result_list:
         assert any(result.endswith(expected_result) for result in result_list)
+
+
+def test_flake8_nb_module_call():
+    """Call flake8_nb as python module ``python -m flake8_nb --help``."""
+    output = subprocess.run(
+        [sys.executable, "-m", "flake8_nb", "--help"], capture_output=True, check=True
+    )
+    assert output.returncode == 0
+    assert output.stdout.decode().startswith("usage: flake8_nb [options] file file ...")

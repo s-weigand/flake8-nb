@@ -21,3 +21,7 @@ def main(argv: list[str] | None = None) -> None:
     app = Flake8NbApplication()
     app.run(sys.argv[1:] if argv is None else argv[1:])
     app.exit()
+
+
+if __name__ == "__main__":
+    main()
