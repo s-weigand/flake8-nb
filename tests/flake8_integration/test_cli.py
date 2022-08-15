@@ -1,9 +1,11 @@
+import contextlib
 import os
 import re
 
 import flake8
 import pytest
 
+from flake8_nb import FLAKE8_VERSION_TUPLE
 from flake8_nb import __version__
 from flake8_nb.flake8_integration.cli import Flake8NbApplication
 from flake8_nb.flake8_integration.cli import get_notebooks_from_args
@@ -42,17 +44,21 @@ def test_Flake8NbApplication__generate_versions():
     orig_args = [os.path.join("tests", "data", "notebooks")]
     app = Flake8NbApplication()
     app.initialize(orig_args)
-    app.option_manager.generate_epilog()
 
-    hacked_generate_versions = app.option_manager.generate_versions()
+    if FLAKE8_VERSION_TUPLE < (5, 0, 0):
+        app.option_manager.generate_epilog()
+
+        hacked_generate_versions = app.option_manager.generate_versions()
+        assert re.match(generate_versions_pattern, hacked_generate_versions) is not None
+
     hacked_generate_epilog: str = app.option_manager.parser.epilog  # type: ignore
 
-    assert re.match(generate_versions_pattern, hacked_generate_versions) is not None
     assert re.match(generate_epilog_pattern, hacked_generate_epilog) is not None
 
 
 def test_Flake8NbApplication__hack_flake8_program_and_version():
     app = Flake8NbApplication()
+    app.initialize([])
     program = "flake8_nb"
 
     assert app.program == program
@@ -65,6 +71,7 @@ def test_Flake8NbApplication__hack_flake8_program_and_version():
 
 def test_Flake8NbApplication__option_defaults():
     app = Flake8NbApplication()
+    app.initialize([])
 
     option_dict = app.option_manager.config_options_dict
     assert option_dict["format"].default == "default_notebook"
@@ -98,15 +105,13 @@ def test_Flake8NbApplication__parse_configuration_and_cli():
 @pytest.mark.parametrize("keep_parsed_notebooks", [False, True])
 def test_Flake8NbApplication__exit(keep_parsed_notebooks: bool):
     with pytest.warns(InvalidNotebookWarning):
-        orig_args = [os.path.join("tests", "data", "notebooks")]
+        orig_args = []
+        if keep_parsed_notebooks is True:
+            orig_args += ["--keep-parsed-notebooks"]
         app = Flake8NbApplication()
-        app.set_flake8_option("--keep-parsed-notebooks", default=keep_parsed_notebooks)
-        app.initialize(orig_args)
+        app.initialize([*orig_args, os.path.join("tests", "data", "notebooks")])
         temp_path = NotebookParser.temp_path
-        try:
+        with contextlib.suppress(SystemExit):
             app.exit()
-        except SystemExit:
-            pass
-
     assert os.path.exists(temp_path) == keep_parsed_notebooks
     NotebookParser.clean_up()

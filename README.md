@@ -16,7 +16,7 @@
 [![Code style Python: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Binder](https://static.mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/s-weigand/flake8-nb.git/main?urlpath=lab%2Ftree%2Ftests%2Fdata%2Fnotebooks)
 
-[`flake8`](https://gitlab.com/pycqa/flake8) checking for jupyter notebooks.
+[`flake8`](https://github.com/pycqa/flake8) checking for jupyter notebooks.
 Basically this is a hack on the `flake8`'s `Application` class,
 which adds parsing and a cell based formatter for `*.ipynb` files.
 

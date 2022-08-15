@@ -22,7 +22,12 @@ def get_test_intermediate_path(intermediate_names):
 
 def get_mocked_option(notebook_cell_format: str, formatter="default_notebook") -> Values:
     return Values(
-        {"output_file": "", "format": formatter, "notebook_cell_format": notebook_cell_format}
+        {
+            "output_file": "",
+            "format": formatter,
+            "notebook_cell_format": notebook_cell_format,
+            "color": "off",
+        }
     )
 
 

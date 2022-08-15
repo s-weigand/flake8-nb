@@ -12,7 +12,7 @@ This packages skeleton was created with Cookiecutter_ and the
 The idea to use cell tags was inspired by the use of cell tags in nbval_.
 
 
-.. _flake8: https://gitlab.com/pycqa/flake8
+.. _flake8: https://github.com/pycqa/flake8
 .. _Cookiecutter: https://github.com/cookiecutter/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
 .. _nbval: https://github.com/computationalmodelling/nbval

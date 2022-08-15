@@ -15,6 +15,12 @@ from flake8.style_guide import Violation
 from flake8_nb.parsers.notebook_parsers import NotebookParser
 from flake8_nb.parsers.notebook_parsers import map_intermediate_to_input
 
+try:
+    from flake8.formatting.default import COLORS
+    from flake8.formatting.default import COLORS_OFF
+except ImportError:
+    COLORS = COLORS_OFF = {}
+
 
 def map_notebook_error(violation: Violation, format_str: str) -> tuple[str, int] | None:
     """Map the violation caused in an intermediate file back to its cause.
@@ -69,6 +75,8 @@ class IpynbFormatter(Default):  # type: ignore[misc]
         """Check for a custom format string."""
         if self.options.format.lower() != "default_notebook":
             self.error_format = self.options.format
+        if not hasattr(self, "color"):
+            self.color = True
 
     def format(self, violation: Violation) -> str | None:
         r"""Format the error detected by a flake8 checker.
@@ -101,6 +109,7 @@ class IpynbFormatter(Default):  # type: ignore[misc]
                         "path": filename,
                         "row": line_number,
                         "col": violation.column_number,
+                        **(COLORS if self.color else COLORS_OFF),
                     },
                 )
         return cast(str, super().format(violation))

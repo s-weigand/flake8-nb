@@ -7,6 +7,7 @@ of the CLI argv and config of ``flake8``.
 """
 from __future__ import annotations
 
+import configparser
 import logging
 import os
 import sys
@@ -152,8 +153,21 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
         version : str
             Application version, by default __version__
         """
-        super().__init__(program, version)
-        self.hack_flake8_program_and_version(program, version)
+        super().__init__()
+        if FLAKE8_VERSION_TUPLE < (5, 0, 0):
+            self.apply_hacks()
+            self.option_manager.generate_versions = hack_option_manager_generate_versions(
+                self.option_manager.generate_versions
+            )
+            self.parse_configuration_and_cli = (  # type: ignore[assignment]
+                self.parse_configuration_and_cli_legacy  # type: ignore[assignment]
+            )
+        else:
+            self.register_plugin_options = self.hacked_register_plugin_options
+
+    def apply_hacks(self) -> None:
+        """Apply hacks to flake8 adding options and changing the application name + version."""
+        self.hack_flake8_program_and_version("flake8_nb", __version__)
         self.hack_options()
         self.set_flake8_option(
             "--keep-parsed-notebooks",
@@ -171,13 +185,24 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
             "Possible variables which will be replaces 'nb_path', 'exec_count',"
             "'code_cell_count' and 'total_cell_count'. (Default: %default)",
         )
-        self.option_manager.generate_versions = hack_option_manager_generate_versions(
-            self.option_manager.generate_versions
+
+    def hacked_register_plugin_options(self) -> None:
+        """Register options provided by plugins to our option manager."""
+        assert self.plugins is not None
+        from flake8.main import options
+        from flake8.options import manager
+
+        plugin_version = ", ".join(
+            [v for v in self.plugins.versions_str().split(", ") if not v.startswith("flake8-nb")]
         )
-        if FLAKE8_VERSION_TUPLE < (3, 8, 0):
-            self.parse_configuration_and_cli = (  # type: ignore[assignment]
-                self.parse_configuration_and_cli_legacy  # type: ignore[assignment]
-            )
+
+        self.option_manager = manager.OptionManager(
+            version=__version__,
+            plugin_versions=f"flake8: {flake_version}, {plugin_version}",
+            parents=[self.prelim_arg_parser],
+        )
+        options.register_default_options(self.option_manager)
+        self.option_manager.register_plugins(self.plugins)
 
     def hack_flake8_program_and_version(self, program: str, version: str) -> None:
         """Hack to overwrite the program name and version of flake8.
@@ -223,15 +248,12 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
         if is_option:
             # pylint: disable=no-member
             parser = self.option_manager.parser
-            if FLAKE8_VERSION_TUPLE > (3, 7, 9):
-                for index, action in enumerate(parser._actions):  # pragma: no branch
-                    if long_option_name in action.option_strings:
-                        parser._handle_conflict_resolve(
-                            None, [(long_option_name, parser._actions[index])]
-                        )
-                        break
-            else:
-                parser.remove_option(long_option_name)
+            for index, action in enumerate(parser._actions):  # pragma: no branch
+                if long_option_name in action.option_strings:
+                    parser._handle_conflict_resolve(
+                        None, [(long_option_name, parser._actions[index])]
+                    )
+                    break
         self.option_manager.add_option(long_option_name, *args, **kwargs)
 
     def hack_options(self) -> None:
@@ -278,40 +300,6 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
         return args + notebook_parser.intermediate_py_file_paths
 
     def parse_configuration_and_cli_legacy(
-        self,
-        argv: list[str] | None = None,
-    ) -> None:
-        """Compat version of self.parse_configuration_and_cli to work with flake8 >=3.7.0,<= 3.7.9 .
-
-        See https://gitlab.com/pycqa/flake8/blob/master/src/flake8/main/application.py#L194
-
-        Parse configuration files and the CLI options.
-
-        Parameters
-        ----------
-        argv: list[str] | None
-            Command-line arguments passed in directly.
-        """
-        if self.options is None and self.args is None:  # type: ignore  # pragma: no branch
-            # pylint: disable=no-member
-            self.options, self.args = aggregator.aggregate_options(
-                self.option_manager, self.config_finder, argv
-            )
-
-        self.args = self.hack_args(self.args, self.options.exclude)
-
-        self.running_against_diff = self.options.diff
-        if self.running_against_diff:  # pragma: no cover
-            self.parsed_diff = utils.parse_unified_diff()
-            if not self.parsed_diff:
-                self.exit()
-
-        self.options._running_from_vcs = False
-
-        self.check_plugins.provide_options(self.option_manager, self.options, self.args)
-        self.formatting_plugins.provide_options(self.option_manager, self.options, self.args)
-
-    def parse_configuration_and_cli(
         self, config_finder: config.ConfigFileFinder, argv: list[str]
     ) -> None:
         """Parse configuration files and the CLI options.
@@ -342,11 +330,94 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
         self.check_plugins.provide_options(self.option_manager, self.options, self.args)
         self.formatting_plugins.provide_options(self.option_manager, self.options, self.args)
 
+    def parse_configuration_and_cli(
+        self,
+        cfg: configparser.RawConfigParser,
+        cfg_dir: str,
+        argv: list[str],
+    ) -> None:
+        """
+        Parse configuration files and the CLI options.
+
+        Parameters
+        ----------
+        cfg: configparser.RawConfigParser
+            Config parser instance
+        cfg_dir: str
+            Dir the the config is in.
+        argv: list[str]
+            CLI args
+
+        Raises
+        ------
+        SystemExit
+            If ``--bug-report`` option is passed to the CLI.
+        """
+        assert self.option_manager is not None
+        assert self.plugins is not None
+
+        self.apply_hacks()
+
+        self.options = aggregator.aggregate_options(
+            self.option_manager,
+            cfg,
+            cfg_dir,
+            argv,
+        )
+
+        argv = self.hack_args(argv, self.options.exclude)
+
+        self.options = aggregator.aggregate_options(
+            self.option_manager,
+            cfg,
+            cfg_dir,
+            argv,
+        )
+
+        import json
+
+        from flake8.main import debug
+
+        if self.options.bug_report:
+            info = debug.information(__version__, self.plugins)
+            for index, plugin in enumerate(info["plugins"]):
+                if plugin["plugin"] == "flake8-nb":
+                    del info["plugins"][index]
+            info["flake8-version"] = flake_version
+            print(json.dumps(info, indent=2, sort_keys=True))
+            raise SystemExit(0)
+
+        if self.options.diff:  # pragma: no cover
+            LOG.warning(
+                "the --diff option is deprecated and will be removed in a " "future version."
+            )
+            self.parsed_diff = utils.parse_unified_diff()
+
+        for loaded in self.plugins.all_plugins():
+            parse_options = getattr(loaded.obj, "parse_options", None)
+            if parse_options is None:
+                continue
+
+            # XXX: ideally we wouldn't have two forms of parse_options
+            try:
+                parse_options(
+                    self.option_manager,
+                    self.options,
+                    self.options.filenames,
+                )
+            except TypeError:
+                parse_options(self.options)
+
     def exit(self) -> None:
         """Handle finalization and exiting the program.
 
         This should be the last thing called on the application instance. It
         will check certain options and exit appropriately.
+
+        Raises
+        ------
+        SystemExit
+            For flake8>=5.0.0
         """
         if self.options.keep_parsed_notebooks:
             temp_path = NotebookParser.temp_path
@@ -356,4 +427,7 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
             )
         else:
             NotebookParser.clean_up()
-        super().exit()
+        if FLAKE8_VERSION_TUPLE < (5, 0, 0):
+            super().exit()
+        else:
+            raise SystemExit(self.exit_code())

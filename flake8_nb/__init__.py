@@ -8,9 +8,7 @@ import flake8
 
 from flake8_nb.flake8_integration.formatter import IpynbFormatter
 
-__all__ = [
-    IpynbFormatter.__name__,
-]
+__all__ = ["IpynbFormatter"]
 
 
 def save_cast_int(int_str: str) -> int:
