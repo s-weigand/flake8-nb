@@ -17,6 +17,12 @@
 [![Binder](https://static.mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/s-weigand/flake8-nb.git/main?urlpath=lab%2Ftree%2Ftests%2Fdata%2Fnotebooks)
 
 [`flake8`](https://github.com/pycqa/flake8) checking for jupyter notebooks.
+
+This tool is mainly aimed towards writing tutorials/lecture material, where one might also want
+to show off bad practices and/or errors, while still keeping the rest of the code clean and
+without adding the complexity of tooling to the readers
+(see [docs on cell tags](https://flake8-nb.readthedocs.io/en/latest/usage.html#cell-tags)).
+
 Basically this is a hack on the `flake8`'s `Application` class,
 which adds parsing and a cell based formatter for `*.ipynb` files.
 
@@ -70,6 +76,11 @@ example_notebook.ipynb:code_cell#5:1:31: E231 missing whitespace after ':'
 $ flake8_nb --notebook-cell-format '{nb_path}:cell#{total_cell_count}' example_notebook.ipynb
 example_notebook.ipynb:cell#10:1:31: E231 missing whitespace after ':'
 ```
+
+## Similar projects
+
+- [nbQA](https://github.com/nbQA-dev/nbQA):
+  Run isort, pyupgrade, mypy, pylint, flake8, mdformat, black, blacken-docs, and more on Jupyter Notebooks
 
 ## Contributors ✨
 
