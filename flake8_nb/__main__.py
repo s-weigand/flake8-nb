@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import sys
 
-from flake8_nb import FLAKE8_VERSION_TUPLE
 from flake8_nb.flake8_integration.cli import Flake8NbApplication
 
 
@@ -19,8 +18,6 @@ def main(argv: list[str] | None = None) -> None:
     argv: list[str] | None
         The arguments to be passed to the application for parsing.
     """
-    if FLAKE8_VERSION_TUPLE > (3, 7, 9):
-        argv = sys.argv[1:] if argv is None else argv[1:]
     app = Flake8NbApplication()
-    app.run(argv)
+    app.run(sys.argv[1:] if argv is None else argv[1:])
     app.exit()

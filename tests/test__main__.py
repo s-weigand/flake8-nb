@@ -3,7 +3,6 @@ import subprocess
 
 import pytest
 
-from flake8_nb import FLAKE8_VERSION_TUPLE
 from flake8_nb.__main__ import main
 from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
 from flake8_nb.parsers.notebook_parsers import NotebookParser
@@ -23,8 +22,6 @@ def test_run_main(
     capsys, keep_intermediate: bool, notebook_cell_format: str, expected_result: str
 ):
     argv = ["flake8_nb", TEST_NOTEBOOK_BASE_PATH]
-    if FLAKE8_VERSION_TUPLE < (3, 8, 0):
-        argv = argv[1:]
     if keep_intermediate:
         argv.append("--keep-parsed-notebooks")
     argv += ["--notebook-cell-format", notebook_cell_format]
@@ -52,8 +49,6 @@ def test_run_main(
 
 def test_run_main_all_excluded(capsys):
     argv = ["flake8_nb", TEST_NOTEBOOK_BASE_PATH]
-    if FLAKE8_VERSION_TUPLE < (3, 8, 0):
-        argv = argv[1:]
     argv += [
         "--exclude",
         f"*.tox/*,*.ipynb_checkpoints*,*/docs/*,{TEST_NOTEBOOK_BASE_PATH}",

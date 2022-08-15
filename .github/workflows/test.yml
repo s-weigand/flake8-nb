@@ -137,7 +137,7 @@ jobs:
           python -m pip install -U pip
           pip install .
           python -m pip install -U -r requirements_dev.txt
-          python -m pip install -U -q 'flake8==3.7.0'
+          python -m pip install -U -q 'flake8==3.8.0'
       - name: Show flake8 version
         run: |
           pip freeze | grep flake8
