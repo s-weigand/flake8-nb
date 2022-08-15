@@ -380,10 +380,14 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
 
         if self.options.bug_report:
             info = debug.information(__version__, self.plugins)
+            for index, plugin in enumerate(info["plugins"]):
+                if plugin["plugin"] == "flake8-nb":
+                    del info["plugins"][index]
+            info["flake8-version"] = flake_version
             print(json.dumps(info, indent=2, sort_keys=True))
             raise SystemExit(0)
 
-        if self.options.diff:
+        if self.options.diff:  # pragma: no cover
             LOG.warning(
                 "the --diff option is deprecated and will be removed in a " "future version."
             )

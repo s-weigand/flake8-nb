@@ -1,9 +1,13 @@
+import json
 import os
 import subprocess
 import sys
 
 import pytest
+from flake8 import __version__ as flake_version
 
+from flake8_nb import FLAKE8_VERSION_TUPLE
+from flake8_nb import __version__
 from flake8_nb.__main__ import main
 from flake8_nb.parsers.notebook_parsers import InvalidNotebookWarning
 from flake8_nb.parsers.notebook_parsers import NotebookParser
@@ -108,3 +112,19 @@ def test_flake8_nb_module_call():
     )
     assert output.returncode == 0
     assert output.stdout.decode().startswith("usage: flake8_nb [options] file file ...")
+
+
+@pytest.mark.skipif(FLAKE8_VERSION_TUPLE < (5, 0, 0), reason="Only implemented for flake8>=5.0.0")
+def test_flake8_nb_bug_report():
+    """Debug information."""
+    output = subprocess.run(
+        [sys.executable, "-m", "flake8_nb", "--bug-report"], capture_output=True, check=True
+    )
+    assert output.returncode == 0
+    info = json.loads(output.stdout.decode())
+
+    assert "flake8-version" in info
+    assert info["flake8-version"] == flake_version
+    assert info["version"] == __version__
+
+    assert not any(plugin["plugin"] == "flake8-nb" for plugin in info["plugins"])
