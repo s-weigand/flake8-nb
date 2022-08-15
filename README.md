@@ -71,6 +71,11 @@ $ flake8_nb --notebook-cell-format '{nb_path}:cell#{total_cell_count}' example_n
 example_notebook.ipynb:cell#10:1:31: E231 missing whitespace after ':'
 ```
 
+## Similar projects
+
+- [nbQA](https://github.com/nbQA-dev/nbQA):
+  Run isort, pyupgrade, mypy, pylint, flake8, mdformat, black, blacken-docs, and more on Jupyter Notebooks
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
