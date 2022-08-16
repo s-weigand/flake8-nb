@@ -1,8 +1,12 @@
 # Changelog
 
+## 0.5.1 (2022-08-16)
+
+- 🩹 Fix config discovery with flake8>=5.0.0 [#251](https://github.com/s-weigand/flake8-nb/pull/251)
+
 ## 0.5.0 (2022-08-15)
 
-- Drop support for `flake8` to be `<3.8.0` [#240](https://github.com/s-weigand/flake8-nb/pull/240)
+- Drop support for `flake8<3.8.0` [#240](https://github.com/s-weigand/flake8-nb/pull/240)
 - Set max supported version of `flake8` to be `<5.0.5` [#240](https://github.com/s-weigand/flake8-nb/pull/240)
 - Enable calling `flake8_nb` as python module [#240](https://github.com/s-weigand/flake8-nb/pull/240)
 
