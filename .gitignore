@@ -113,3 +113,4 @@ venv.bak/
 # local hook testing files
 flake8-nb_run_output.txt
 hook_run_output.txt
+flake8_nb/flake8_integration/hacked_config.py

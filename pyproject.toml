@@ -26,7 +26,7 @@ known_first_party = ["flake8_nb", "tests"]
 force_single_line = true
 
 [tool.interrogate]
-exclude = ["setup.py", "docs", "tests", ".eggs"]
+exclude = ["setup.py", "docs", "tests", ".eggs","flake8_nb/flake8_integration/hacked_config.py"]
 ignore-init-module = true
 fail-under=100
 verbose = 1

@@ -11,6 +11,7 @@ import configparser
 import logging
 import os
 import sys
+from pathlib import Path
 from typing import Any
 from typing import Callable
 
@@ -134,6 +135,25 @@ def hack_option_manager_generate_versions(
         return f"{additional_output}, {original_output}"
 
     return hacked_generate_versions
+
+
+def hack_config_module() -> None:
+    """Create hacked version of ``flake8.options.config`` at runtime.
+
+    Since flake8>=5.0.0 uses hardcoded ``"flake8"`` to discover the config we replace
+    with it with ``"flake8_nb"`` to create our own hacked version and replace
+    the references to the original module with the hacked one.
+
+    See: https://github.com/s-weigand/flake8-nb/issues/249
+    """
+    hacked_config_source = Path(config.__file__).read_text().replace('"flake8"', '"flake8_nb"')
+    hacked_config_path = Path(__file__).parent / "hacked_config.py"
+    hacked_config_path.write_text(hacked_config_source)
+
+    from flake8_nb.flake8_integration import hacked_config  # type:ignore[attr-defined]
+
+    sys.modules["flake8.options.config"] = hacked_config
+    aggregator.config = hacked_config
 
 
 class Flake8NbApplication(Application):  # type: ignore[misc]
@@ -357,6 +377,7 @@ class Flake8NbApplication(Application):  # type: ignore[misc]
         assert self.plugins is not None
 
         self.apply_hacks()
+        hack_config_module()
 
         self.options = aggregator.aggregate_options(
             self.option_manager,
