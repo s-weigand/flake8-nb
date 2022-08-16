@@ -92,6 +92,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "dominiquesydow",
+      "name": "Dominique Sydow",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7207093?v=4",
+      "profile": "https://github.com/dominiquesydow",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
