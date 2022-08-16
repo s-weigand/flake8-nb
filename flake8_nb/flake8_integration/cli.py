@@ -150,7 +150,7 @@ def hack_config_module() -> None:
     hacked_config_path = Path(__file__).parent / "hacked_config.py"
     hacked_config_path.write_text(hacked_config_source)
 
-    from flake8_nb.flake8_integration import hacked_config
+    from flake8_nb.flake8_integration import hacked_config  # type:ignore[attr-defined]
 
     sys.modules["flake8.options.config"] = hacked_config
     aggregator.config = hacked_config
