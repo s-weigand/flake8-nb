@@ -98,8 +98,8 @@ def extract_flake8_inline_tags(notebook_cell: NotebookCell) -> list[str]:
     flake8_inline_tags = []
     for source_line in notebook_cell["source"]:
         match = re.match(FLAKE8_INLINE_TAG_PATTERN, source_line)
-        if match and match.group("flake8_inline_tags"):
-            for tag in match.group("flake8_inline_tags").split(" "):
+        if match and match["flake8_inline_tags"]:
+            for tag in match["flake8_inline_tags"].split(" "):
                 tag = tag.strip()
                 if tag:
                     flake8_inline_tags.append(tag)
@@ -121,11 +121,11 @@ def extract_inline_flake8_noqa(source_line: str) -> list[str]:
     """
     match = re.match(FLAKE8_NOQA_INLINE_PATTERN, source_line)
     if match:
-        flake8_noqa_rules_str = match.group("flake8_noqa_rules")
+        flake8_noqa_rules_str = match["flake8_noqa_rules"]
         if flake8_noqa_rules_str:
             flake8_noqa_rules = flake8_noqa_rules_str.split(",")
             return [line.strip() for line in flake8_noqa_rules]
-        elif match.group("has_flake8_noqa_all"):  # pragma: no branch
+        elif match["has_flake8_noqa_all"]:  # pragma: no branch
             return ["noqa"]
     return []
 
@@ -153,19 +153,19 @@ def flake8_tag_to_rules_dict(flake8_tag: str) -> RulesDict:
     """
     match = re.match(FLAKE8_TAG_PATTERN, flake8_tag)
     if match:
-        if match.group("cell_rules"):
-            cell_rules_str = match.group("cell_rules")
+        if match["cell_rules"]:
+            cell_rules_str = match["cell_rules"]
             cell_rules = cell_rules_str.split("-")
             return {"cell": cell_rules}
-        elif match.group("ignore_cell"):
+        elif match["ignore_cell"]:
             return {"cell": ["noqa"]}
-        elif match.group("line_nr") and match.group("line_rules"):
-            line_nr = str(match.group("line_nr"))
-            line_rules_str = match.group("line_rules")
+        elif match["line_nr"] and match["line_rules"]:
+            line_nr = str(match["line_nr"])
+            line_rules_str = match["line_rules"]
             line_rules = line_rules_str.split("-")
             return {line_nr: line_rules}
-        elif match.group("ignore_line_nr"):  # pragma: no branch
-            line_nr = str(match.group("ignore_line_nr"))
+        elif match["ignore_line_nr"]:  # pragma: no branch
+            line_nr = str(match["ignore_line_nr"])
             return {line_nr: ["noqa"]}
     warnings.warn(InvalidFlake8TagWarning(flake8_tag))
     return {}
@@ -281,11 +281,10 @@ def update_inline_flake8_noqa(source_line: str, rules_list: list[str]) -> str:
         rules_list = list(set(inline_flake8_noqa + rules_list))
         source_line = re.sub(FLAKE8_NOQA_INLINE_REPLACE_PATTERN, r"\g<source_code>", source_line)
     rules_list = sorted(rules_list)
-    noqa_str = "" if "noqa" in rules_list else ", ".join(rules_list)
-    if rules_list:
-        return f"{source_line}  # noqa: {noqa_str}\n"
-    else:
+    if not rules_list:
         return f"{source_line}\n"
+    noqa_str = "" if "noqa" in rules_list else ", ".join(rules_list)
+    return f"{source_line}  # noqa: {noqa_str}\n"
 
 
 def notebook_cell_to_intermediate_dict(
