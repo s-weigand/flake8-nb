@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 import pytest
 from flake8 import __version__ as flake_version
@@ -50,6 +51,28 @@ def test_run_main(
     if keep_intermediate:
         assert os.path.exists(NotebookParser.temp_path)
         NotebookParser.clean_up()
+
+
+def test_run_main_use_config(capsys, tmp_path: Path):
+    test_config = tmp_path / "setup.cfg"
+    test_config.write_text("[flake8_nb]\nextend-ignore = E231,F401")
+
+    argv = ["flake8_nb", "--config", test_config.resolve().as_posix()]
+    with pytest.raises(SystemExit):
+        with pytest.warns(InvalidNotebookWarning):
+            main([*argv, TEST_NOTEBOOK_BASE_PATH])
+    captured = capsys.readouterr()
+    result_output = captured.out
+    result_list = result_output.replace("\r", "").split("\n")
+    result_list.remove("")
+    expected_result_path = os.path.join(
+        os.path.dirname(__file__), "data", "expected_output_config_test.txt"
+    )
+    with open(expected_result_path) as result_file:
+        expected_result_list = result_file.readlines()
+    assert len(expected_result_list) == len(result_list)
+    for expected_result in expected_result_list:
+        assert any(result.endswith(expected_result.rstrip("\n")) for result in result_list)
 
 
 def test_run_main_all_excluded(capsys):
