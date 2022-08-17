@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.2 (2022-08-17)
+
+- 🩹 Fix config file discovery with flake8>=5.0.0 [#255](https://github.com/s-weigand/flake8-nb/pull/255)
+
 ## 0.5.1 (2022-08-16)
 
 - 🩹 Fix config discovery with flake8>=5.0.0 [#251](https://github.com/s-weigand/flake8-nb/pull/251)
