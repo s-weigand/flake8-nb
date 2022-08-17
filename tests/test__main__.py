@@ -1,10 +1,13 @@
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
+from _pytest.capture import CaptureFixture
+from _pytest.monkeypatch import MonkeyPatch
 from flake8 import __version__ as flake_version
 
 from flake8_nb import FLAKE8_VERSION_TUPLE
@@ -61,6 +64,36 @@ def test_run_main_use_config(capsys, tmp_path: Path):
     with pytest.raises(SystemExit):
         with pytest.warns(InvalidNotebookWarning):
             main([*argv, TEST_NOTEBOOK_BASE_PATH])
+    captured = capsys.readouterr()
+    result_output = captured.out
+    result_list = result_output.replace("\r", "").split("\n")
+    result_list.remove("")
+    expected_result_path = os.path.join(
+        os.path.dirname(__file__), "data", "expected_output_config_test.txt"
+    )
+    with open(expected_result_path) as result_file:
+        expected_result_list = result_file.readlines()
+    assert len(expected_result_list) == len(result_list)
+    for expected_result in expected_result_list:
+        assert any(result.endswith(expected_result.rstrip("\n")) for result in result_list)
+
+
+@pytest.mark.parametrize("config_file_name", ("setup.cfg", "tox.ini", ".flake8_nb"))
+def test_config_discovered(
+    config_file_name: str, tmp_path: Path, monkeypatch: MonkeyPatch, capsys: CaptureFixture
+):
+    """Check that config file is discovered."""
+
+    test_config = tmp_path / config_file_name
+    test_config.write_text("[flake8_nb]\nextend-ignore = E231,F401")
+
+    shutil.copytree(TEST_NOTEBOOK_BASE_PATH, tmp_path / "notebooks")
+
+    with monkeypatch.context() as m:
+        m.chdir(tmp_path)
+        with pytest.raises(SystemExit):
+            with pytest.warns(InvalidNotebookWarning):
+                main(["flake8_nb"])
     captured = capsys.readouterr()
     result_output = captured.out
     result_list = result_output.replace("\r", "").split("\n")
