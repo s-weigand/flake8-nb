@@ -26,4 +26,4 @@ jobs:
           pip freeze | grep flake8
       - name: Run tests
         run: |
-          python -m pytest -vv --cov=flake8_nb --cov-report term --cov-report xml --cov-config pyproject.toml tests
+          python -m pytest -vv

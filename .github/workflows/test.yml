@@ -115,7 +115,7 @@ jobs:
           pip freeze | grep flake8
       - name: Run tests
         run: |
-          python -m pytest -vv --cov=flake8_nb --cov-report term --cov-report xml --cov-config pyproject.toml tests
+          python -m pytest -vv
       - name: Codecov Upload
         uses: codecov/codecov-action@v3
         with:
@@ -143,7 +143,7 @@ jobs:
           pip freeze | grep flake8
       - name: Run tests
         run: |
-          python -m pytest -vv --cov=flake8_nb --cov-report term --cov-report xml --cov-config pyproject.toml tests
+          python -m pytest -vv
       - name: Codecov Upload
         uses: codecov/codecov-action@v3
         with:
@@ -171,7 +171,7 @@ jobs:
           python -m pip install -U -r requirements_dev.txt
       - name: Run tests
         run: |
-          python -m pytest --cov=flake8_nb --cov-report term --cov-report xml --cov-config pyproject.toml tests
+          python -m pytest
       - name: Codecov Upload
         uses: codecov/codecov-action@v3
         with:
