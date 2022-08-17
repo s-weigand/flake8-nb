@@ -34,15 +34,13 @@ verbose = 1
 
 [tool.coverage.run]
 branch = true
-include = [
-  'flake8_nb/*',
-]
+relative_files = true
 omit = [
   'setup.py',
-  "flake8_nb/__init__.py",
-  "flake8_nb/*/__init__.py",
-  "tests/__init__.py",
-  "*/tests/*",
+  'flake8_nb/__init__.py',
+  'flake8_nb/*/__init__.py',
+  'tests/__init__.py',
+  '*/tests/*',
 # comment the above line if you want to see if all tests did run
   ]
 
