@@ -114,12 +114,3 @@ repos:
     hooks:
       - id: yesqa
         additional_dependencies: [flake8-docstrings]
-  - repo: https://github.com/econchick/interrogate
-    rev: 1.5.0
-    hooks:
-      - id: interrogate
-        name: Update interrogate badge
-        args: [-vv, --config=pyproject.toml, -g, docs/_static]
-        pass_filenames: false
-        always_run: true
-        stages: [push]
