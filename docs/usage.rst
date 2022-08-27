@@ -71,7 +71,7 @@ or all errors, ``flake8`` would report on that given line.
 .. note::
 
     If a normal ``flake8 noqa comment`` ends with a string, which doesn't
-    match the error code patter (``\w+\d+``), this comment will be ignored.
+    match the error code pattern (``\w+\d+``), this comment will be ignored.
 
 
 Cell tags
