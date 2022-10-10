@@ -15,7 +15,7 @@ repos:
       - id: validate_manifest
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.981
+    rev: v0.982
     hooks:
       - id: mypy
         exclude: "^(docs|tests|.github)"
@@ -29,12 +29,12 @@ repos:
         types_or: [python, pyi]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.38.2
+    rev: v3.0.0
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
   - repo: https://github.com/python/black
-    rev: 22.8.0
+    rev: 22.10.0
     hooks:
       - id: black
         language_version: python3
@@ -62,7 +62,7 @@ repos:
         args: [--include-version-classifiers]
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0-alpha.0 # Use the sha or tag you want to point at
+    rev: v3.0.0-alpha.1 # Use the sha or tag you want to point at
     hooks:
       - id: prettier
   - repo: https://github.com/pycqa/flake8
