@@ -74,7 +74,7 @@ repos:
     hooks:
       - id: isort
   - repo: https://github.com/PyCQA/pydocstyle
-    rev: 6.2.3
+    rev: 6.3.0
     hooks:
       - id: pydocstyle
         exclude: "^(docs|tests|setup.py)"
