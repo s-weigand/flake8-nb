@@ -101,6 +101,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "lkeegan",
+      "name": "Liam Keegan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12845624?v=4",
+      "profile": "https://www.keegan.ch",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
@@ -108,5 +118,6 @@
   "projectOwner": "s-weigand",
   "repoType": "github",
   "repoHost": "https://github.com",
-  "skipCi": true
+  "skipCi": true,
+  "commitConvention": "angular"
 }
