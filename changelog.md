@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.3 (2023-03-28)
+
+- ✨ Official python 3.11 support [#291](https://github.com/s-weigand/flake8-nb/pull/291)
+- 🩹 Fixed bug with pre-commit-ci due to read-only filesystem by @lkeegan in [#290](https://github.com/s-weigand/flake8-nb/pull/290)
+
 ## 0.5.2 (2022-08-17)
 
 - 🩹 Fix config file discovery with flake8>=5.0.0 [#255](https://github.com/s-weigand/flake8-nb/pull/255)
