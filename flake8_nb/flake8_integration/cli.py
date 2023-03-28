@@ -11,6 +11,7 @@ import configparser
 import logging
 import os
 import sys
+import types
 from pathlib import Path
 from typing import Any
 from typing import Callable
@@ -154,10 +155,8 @@ def hack_config_module() -> None:
         .replace('"flake8"', '"flake8_nb"')
         .replace('".flake8"', '".flake8_nb"')
     )
-    hacked_config_path = Path(__file__).parent / "hacked_config.py"
-    hacked_config_path.write_text(hacked_config_source)
-
-    from flake8_nb.flake8_integration import hacked_config  # type:ignore[attr-defined]
+    hacked_config = types.ModuleType("hacked_config")
+    exec(hacked_config_source, hacked_config.__dict__)
 
     sys.modules["flake8.options.config"] = hacked_config
     aggregator.config = hacked_config
