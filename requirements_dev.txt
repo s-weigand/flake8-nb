@@ -14,6 +14,6 @@ coverage[toml]>=4.5.4
 # doc requirements
 -r docs/requirements.txt
 # package runtime requirements
-flake8==5.0.4
+flake8==6.0.0
 nbconvert==7.3.1; python_version > '3.7'
 ipython==8.12.0; python_version > '3.7'
