@@ -10,12 +10,12 @@ repos:
       - id: fix-encoding-pragma
         args: [--remove]
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v3.2.2
+    rev: v3.3.3
     hooks:
       - id: validate_manifest
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.2.0
+    rev: v1.4.1
     hooks:
       - id: mypy
         exclude: "^(docs|tests|.github)"
@@ -29,7 +29,7 @@ repos:
         types_or: [python, pyi]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.2
+    rev: v3.8.0
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
@@ -56,13 +56,13 @@ repos:
         files: "notebook_with_out_flake8_tags"
 
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.2.0
+    rev: v2.4.0
     hooks:
       - id: setup-cfg-fmt
         args: [--include-version-classifiers]
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0-alpha.9-for-vscode # Use the sha or tag you want to point at
+    rev: v3.0.0 # Use the sha or tag you want to point at
     hooks:
       - id: prettier
   - repo: https://github.com/pycqa/flake8
@@ -104,13 +104,13 @@ repos:
       - id: rst-backticks
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.4
+    rev: v2.2.5
     hooks:
       - id: codespell
         files: ".py|.rst|.md"
 
   - repo: https://github.com/asottile/yesqa
-    rev: v1.4.0
+    rev: v1.5.0
     hooks:
       - id: yesqa
         additional_dependencies: [flake8-docstrings]
