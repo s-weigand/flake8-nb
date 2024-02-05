@@ -40,7 +40,7 @@ repos:
         language_version: python3
 
   - repo: https://github.com/kynan/nbstripout
-    rev: 0.6.1
+    rev: 0.7.1
     hooks:
       - id: nbstripout
         name: nbstripout no notebook_with_out_flake8_tags
@@ -48,7 +48,7 @@ repos:
         exclude: "not_a_notebook|notebook_with_out_flake8_tags|cell_with_source_string"
 
   - repo: https://github.com/kynan/nbstripout
-    rev: 0.6.1
+    rev: 0.7.1
     hooks:
       - id: nbstripout
         name: nbstripout only notebook_with_out_flake8_tags
