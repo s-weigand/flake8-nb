@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: check-ast
       - id: check-builtin-literals
@@ -10,12 +10,12 @@ repos:
       - id: fix-encoding-pragma
         args: [--remove]
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v3.2.2
+    rev: v3.7.0
     hooks:
       - id: validate_manifest
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.2.0
+    rev: v1.9.0
     hooks:
       - id: mypy
         exclude: "^(docs|tests|.github)"
@@ -29,18 +29,18 @@ repos:
         types_or: [python, pyi]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.2
+    rev: v3.15.2
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
   - repo: https://github.com/python/black
-    rev: 23.3.0
+    rev: 24.3.0
     hooks:
       - id: black
         language_version: python3
 
   - repo: https://github.com/kynan/nbstripout
-    rev: 0.6.1
+    rev: 0.7.1
     hooks:
       - id: nbstripout
         name: nbstripout no notebook_with_out_flake8_tags
@@ -48,7 +48,7 @@ repos:
         exclude: "not_a_notebook|notebook_with_out_flake8_tags|cell_with_source_string"
 
   - repo: https://github.com/kynan/nbstripout
-    rev: 0.6.1
+    rev: 0.7.1
     hooks:
       - id: nbstripout
         name: nbstripout only notebook_with_out_flake8_tags
@@ -56,21 +56,21 @@ repos:
         files: "notebook_with_out_flake8_tags"
 
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.2.0
+    rev: v2.5.0
     hooks:
       - id: setup-cfg-fmt
         args: [--include-version-classifiers]
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0-alpha.9-for-vscode # Use the sha or tag you want to point at
+    rev: v4.0.0-alpha.8 # Use the sha or tag you want to point at
     hooks:
       - id: prettier
   - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
+    rev: 7.0.0
     hooks:
       - id: flake8
   - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
+    rev: 5.13.2
     hooks:
       - id: isort
   - repo: https://github.com/PyCQA/pydocstyle
@@ -92,7 +92,7 @@ repos:
         pass_filenames: false
 
   - repo: https://github.com/rstcheck/rstcheck
-    rev: "v6.1.2"
+    rev: "v6.2.0"
     hooks:
       - id: rstcheck
         additional_dependencies: [sphinx]
@@ -104,13 +104,13 @@ repos:
       - id: rst-backticks
 
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.4
+    rev: v2.2.6
     hooks:
       - id: codespell
         files: ".py|.rst|.md"
 
   - repo: https://github.com/asottile/yesqa
-    rev: v1.4.0
+    rev: v1.5.0
     hooks:
       - id: yesqa
         additional_dependencies: [flake8-docstrings]
