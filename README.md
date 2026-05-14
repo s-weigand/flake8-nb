@@ -28,6 +28,12 @@ which adds parsing and a cell based formatter for `*.ipynb` files.
 
 This is **NOT A PLUGIN** but a stand alone CLI tool/[pre-commit](https://pre-commit.com/) hook to be used instead of the `flake8` command/hook.
 
+## Installation
+
+```sh
+pip install flake8-nb
+```
+
 ## Features
 
 - flake8 CLI tests for jupyter notebooks
